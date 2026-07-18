@@ -24,7 +24,7 @@ CREATE TABLE Listing(
     listing_title  VARCHAR(100) NOT NULL,
     listing_description TEXT,
     price DECIMAL(10,2) NOT NULL,
-    condition ENUM('NEW','LIKE NEW','GOOD','FAIR','USED') NOT NULL,
+    listing_condition ENUM('NEW','LIKE NEW','GOOD','FAIR','USED') NOT NULL,
     listing_status ENUM('ACTIVE', 'SOLD', 'RESERVED', 'REMOVED') NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -68,7 +68,7 @@ CREATE TABLE Listing_image(
 
     image_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     listing_id INT UNSIGNED NOT NULL,
-    image_url VARCHAR(2048) NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
     display_order SMALLINT UNSIGNED NOT NULL DEFAULT 1,
     is_primary BOOLEAN NOT NULL DEFAULT FALSE,
 
