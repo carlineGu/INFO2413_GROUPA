@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  background: #fff;
+}
+
+.landing-page {
+  min-height: 100vh;
+  padding: 28px 20px;
+}
+
+.landing-container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.landing-container h1 {
+  margin: 0 0 28px;
+  text-align: center;
+  font-size: 38px;
+  font-weight: 600;
+}
+
+.hero-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 38px;
+}
+
+.hero-image {
+  display: block;
+  width: 350px;
+  height: auto;  
+
+  border: 1px solid #333;
+  object-fit: cover;
+}
+
+.application-description h2 {
+  margin-bottom: 16px;
+  font-size: 21px;
+}
+
+.application-description p,
+.application-description li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #364152;
+}
+
+.application-description ul {
+  padding-left: 30px;
+}
+
+.landing-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.landing-button {
+  display: flex;
+  flex: 1;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #111;
+  text-decoration: none;
+  font-size: 14px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.primary-button {
+  background: #000;
+  color: #fff;
+}
+
+.primary-button:hover {
+  background: #333;
+}
+
+.secondary-button {
+  background: #fff;
+  color: #111;
+}
+
+.secondary-button:hover {
+  background: #f1f1f1;
+}
+
+@media (max-width: 650px) {
+  .landing-page {
+    padding: 20px 16px;
+  }
+
+  .landing-container h1 {
+    font-size: 30px;
+  }
+
+  .hero-image {
+    min-height: 230px;
+  }
+
+  .landing-actions {
+    flex-direction: column;
+  }
+}
