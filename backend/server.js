@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const db = require("./db");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -70,3 +71,5 @@ app.get("/api/listing", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 }); 
+
+app.use("/api/auth", authRoutes);

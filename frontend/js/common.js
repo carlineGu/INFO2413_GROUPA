@@ -107,7 +107,7 @@ function initializeNavbar() {
 
   logoutButton.addEventListener("click", () => {
     localStorage.removeItem("user");
-    window.location.href = "landing.html";
+    window.location.href = "/html/landing.html";
   });
 
   loadNotifications();
