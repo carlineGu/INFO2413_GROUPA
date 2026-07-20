@@ -56,8 +56,8 @@ if (navbarContainer) {
       <a href="index.html">Browse Listings</a>
       <a href="my-listings.html">My Listings</a>
       <a href="favorites.html">Favorites</a>
-      <a href="messages.html">Messages</a>
-      <a href="create-listing.html">Create Listing</a>
+      <a href="message.html">Messages</a>
+      <a href="create_listing.html">Create Listing</a>
       <a href="profile.html">Account / Profile</a>
       <a href="settings.html">Settings</a>
       <a href="support.html">Help & Support</a>

@@ -124,6 +124,7 @@ body {
 
 .profile-dropdown {
   min-width: 160px;
+  top: 100%;
 }
 
 .profile-dropdown a,
@@ -151,7 +152,8 @@ body {
 }
 
 /* Show profile menu when hovering */
-.profile-wrapper:hover .profile-dropdown {
+.profile-wrapper:hover .profile-dropdown,
+.profile-wrapper:focus-within .profile-dropdown {
   display: block;
 }
 

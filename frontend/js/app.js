@@ -37,6 +37,9 @@ async function loadListings() {
 
       column.innerHTML = `
         <div class="card h-100">
+          ${listing.photo ? `
+          <img src="${listing.photo}" class="card-img-top" alt="${listing.listing_title}" style="height: 200px; object-fit: cover;" />
+          ` : ""}
           <div class="card-body">
             <h5 class="card-title">${listing.listing_title}</h5>
 

@@ -4,6 +4,52 @@ const db = require("../db");
 
 const router = express.Router();
 
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required." });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const [users] = await db.query(
+      `SELECT user_id, first_name, last_name, email_addr, password_hash, account_status
+       FROM User
+       WHERE email_addr = ?`,
+      [normalizedEmail]
+    );
+
+    if (users.length === 0) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    const user = users[0];
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    return res.json({
+      message: "Login successful.",
+      user: {
+        user_id: user.user_id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        fullName: `${user.first_name} ${user.last_name}`.trim(),
+        email: user.email_addr,
+        email_addr: user.email_addr,
+        account_status: user.account_status
+      }
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Server error while logging in." });
+  }
+});
+
 router.post("/register", async (req, res) => {
   try {
     const {
