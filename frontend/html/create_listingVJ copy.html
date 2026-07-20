@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Marketplace</title>
+    <title>Campus Marketplace - Create Listing</title>
 
     <style>
         * {
@@ -82,7 +81,7 @@
             margin-bottom: 40px;
             font-weight: normal;
         }
-        
+
         .notification, .profile-menu-btn {
             transform: translateY(-12px);
         }
@@ -96,7 +95,7 @@
         }
 
         .profile-menu-btn {
-            position: relative; 
+            position: relative;
         }
 
         .user-dropdown {
@@ -230,6 +229,96 @@
             display: block;
         }
 
+
+        /* Main Section */
+        .main-content {
+            padding: 50px 0;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            margin-bottom: 40px;
+            font-weight: normal;
+        }
+
+        .form-container {
+            width: 450px;
+            margin: 0 auto;
+            border: 1px solid #000;
+            padding: 30px;
+            background: white;
+        }
+
+        .photo-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .photo-box {
+            width: 100%;
+            height: 180px;
+            border: 1px solid #000;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        /* X placeholder */
+        .photo-box::before,
+        .photo-box::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #000;
+            top: 50%;
+            left: 0;
+        }
+
+        .photo-box::before {
+            transform: rotate(19deg);
+        }
+
+        .photo-box::after {
+            transform: rotate(-19deg);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid #000;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .publish-btn {
+            width: 100%;
+            background: black;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -246,6 +335,7 @@ function closeMenu() {
 
 <body>
     <header class="header">
+
 
         <div class="top-bar">
 
@@ -275,15 +365,16 @@ function closeMenu() {
             <a href="listing.html" class="marketplace-btn"> Campus Marketplace </a>
 
             <div class="search-container">
-            <input type="text" placeholder="Search...">
+                <input type="text" placeholder="Search...">
             </div>
+
            
             <div class="right-icons">
                  <!-- Notification Bell -->
                 <div class="notification">
                         <img src="../pictures/bell.png" alt="Bell" class="bell-img">
                     
-                    <span id="badge"></span>
+                    <span id="badge"> 12</span>
                  </div>
                  
                  <!-- Profile Dropdown Menu -->
@@ -297,8 +388,7 @@ function closeMenu() {
                     </div>
                  </div>
             </div>
-
-
+            
         </div>
 
     </header>
@@ -309,8 +399,42 @@ function closeMenu() {
 
         <div class="form-container">
 
+            <label class="photo-label">Photos</label>
+
+            <div class="photo-box"></div>
+
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text">
+            </div>
+
+            <div class="form-group">
+                <label>Price</label>
+                <input type="text">
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select>
+                    <option>Select...</option>
+                    <option>Books</option>
+                    <option>Electronics</option>
+                    <option>Furniture</option>
+                    <option>Clothing</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea></textarea>
+            </div>
+
+            <button class="publish-btn">
+                Publish Listing
+            </button>
+
+        </div>
 
     </main>
-
-</body>
+</body> 
 </html>
