@@ -10,11 +10,14 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="../css/navbar.css" />
 <style>
-  body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  body { margin: 0; }
+  #root { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
 </style>
 </head>
 <body>
+<div id="navbar"></div>
 <div id="root"></div>
+<script src="../js/common.js"></script>
 <script type="text/babel" data-presets="react">
 const { useState, useEffect } = React;
 
@@ -82,88 +85,6 @@ function Btn({ label, onClick }) {
     <button onClick={onClick} className="w-full py-2 text-sm border border-black bg-black text-white">
       {label}
     </button>
-  );
-}
-
-// ─── Header (mirrors campus-marketplace.html) ─────────────────────────────────
-
-const MENU_ITEMS = [
-  { label: "Home", href: "index.html" },
-  { label: "Browse Listings", href: "index.html" },
-  { label: "My Listings", href: "profile.html" },
-  { label: "Favorites", href: "favorite.html" },
-  { label: "Messages", href: "message.html" },
-  { label: "Create Listing", href: "create_listing.html" },
-  { label: "Account / Profile", href: "profile.html" },
-  { label: "Settings", href: "profile.html" },
-];
-
-function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
-
-  return (
-    <>
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          <div className="w-64 bg-white border-r border-black flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-black">
-              <span className="text-sm font-semibold">Menu</span>
-              <button onClick={() => setMenuOpen(false)} className="text-lg leading-none">×</button>
-            </div>
-            {MENU_ITEMS.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-left px-4 py-2.5 text-sm border-b border-black last:border-0 hover:bg-black hover:text-white"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-          <div className="flex-1 bg-black/30" onClick={() => setMenuOpen(false)} />
-        </div>
-      )}
-
-      <div className="border-b border-black bg-white sticky top-0 z-40">
-        <nav className="main-navbar">
-          <button
-            onClick={() => setMenuOpen(true)}
-            className="nav-icon-button"
-            aria-label="Open menu"
-          >
-            ☰
-          </button>
-          <a href="index.html" className="navbar-brand">
-            Campus Marketplace
-          </a>
-          <div className="navbar-actions">
-            <div className="notification-wrapper">
-              <button className="nav-icon-button" onClick={() => setNotifOpen((o) => !o)} aria-label="Notifications">
-                🔔
-                <span className="notification-count">0</span>
-              </button>
-              {notifOpen && (
-                <div className="dropdown show">
-                  <div className="dropdown-heading">Notifications</div>
-                  <div className="empty-notification">No notifications yet.</div>
-                </div>
-              )}
-            </div>
-            <div className="profile-wrapper">
-              <a href="profile.html" className="nav-icon-button" aria-label="Profile" style={{ display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", color: "#111" }}>
-                👤
-              </a>
-              <div className="dropdown profile-dropdown">
-                <a href="profile.html">Account</a>
-                <a href="message.html">Messages</a>
-                <a href="login.html">Log Out</a>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </>
   );
 }
 
@@ -305,7 +226,6 @@ function Profile() {
 
   return (
     <>
-      <Header />
       <div className="px-4 py-6 max-w-xl mx-auto">
         <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
           <div className="w-16 h-16 shrink-0">
@@ -513,7 +433,6 @@ function PublicProfile({ userId }) {
   if (notFound) {
     return (
       <>
-        <Header />
         <div className="px-4 py-6 max-w-xl mx-auto text-center text-sm text-gray-500">
           This user could not be found.
         </div>
@@ -524,7 +443,6 @@ function PublicProfile({ userId }) {
   if (!profile) {
     return (
       <>
-        <Header />
         <div className="px-4 py-6 max-w-xl mx-auto text-center text-sm text-gray-500">
           Loading profile...
         </div>
@@ -536,7 +454,6 @@ function PublicProfile({ userId }) {
 
   return (
     <>
-      <Header />
       <div className="px-4 py-6 max-w-xl mx-auto">
         <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
           <div className="w-16 h-16 shrink-0">

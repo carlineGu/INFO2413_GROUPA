@@ -35,7 +35,7 @@ if (navbarContainer) {
 
           <div class="dropdown profile-dropdown">
             <a href="profile.html">Account</a>
-            <a href="messages.html">Messages</a>
+            <a href="message.html">Messages</a>
             <button id="logoutButton" type="button">Log Out</button>
           </div>
         </div>
