@@ -7,7 +7,7 @@ if (navbarContainer) {
         ☰
       </button>
 
-      <a class="navbar-brand" href="/html/index.html">
+      <a class="navbar-brand" href="../html/index.html">
         Campus Marketplace
       </a>
 
