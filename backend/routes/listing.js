@@ -103,6 +103,75 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /api/listing/:id?userId=X -> full listing detail, all photos, seller info
+router.get("/:id", async (req, res) => {
+  try {
+    const listingId = Number(req.params.id);
+    const viewerId = req.query.userId ? Number(req.query.userId) : null;
+
+    if (!listingId) {
+      return res.status(400).json({ message: "A valid listing id is required." });
+    }
+
+    const [rows] = await db.query(
+      `SELECT l.listing_id, l.user_id, l.listing_title, l.listing_description, l.price,
+              l.listing_condition, l.listing_status, l.created_at,
+              c.category_name, d.department_name, loc.location_name,
+              CONCAT(u.first_name, ' ', u.last_name) AS seller_name
+         FROM Listing l
+         JOIN User u ON u.user_id = l.user_id
+         LEFT JOIN Category c ON c.category_id = l.category_id
+         LEFT JOIN Department d ON d.department_id = l.department_id
+         LEFT JOIN Location loc ON loc.location_id = l.location_id
+        WHERE l.listing_id = ?`,
+      [listingId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Listing not found." });
+    }
+
+    const listing = rows[0];
+
+    const [images] = await db.query(
+      `SELECT image_url, is_primary FROM Listing_image
+        WHERE listing_id = ?
+        ORDER BY is_primary DESC, image_url ASC`,
+      [listingId]
+    );
+
+    const [ratingRows] = await db.query(
+      `SELECT ROUND(AVG(rating), 1) AS avg_rating, COUNT(*) AS review_count
+         FROM Review WHERE reviewed_user_id = ?`,
+      [listing.user_id]
+    );
+
+    let favorited = false;
+    if (viewerId) {
+      const [favRows] = await db.query(
+        `SELECT 1 FROM Favorite WHERE user_id = ? AND listing_id = ? LIMIT 1`,
+        [viewerId, listingId]
+      );
+      favorited = favRows.length > 0;
+    }
+
+    res.json({
+      ...listing,
+      photos: images.map((img) => img.image_url),
+      seller: {
+        user_id: listing.user_id,
+        name: listing.seller_name,
+        avgRating: ratingRows[0].avg_rating,
+        reviewCount: ratingRows[0].review_count
+      },
+      favorited
+    });
+  } catch (error) {
+    console.error("Load listing detail error:", error);
+    res.status(500).json({ message: "Could not load listing." });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { userId, title, description, price, category, condition, location, photo } = req.body;

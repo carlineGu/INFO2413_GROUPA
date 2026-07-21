@@ -116,6 +116,51 @@ router.get("/thread/:conversationId", async (req, res) => {
   }
 });
 
+router.post("/start", async (req, res) => {
+  const { listingId, buyerId } = req.body;
+
+  if (!listingId || !buyerId) {
+    return res.status(400).json({ message: "listingId and buyerId are required." });
+  }
+
+  try {
+    const [listingRows] = await db.query(
+      `SELECT listing_id, user_id AS seller_id FROM Listing WHERE listing_id = ?`,
+      [listingId]
+    );
+
+    if (listingRows.length === 0) {
+      return res.status(404).json({ message: "Listing not found." });
+    }
+
+    const sellerId = listingRows[0].seller_id;
+
+    if (Number(sellerId) === Number(buyerId)) {
+      return res.status(400).json({ message: "You cannot message yourself about your own listing." });
+    }
+
+    const [existing] = await db.query(
+      `SELECT conversation_id FROM Conversation
+        WHERE listing_id = ? AND buyer_id = ? AND seller_id = ?`,
+      [listingId, buyerId, sellerId]
+    );
+
+    if (existing.length > 0) {
+      return res.json({ conversationId: existing[0].conversation_id });
+    }
+
+    const [result] = await db.query(
+      `INSERT INTO Conversation (listing_id, buyer_id, seller_id) VALUES (?, ?, ?)`,
+      [listingId, buyerId, sellerId]
+    );
+
+    res.status(201).json({ conversationId: result.insertId });
+  } catch (error) {
+    console.error("Start conversation error:", error);
+    res.status(500).json({ message: "Could not start conversation." });
+  }
+});
+
 router.post("/send", async (req, res) => {
   const { conversationId, senderId, content } = req.body;
 

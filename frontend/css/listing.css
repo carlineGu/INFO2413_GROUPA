@@ -1,0 +1,110 @@
+.listing-gallery {
+  border: 1px solid #222;
+  margin-bottom: 12px;
+}
+
+.listing-gallery-main {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.listing-gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-gallery-placeholder {
+  color: #888;
+  font-size: 14px;
+}
+
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: 1px solid #222;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.gallery-arrow.prev {
+  left: 12px;
+}
+
+.gallery-arrow.next {
+  right: 12px;
+}
+
+.listing-thumb-strip {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  overflow-x: auto;
+  border-top: 1px solid #222;
+}
+
+.listing-thumb {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.listing-thumb.active {
+  border-color: #111;
+}
+
+.listing-favorite-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #222;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.listing-favorite-btn.favorited {
+  color: #d11a2a;
+}
+
+.seller-card {
+  border: 1px solid #222;
+  padding: 16px;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.seller-card .seller-name {
+  font-weight: 700;
+  text-decoration: none;
+  color: #111;
+}
+
+.seller-card .seller-meta {
+  font-size: 13px;
+  color: #555;
+}
+
+.seller-actions {
+  display: flex;
+  gap: 8px;
+}

@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth");
 const messageRoutes = require("./routes/message");
 const userRoutes = require("./routes/user");
 const listingRoutes = require("./routes/listing");
+const favoriteRoutes = require("./routes/favorite");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -17,6 +18,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/listing", listingRoutes);
+app.use("/api/favorite", favoriteRoutes);
 
 //this provides frontend folder 'Relative' path
 app.use(express.static(path.join(__dirname, "../frontend")));
@@ -30,8 +32,7 @@ app.get("/api/test", (req, res) => {
 
 //this shows homepage
 app.get("/", (req, res) => {
-  //res.send("Campus Marketplace backend is running!");
-  res.sendFile(path.join(__dirname, "../frontend/html/index.html"));
+  res.redirect("/html/index.html");
 });
 
 app.listen(PORT, () => {

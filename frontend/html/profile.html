@@ -21,7 +21,6 @@ const { useState, useEffect } = React;
 // ─── Profile content ─────────────────────────────────────────────────────
 
 const MY_LISTINGS = [];
-const SAVED_LISTINGS = [];
 
 // ─── Shared building blocks ────────────────────────────────────────────────
 
@@ -178,6 +177,7 @@ function Profile() {
     email: "",
   });
   const [myListings, setMyListings] = useState([]);
+  const [savedListings, setSavedListings] = useState([]);
   const [profilePic, setProfilePic] = useState(() => localStorage.getItem("profilePic") || null);
   const tabs = ["listings", "saved", "settings"];
 
@@ -238,6 +238,12 @@ function Profile() {
           const listingData = await listingResponse.json();
           setMyListings(listingData || []);
         }
+
+        const favoriteResponse = await fetch(`http://localhost:3000/api/favorite?userId=${freshUser.user_id}`);
+        if (favoriteResponse.ok) {
+          const favoriteData = await favoriteResponse.json();
+          setSavedListings(favoriteData || []);
+        }
       } catch (error) {
         console.error("Profile fetch failed:", error);
       }
@@ -277,6 +283,17 @@ function Profile() {
       setMyListings((current) => current.filter((item) => item.listing_id !== listingId));
     } catch (error) {
       console.error("Delete listing error:", error);
+    }
+  }
+
+  async function handleUnfavorite(listingId) {
+    if (!user?.user_id) return;
+
+    try {
+      await fetch(`/api/favorite/${listingId}?userId=${user.user_id}`, { method: "DELETE" });
+      setSavedListings((current) => current.filter((item) => item.listing_id !== listingId));
+    } catch (error) {
+      console.error("Unfavorite error:", error);
     }
   }
 
@@ -378,19 +395,34 @@ function Profile() {
         )}
 
         {tab === "saved" && (
-          SAVED_LISTINGS.length === 0 ? (
+          savedListings.length === 0 ? (
             <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
               No saved items
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
-              {SAVED_LISTINGS.map((item) => (
-                <div key={item.id} className="border border-black bg-white">
-                  <div className="h-20"><ImgBox /></div>
-                  <div className="p-1.5">
-                    <div className="text-xs">{item.name}</div>
-                    <div className="text-xs font-bold">{item.price}</div>
-                  </div>
+              {savedListings.map((item) => (
+                <div key={item.listing_id} className="border border-black bg-white">
+                  <a href={`listing.html?id=${item.listing_id}`} className="block">
+                    <div className="h-20 overflow-hidden bg-gray-50">
+                      {item.photo ? (
+                        <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                      ) : (
+                        <ImgBox />
+                      )}
+                    </div>
+                    <div className="p-1.5">
+                      <div className="text-xs">{item.listing_title}</div>
+                      <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
+                    </div>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleUnfavorite(item.listing_id)}
+                    className="w-full text-[10px] border-t border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
             </div>
@@ -446,8 +478,118 @@ function Profile() {
   );
 }
 
+// ─── Public profile (viewing another user, e.g. a seller) ─────────────────
+
+function PublicProfile({ userId }) {
+  const [profile, setProfile] = useState(null);
+  const [listings, setListings] = useState([]);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const profileResponse = await fetch(`/api/user/${userId}`);
+        if (!profileResponse.ok) {
+          setNotFound(true);
+          return;
+        }
+        const profileData = await profileResponse.json();
+        setProfile(profileData);
+
+        const listingResponse = await fetch(`/api/listing?userId=${userId}`);
+        if (listingResponse.ok) {
+          const listingData = await listingResponse.json();
+          setListings(listingData || []);
+        }
+      } catch (error) {
+        console.error("Public profile fetch failed:", error);
+        setNotFound(true);
+      }
+    }
+
+    load();
+  }, [userId]);
+
+  if (notFound) {
+    return (
+      <>
+        <Header />
+        <div className="px-4 py-6 max-w-xl mx-auto text-center text-sm text-gray-500">
+          This user could not be found.
+        </div>
+      </>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <>
+        <Header />
+        <div className="px-4 py-6 max-w-xl mx-auto text-center text-sm text-gray-500">
+          Loading profile...
+        </div>
+      </>
+    );
+  }
+
+  const ratingLabel = profile.avgRating ? `${profile.avgRating} \u2605 (${profile.reviewCount})` : "No ratings yet";
+
+  return (
+    <>
+      <Header />
+      <div className="px-4 py-6 max-w-xl mx-auto">
+        <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
+          <div className="w-16 h-16 shrink-0">
+            <ImgBox />
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-sm">{profile.fullName}</div>
+            <div className="flex gap-6 text-xs mt-2">
+              <div>Listings: <b>{profile.listingCount}</b></div>
+              <div>Rating: <b>{ratingLabel}</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs font-semibold mb-2">Active Listings</div>
+        {listings.length === 0 ? (
+          <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+            No active listings
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {listings.map((item) => (
+              <a key={item.listing_id} href={`listing.html?id=${item.listing_id}`} className="border border-black bg-white block">
+                <div className="h-24 overflow-hidden bg-gray-50">
+                  {item.photo ? (
+                    <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                  ) : (
+                    <ImgBox />
+                  )}
+                </div>
+                <div className="p-1.5">
+                  <div className="text-xs">{item.listing_title}</div>
+                  <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+function ProfilePage() {
+  const viewedUserId = new URLSearchParams(window.location.search).get("id");
+  const currentUser = getStoredUser();
+  const isViewingOther = viewedUserId && String(viewedUserId) !== String(currentUser?.user_id);
+
+  return isViewingOther ? <PublicProfile userId={viewedUserId} /> : <Profile />;
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Profile />);
+root.render(<ProfilePage />);
 </script>
 </body>
 </html>
