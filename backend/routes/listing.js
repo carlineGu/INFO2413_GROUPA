@@ -105,10 +105,10 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { userId, title, description, price, category, condition, location, photo } = req.body;
+    const { userId, title, description, price, department, category, condition, location, photo } = req.body;
 
-    if (!userId || !title || !description || !price || !category) {
-      return res.status(400).json({ message: "userId, title, description, price, and category are required." });
+    if (!userId || !title || !department || !description || !price || !category) {
+      return res.status(400).json({ message: "userId, title, description, price, department, and category are required." });
     }
 
     const numericPrice = Number(price);
@@ -120,7 +120,7 @@ router.post("/", async (req, res) => {
     // Ensure these table names match your database exactly (e.g., if 'Category' fails, change to 'category')
     const categoryId = await getCategoryId(category);
     const locationId = await getLocationId(location || "Richmond Campus");
-    const departmentId = await getDepartmentId("General");
+    const departmentId = await getDepartmentId(department);
     const listingCondition = normalizeCondition(condition);
 
     // Using 'Listing' (singular, capital L)
