@@ -1,383 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Create Listing — Campus Marketplace</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js" crossorigin></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Marketplace - Create Listing</title>
+
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/create_listing.css">
+
 </head>
+
 <body>
-<div id="root"></div>
-<script type="text/babel" data-presets="react">
-const { useState, useRef, useEffect } = React;
+    <div id="navbar"></div>
+    <div id="menu-overlay" class="menu-overlay"></div>
 
-// ─── Shared primitives ─────────────────────────────────────────────────────
+    <div id="create_listing"></div>
+    
+<main class="main-content">
 
-function Btn({ label, onClick }) {
-  return (
-    <button onClick={onClick} className="w-full py-2 text-sm border border-black bg-black text-white">
-      {label}
-    </button>
-  );
-}
+<h1 class="page-title">Create Listing</h1>
+ <div class="form-container">
 
-function Dropdown({ label, options, onSelect, fullWidth = false, error = false, placeholder = false }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
 
-  useEffect(() => {
-    function handle(e) {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    }
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, []);
+    <div class="form-group">
+      <label class="photo-label">
+        Photos <span>(up to 4)</span>
+      </label>
 
-  const buttonClass = fullWidth
-    ? `w-full flex items-center justify-between gap-1 border px-3 py-2 text-sm bg-white ${error ? "border-red-600" : "border-black"}`
-    : "flex items-center gap-1 border border-black px-2 py-1 text-xs bg-white whitespace-nowrap";
+      <div class="photo-grid">
 
-  return (
-    <div ref={ref} className={`relative ${fullWidth ? "w-full" : ""}`}>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className={buttonClass}
-      >
-        <span className={placeholder ? "text-gray-400" : ""}>{label}</span> <span className="text-[10px]">▾</span>
-      </button>
-      {open && options.length > 0 && (
-        <div className={`absolute top-full left-0 mt-px border border-black bg-white z-50 ${fullWidth ? "w-full" : "min-w-[160px]"}`}>
-          {options.map((o) => (
-            <button
-              key={o}
-              type="button"
-              onClick={() => { onSelect?.(o); setOpen(false); }}
-              className="block w-full text-left px-3 py-1.5 text-xs hover:bg-black hover:text-white border-b border-black last:border-0"
-            >
-              {o}
-            </button>
-          ))}
-        </div>
-      )}
+        <label class="photo-upload">
+            <span class="plus">+</span>
+            <span>Add</span>
+            <input type="file" accept="image/*">
+        </label>
+
+        <label class="photo-upload">
+            <span class="plus">+</span>
+            <span>Add</span>
+            <input type="file" accept="image/*">
+        </label>
+
+        <label class="photo-upload">
+            <span class="plus">+</span>
+            <span>Add</span>
+            <input type="file" accept="image/*">
+        </label>
+
+        <label class="photo-upload">
+            <span class="plus">+</span>
+            <span>Add</span>
+            <input type="file" accept="image/*">
+        </label>
+      </div>  
+    </div>  
+
+    <div class="form-group">
+        <label>Title</label>
+        <input
+            type="text"
+            placeholder="e.g. Used Calculus Textbook">
     </div>
-  );
-}
 
-// ─── Data ─────────────────────────────────────────────────────────────────
-
-const CATEGORIES = [
-  { label: "Books & Textbooks", subs: ["Used Textbooks", "Lab Manuals", "Class Notes", "Study Guides"] },
-  { label: "Electronics", subs: ["Laptops", "Monitors", "Calculators", "Headphones", "Other Devices"] },
-  { label: "Dorm & Furniture", subs: ["Desks", "Chairs", "Lamps", "Mini Fridges", "Storage"] },
-  { label: "Clothing & Accessories", subs: ["Jackets", "Shoes", "Backpacks", "Campus Merchandise"] },
-  { label: "School Supplies", subs: ["Notebooks", "Stationery", "Art Supplies", "Calculators"] },
-  { label: "Services", subs: ["Tutoring", "Editing", "Rideshare", "Other Services"] },
-];
-
-const CATEGORY_OPTIONS = CATEGORIES.map((c) => c.label);
-const CONDITION_OPTIONS = ["New", "Like New", "Good", "Fair", "Used"];
-const MEETUP_LOCATIONS = ["Richmond Campus", "Surrey Campus", "Langley Campus", "Cloverdale Campus", "Tech Campus"];
-
-// ─── Photo upload slot ──────────────────────────────────────────────────────
-
-function PhotoSlot({ photo, onAdd, onRemove }) {
-  const inputRef = useRef(null);
-
-  if (photo) {
-    return (
-      <div className="relative border border-black h-24 bg-white overflow-hidden">
-        <img src={photo} alt="Listing photo" className="w-full h-full object-cover" />
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label="Remove photo"
-          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black text-white text-xs leading-none flex items-center justify-center"
+    <div class="form-group">
+        <label>Price</label>
+        <input
+            type="text" 
+            placeholder="$0.00"
         >
-          ×
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={() => inputRef.current?.click()}
-      className="border border-dashed border-black h-24 bg-white flex flex-col items-center justify-center gap-1 text-gray-400 text-[10px]"
-    >
-      <span className="text-base leading-none">+</span>
-      Add
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = () => onAdd(reader.result);
-          reader.readAsDataURL(file);
-          e.target.value = "";
-        }}
-      />
-    </button>
-  );
-}
-
-// ─── Create Listing page ────────────────────────────────────────────────────
-
-function CreateListing() {
-  const [photos, setPhotos] = useState([null, null, null, null]);
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [subcategory, setSubcategory] = useState("");
-  const [condition, setCondition] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [attempted, setAttempted] = useState(false);
-  const [published, setPublished] = useState(null);
-
-  const selectedCategory = CATEGORIES.find((c) => c.label === category);
-  const subOptions = selectedCategory ? selectedCategory.subs : [];
-  const numericPrice = Number(String(price).replace(/[^0-9.]/g, ""));
-
-  const errors = {
-    title: title.trim().length === 0,
-    price: !price.trim() || !isFinite(numericPrice) || numericPrice <= 0,
-    category: category.trim().length === 0,
-    description: description.trim().length === 0,
-  };
-  const hasErrors = Object.values(errors).some(Boolean);
-
-  function updatePhoto(idx, dataUrl) {
-    setPhotos((prev) => prev.map((p, i) => (i === idx ? dataUrl : p)));
-  }
-  function removePhoto(idx) {
-    setPhotos((prev) => prev.map((p, i) => (i === idx ? null : p)));
-  }
-
-  async function handlePublish() {
-    setAttempted(true);
-    if (hasErrors) return;
-
-    const currentUser = JSON.parse(localStorage.getItem("user") || "null");
-    if (!currentUser || !currentUser.user_id) {
-      setPublished({ error: "You must be logged in to create a listing." });
-      return;
-    }
-
-    try {
-      // Find the first available uploaded photo string (Base64)
-      const primaryPhoto = photos.find(Boolean) || null;
-
-      const response = await fetch("/api/listing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: currentUser.user_id,
-          title: title.trim(),
-          description: description.trim(),
-          price: numericPrice,
-          category,
-          condition,
-          location: location || "Richmond Campus",
-          photo: primaryPhoto // <-- ADDED: Sends the photo string to your server API
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setPublished({ error: data.message || "Could not create listing." });
-        return;
-      }
-
-      setPublished({
-        success: true,
-        name: data.listing_title,
-        price: `$${Number(data.price).toFixed(2)}`,
-        category,
-        condition: condition || "Not specified",
-        location: location || "Not specified",
-        description: data.listing_description,
-        photo: data.photo || primaryPhoto // <-- Backwards compatibility safety catch
-      });
-    } catch (error) {
-      console.error(error);
-      setPublished({ error: "Unable to reach the server." });
-    }
-  }
-
-  function startNewListing() {
-    setPhotos([null, null, null, null]);
-    setTitle("");
-    setPrice("");
-    setCategory("");
-    setSubcategory("");
-    setCondition("");
-    setLocation("");
-    setDescription("");
-    setAttempted(false);
-    setPublished(null);
-  }
-
-  if (published) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center pt-16 px-4">
-        <div className="w-full max-w-md border border-black bg-white p-6 text-center">
-          {published.error ? (
-            <>
-              <div className="text-lg font-semibold mb-1">Could not create listing</div>
-              <div className="text-xs text-red-600 mb-5">{published.error}</div>
-            </>
-          ) : (
-            <>
-              <div className="text-lg font-semibold mb-1">Listing published!</div>
-              <div className="text-xs text-gray-500 mb-5">Here's what buyers will see.</div>
-            </>
-          )}
-
-          <div className="border border-black bg-white text-left">
-            <div className="h-40 bg-gray-50 border-b border-black overflow-hidden flex items-center justify-center">
-              {published.photo
-                ? <img src={published.photo} alt={published.name} className="w-full h-full object-cover" />
-                : <span className="text-xs text-gray-300">No photo</span>}
-            </div>
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-1">
-                <div className="text-base font-semibold">{published.name}</div>
-                <div className="text-base font-bold">{published.price}</div>
-              </div>
-              <div className="text-xs text-gray-500 mb-3">{published.category} · {published.condition} · {published.location}</div>
-              <div className="text-sm text-gray-600">{published.description}</div>
-            </div>
-          </div>
-          <button onClick={startNewListing} className="w-full mt-5 py-2 text-sm border border-black bg-black text-white">
-            Create Another Listing
-          </button>
-          <a href="index.html" className="block mt-3 text-xs underline">View all listings</a>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-10 px-4 pb-16">
-      <div className="text-2xl mb-6">Create Listing</div>
-      <div className="w-full max-w-md border border-black p-6 bg-white">
-
-        <div className="mb-4">
-          <div className="text-xs mb-1">Photos <span className="text-gray-400 font-normal">(up to 4)</span></div>
-          <div className="grid grid-cols-4 gap-2">
-            {photos.map((p, i) => (
-              <PhotoSlot key={i} photo={p} onAdd={(url) => updatePhoto(i, url)} onRemove={() => removePhoto(i)} />
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <div className="text-xs mb-1">Title</div>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Used Calculus Textbook"
-            className={`w-full border px-3 py-2 text-sm outline-none ${attempted && errors.title ? "border-red-600" : "border-black"}`}
-          />
-          {attempted && errors.title && <div className="text-[10px] text-red-600 mt-1">Title is required</div>}
-        </div>
-
-        <div className="mb-4">
-          <div className="text-xs mb-1">Price</div>
-          <div className={`flex items-center border px-3 ${attempted && errors.price ? "border-red-600" : "border-black"}`}>
-            <span className="text-sm text-gray-400 mr-1">$</span>
-            <input
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="0.00"
-              inputMode="decimal"
-              className="flex-1 py-2 text-sm outline-none"
-            />
-          </div>
-          {attempted && errors.price && <div className="text-[10px] text-red-600 mt-1">Enter a valid price</div>}
-        </div>
-
-        <div className="mb-4">
-          <div className="text-xs mb-1">Category</div>
-          <Dropdown
-            fullWidth
-            placeholder={!category}
-            error={attempted && errors.category}
-            label={category || "Select..."}
-            options={CATEGORY_OPTIONS}
-            onSelect={(o) => { setCategory(o); setSubcategory(""); }}
-          />
-          {attempted && errors.category && <div className="text-[10px] text-red-600 mt-1">Choose a category</div>}
-        </div>
-
-        {subOptions.length > 0 && (
-          <div className="mb-4">
-            <div className="text-xs mb-1">Subcategory <span className="text-gray-400 font-normal">(optional)</span></div>
-            <Dropdown
-              fullWidth
-              placeholder={!subcategory}
-              label={subcategory || "Select..."}
-              options={subOptions}
-              onSelect={setSubcategory}
-            />
-          </div>
-        )}
-
-        <div className="mb-4">
-          <div className="text-xs mb-1">Condition <span className="text-gray-400 font-normal">(optional)</span></div>
-          <Dropdown
-            fullWidth
-            placeholder={!condition}
-            label={condition || "Select..."}
-            options={CONDITION_OPTIONS}
-            onSelect={setCondition}
-          />
-        </div>
-
-        <div className="mb-4">
-          <div className="text-xs mb-1">Meetup Location <span className="text-gray-400 font-normal">(optional)</span></div>
-          <Dropdown
-            fullWidth
-            placeholder={!location}
-            label={location || "Select..."}
-            options={MEETUP_LOCATIONS}
-            onSelect={setLocation}
-          />
-        </div>
-
-        <div className="mb-5">
-          <div className="text-xs mb-1">Description</div>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={4}
-            placeholder="Condition, details, and any other notes about the item..."
-            className={`w-full border px-3 py-2 text-sm outline-none resize-none ${attempted && errors.description ? "border-red-600" : "border-black"}`}
-          />
-          {attempted && errors.description && <div className="text-[10px] text-red-600 mt-1">Description is required</div>}
-        </div>
-
-        <Btn label="Publish Listing" onClick={handlePublish} />
-      </div>
     </div>
-  );
-}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<CreateListing />);
-</script>
-</body>
+    <div class="form-group">
+        <label>Category</label>
+        <select id="category" onchange="updateSubcategories()">
+            <option value="">Select...</option>
+            <option value="Books">Books & Textbooks</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Dorm & Furniture</option>
+            <option value="Clothing">Clothing & Accessories</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Subcategory</label>
+        <select id="subcategory">
+            <option>Select...</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Condition<span>(optional)</span></label>
+        <select>
+            <option>Select...</option>
+            <option>New</option>
+            <option>Like New</option>
+            <option>Good</option>
+            <option>Fair</option>
+            <option>Used</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Meetup Location <span>(optional)</span></label>
+        <select>
+            <option>Select...</option>
+            <option>Richmond Campus</option>
+            <option>Surrey Campus</option>
+            <option>Langley Campus</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea placeholder="Condition, details, and any other notes about the item..."></textarea>
+    </div>
+
+    <button
+        class="publish-btn"
+        onclick="publishListing()"
+    >
+        Publish Listing
+    </button>
+
+   </div>
+      
+       
+
+</main>
+  <script src="../js/listing.js"></script>
+  <script src="../js/navbar.js"></script>
+
+</body> 
 </html>
