@@ -50,6 +50,12 @@
     margin-top: 20px;
 }
 
+.listing-meta {
+    margin: 0px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
 .seller-card {
     display: flex;
     justify-content: space-between;
