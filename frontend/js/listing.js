@@ -1,158 +1,118 @@
-function updateSubcategories() {
+console.log("listing.js loaded");
 
-    const category = document.getElementById("category").value;
+async function loadListing() {
 
-    const sub = document.getElementById("subcategory");
+    const params = new URLSearchParams(window.location.search);
 
-    sub.innerHTML = "";
-        const data = {
-          Books: [
-            "Used Textbooks",
-            "Lab Manuals",
-            "Class Notes",
-            "Study Guides"
-         ],
+    const listingId = params.get("id");
 
-          Electronics: [
-            "Laptops",
-            "Monitors",
-            "Calculators",
-            "Headphones"
-          ],
+    const response = await fetch(`/api/listing/${listingId}`);
 
-          Furniture: [
-            "Desks",
-            "Chairs",
-            "Lamps",
-            "Mini Fridges"
-          ],
+    const listing = await response.json();
 
-          Clothing: [
-            "Jackets",
-            "Shoes",
-            "Backpacks"
-          ]
-    };
+    document.getElementById("listing-title").textContent =
+        listing.listing_title;
 
-    const defaultOption = document.createElement("option");
+    document.getElementById("listing-price").textContent =
+        `$${listing.price}`;
 
-    defaultOption.text = "Select...";
-    sub.add(defaultOption);
+    document.getElementById("listing-description").textContent =
+        listing.listing_description;
 
-    if (data[category]) {
-        data[category].forEach(item => {
+    document.getElementById("listing-meta").textContent =
+        `${listing.category_name} · ${listing.listing_condition} · ${listing.location_name}`;
 
-            const option =
-                document.createElement("option");
+    document.getElementById("listing-photo").src =
+        listing.photo;
 
-            option.text = item;
+    document.getElementById("seller-name").textContent =
+        listing.seller_name;
 
-            sub.add(option);
-        });
+    document.getElementById("seller-department").textContent =
+        listing.department_name;
+
+    const currentUser =
+        JSON.parse(localStorage.getItem("user") || "null");
+
+    if (currentUser) {
+
+        const favoriteResponse = await fetch(
+            `/api/favorite/${listingId}/${currentUser.user_id}`
+        );
+
+        const favoriteData =
+            await favoriteResponse.json();
+
+        if (favoriteData.favorited) {
+
+            const heart =
+                document.getElementById("heart-img");
+
+            heart.classList.add("favorited");
+
+            heart.src =
+                "../pictures/heart-filled.png";
+        }
     }
 }
 
-let photoData = null;
-document.querySelectorAll('.photo-upload input').forEach(input => {
-
-    input.addEventListener('change', function () {
-
-        const file = this.files[0];
-
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-            photoData = e.target.result;
-            this.parentElement.innerHTML = `${e.target.result}`;
-        };
-
-        reader.readAsDataURL(file);
-    });
-
-});
+loadListing();
 
 
-async function publishListing() {
-    const title = document.getElementById("title").value.trim();
-    const price = document.getElementById("price").value.trim();
-    const department = document.getElementById("department").value;
-    const category = document.getElementById("category").value;
-    const description = document.getElementById("description").value.trim();
-    const condition = document.getElementById("condition").value;
-    const location = document.getElementById("location").value;
+async function toggleFavorite() {
+ console.log("clicked");
+    const heart =
+        document.getElementById("heart-img");
+    console.log(heart);
 
-    if (!title) {
-        alert("Title is required");
-        return;
-    }
+    const currentUser =
+        JSON.parse(localStorage.getItem("user") || "null");
 
-    if (!price || Number(price) <= 0) {
-        alert("Enter a valid price");
-        return;
-    }
-    
-    if (!department) {
-        alert("Choose a department");
-        return;
-    }
 
-    if (!category) {
-        alert("Choose a category");
-        return;
-    }
+    const listingId =
+        new URLSearchParams(window.location.search)
+            .get("id");
 
-    if (!description) {
-        alert("Description is required");
-        return;
-    }
+    if (heart.classList.contains("favorited")) {
 
-    try {
-        const currentUser = JSON.parse(localStorage.getItem("user") || "null");
-            if (!currentUser || !currentUser.user_id) {
-             alert("You must be logged in.");
-             return;
-            }
-        const response = await fetch("/api/listing", {
+        const response = await fetch("/api/favorite", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userId: currentUser.user_id,
+                listingId
+            })
+        });
+
+        if (response.ok) {
+
+            heart.classList.remove("favorited");
+
+            heart.src =
+                "../pictures/heart-outline.png";
+        }
+
+    } else {
+
+        const response = await fetch("/api/favorite", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 userId: currentUser.user_id,
-                title,
-                price: Number(price),
-                department,
-                category,
-                condition,
-                location,
-                description,
-                photo: photoData
+                listingId
             })
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            alert("Listing Published!");
-        document.getElementById("title").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("description").value = "";
-        document.getElementById("category").selectedIndex = 0;
-        document.getElementById("condition").selectedIndex = 0;
-        document.getElementById("location").selectedIndex = 0;
-        document.getElementById("subcategory").innerHTML =
-        "<option>Select...</option>";
+
+            heart.classList.add("favorited");
+
+            heart.src =
+                "../pictures/heart-filled.png";
         }
-        
-        else {
-            alert(data.message || "Could not publish listing.");
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Unable to connect to the server.");
     }
 }
-
-

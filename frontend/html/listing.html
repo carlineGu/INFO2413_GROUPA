@@ -16,19 +16,48 @@
     <div id="menu-overlay" class="menu-overlay"></div>
     <div id="listing"></div>
     
-<main class="main-content">
+<main class="main-content"> 
 
-<h1 class="page-title">Listing</h1>
- <div class="form-container">
+    <a href="index.html" class="back-link">
+        ← Back to Listings
+    </a>
 
+    <div class="listing-image">
+        <img id="listing-photo">
+    </div>
+
+    <div class="listing-details">
+        <div class="listing-header">
+            <h1 id="listing-title"></h1>
+            <span id="listing-price"></span>
+            <button
+                class="favorite-btn"
+                onclick="toggleFavorite()"> 
+                <img id="heart-img" class="heart-img" src="../pictures/heart-outline.png">
+            </button>
+        </div>
+
+    <div id="listing-meta" class="listing-meta"></div>
     
-    <button class="publish-btn" onclick="publishListing()">
-        Publish Listing
-    </button>
+    <p id="listing-description"></p>
+    </div>
+   
 
-   </div>
-      
-       
+<div class="seller-card">
+    <div class="seller-left">
+        <div class="seller-avatar">
+            <img id="seller-avatar" alt="Seller Photo">
+        </div>
+    <div>
+        <h3 id="seller-name"></h3>
+        <p id="seller-department"></p>
+    </div>
+</div>
+</div>
+
+<button class="publish-btn" onclick="contactSeller()">
+    Contact Seller 
+</button>
 
 </main>
   <script src="../js/listing.js"></script>

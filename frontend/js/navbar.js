@@ -14,13 +14,13 @@ if (navbarContainer) {
                         <button class="close-btn" onclick="closeMenu()">✕</button>
                     </div>
 
-                    <a href="home.html">Home</a>
-                    <a href="browse_listings.html">Browse Listings</a>
+                    <a href="/html/home.html">Home</a>
+                    <a href="/html/index.html">Browse Listings</a>
                     <a href="my_listings.html">My Listings</a>
-                    <a href="favorites.html">Favorites</a>
+                    <a href="/html/profile.html">Favorites</a>
                     <a href="messages.html">Messages</a>
-                    <a href="create_listing.html">Create Listing</a>
-                    <a href="account.html"> Account / Profile</a>
+                    <a href="/html/create_listing.html">Create Listing</a>
+                    <a href="profile.html"> Account / Profile</a>
                     <a href="settings.html">Settings</a>
                     <a href="help_support.html">Help & Support</a>
                 </div>
@@ -45,7 +45,7 @@ if (navbarContainer) {
                     <img src="../pictures/user.png" alt="User" class="user-img">
 
                     <div class="user-dropdown">
-                        <a href="account.html">Account</a>
+                        <a href="profile.html">Account</a>
                         <a href="messages.html">Messages</a>
                         <a href="logout.html">Logout</a>
                     </div>

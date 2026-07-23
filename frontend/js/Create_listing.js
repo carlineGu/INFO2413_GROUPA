@@ -65,7 +65,8 @@ document.querySelectorAll('.photo-upload input').forEach(input => {
 
         reader.onload = (e) => {
             photoData = e.target.result;
-            this.parentElement.innerHTML = `${e.target.result}`;
+            this.parentElement.innerHTML = `
+            <img src="${e.target.result}" alt="Preview" class="photo-preview">`
         };
 
         reader.readAsDataURL(file);
@@ -110,10 +111,6 @@ async function publishListing() {
 
     try {
         const currentUser = JSON.parse(localStorage.getItem("user") || "null");
-            if (!currentUser || !currentUser.user_id) {
-             alert("You must be logged in.");
-             return;
-            }
         const response = await fetch("/api/listing", {
             method: "POST",
             headers: {
