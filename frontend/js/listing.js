@@ -10,27 +10,34 @@ async function loadListing() {
 
     const listing = await response.json();
 
-    document.getElementById("listing-title").textContent =
-        listing.listing_title;
+    const createdDate = new Date(listing.created_at);
+    const today = new Date();
+    const daysAgo = Math.floor(
+        (today - createdDate) / (1000 * 60 * 60 * 24));
 
-    document.getElementById("listing-price").textContent =
-        `$${listing.price}`;
+    document.getElementById("listing-title").textContent = listing.listing_title;
 
-    document.getElementById("listing-description").textContent =
-        listing.listing_description;
+    document.getElementById("listing-price").textContent = `$${listing.price}`;
+
+    document.getElementById("listing-description").textContent = listing.listing_description;
 
     document.getElementById("listing-meta").textContent =
-        `${listing.category_name} · ${listing.listing_condition} · ${listing.location_name}`;
+        `${listing.category_name} · ${listing.listing_condition} · ${listing.location_name} · Posted ${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`;
 
-    document.getElementById("listing-photo").src =
-        listing.photo;
+    document.getElementById("listing-photo").src = listing.photo;
 
-    document.getElementById("seller-name").textContent =
-        listing.seller_name;
+    document.getElementById("seller-name").textContent = listing.seller_name;
 
-    document.getElementById("seller-department").textContent =
-        listing.department_name;
-
+    document.getElementById("seller-department").textContent = 
+        `${listing.department_name} · Rating ${listing.seller_rating || "0.0"}`;
+                if (listing.profile_photo) {
+                    document.getElementById("seller-avatar").src =
+                    listing.profile_photo;
+                }
+                
+    document.getElementById("view-profile").href = `/html/profile.html?id=${listing.user_id}`;
+    
+    
     const currentUser =
         JSON.parse(localStorage.getItem("user") || "null");
 

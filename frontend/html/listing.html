@@ -23,36 +23,45 @@
     </a>
 
     <div class="listing-image">
-        <img id="listing-photo">
+        <img id="listing-photo" alt="Listing Pic">
     </div>
 
     <div class="listing-details">
         <div class="listing-header">
-            <h1 id="listing-title"></h1>
-            <span id="listing-price"></span>
-            <button
-                class="favorite-btn"
-                onclick="toggleFavorite()"> 
-                <img id="heart-img" class="heart-img" src="../pictures/heart-outline.png">
-            </button>
+            <h3 id="listing-title">Name </h3>
+                <div class="listing-actions">
+                    <span id="listing-price">Price</span>
+                     <button
+                     class="favorite-btn"
+                    onclick="toggleFavorite()"> 
+                    <img id="heart-img" class="heart-img" src="../pictures/heart-outline.png">
+                    </button>
+                </div>
         </div>
 
-    <div id="listing-meta" class="listing-meta"></div>
+    <div id="listing-meta" class="listing-meta">meta</div>
     
-    <p id="listing-description"></p>
+    <p id="listing-description">description</p>
+    <br>
+    <a href="/html/report.html" class="report-link">
+        Report Listing
+    </a>
     </div>
    
 
 <div class="seller-card">
     <div class="seller-left">
         <div class="seller-avatar">
-            <img id="seller-avatar" alt="Seller Photo">
+            <img src="../pictures/user-pro-placeholder.jpg" id="seller-avatar" alt="Seller Photo">
         </div>
-    <div>
-        <h3 id="seller-name"></h3>
-        <p id="seller-department"></p>
+    <div class="seller-info">
+        <h3 id="seller-name">Name</h3>
+        <p id="seller-department">Depart</p>
     </div>
 </div>
+ <a id="view-profile" class="view-profile">
+    View profile →
+</a>
 </div>
 
 <button class="publish-btn" onclick="contactSeller()">

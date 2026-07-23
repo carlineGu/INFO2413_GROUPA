@@ -23,6 +23,7 @@ router.get("/:id", async (req, res) => {
                 loc.location_name,
                 li.image_url AS photo,
                 CONCAT(u.first_name, ' ', u.last_name) AS seller_name
+                ROUND(AVG(r.rating), 1) AS seller_rating
              FROM Listing l
              LEFT JOIN User u
                 ON u.user_id = l.user_id
@@ -35,7 +36,10 @@ router.get("/:id", async (req, res) => {
              LEFT JOIN Listing_image li
                 ON li.listing_id = l.listing_id
                 AND li.is_primary = TRUE
-             WHERE l.listing_id = ?`,
+             LEFT JOIN Review r
+                ON r.reviewed_user_id = l.user_id
+             WHERE l.listing_id = ?
+             GROUP BY l.listing_id`
             [listingId]
         );
 

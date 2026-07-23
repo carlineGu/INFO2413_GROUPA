@@ -47,4 +47,43 @@ router.get("/me", async (req, res) => {
   }
 });
 
+
+router.get("/:id", async (req, res) => {
+
+    try {
+
+        const userId = Number(req.params.id);
+
+        const [rows] = await db.query(
+            `SELECT
+                user_id,
+                first_name,
+                last_name,
+                email_addr,
+                account_status
+             FROM User
+             WHERE user_id = ?`,
+            [userId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                message: "User not found."
+            });
+        }
+
+        res.json(rows[0]);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Could not load user."
+        });
+
+    }
+
+});
+
 module.exports = router;
