@@ -1,6 +1,7 @@
 CREATE DATABASE campus_marketplace;
 
 USE campus_marketplace;
+SHOW tables;
 
 CREATE TABLE  User(
 
@@ -172,6 +173,7 @@ CREATE TABLE Favorite(
     CONSTRAINT fk_favorite_listing FOREIGN KEY (listing_id) REFERENCES Listing(listing_id) ON DELETE CASCADE
 
 );
+
 
 
 

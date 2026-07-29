@@ -44,11 +44,11 @@ registerForm.addEventListener("submit", async (event) => {
     );
 
     isValid = false;
-  } else if (!email.endsWith("@student.kpu.ca")) {
+  } else if (!email.endsWith("@student.kpu.ca")&& !email.endsWith("@kpu.ca")) {
     showFieldError(
       emailInput,
       emailError,
-      "Please use an email ending in @student.kpu.ca."
+      "Please use an email ending in @student.kpu.ca or @kpu.ca."
     );
 
     isValid = false;

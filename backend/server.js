@@ -5,6 +5,15 @@ const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = process.env.PORT;
+require("dotenv").config();
+const nodemailer = require("nodemailer");
+
+
+
+// console.log("EMAIL_USER:", process.env.EMAIL_USER);
+// console.log("EMAIL_PASSWORD loaded:", Boolean(process.env.EMAIL_PASSWORD));
+
+
 
 //this allows backend to receive JSON
 app.use(express.json());
@@ -67,6 +76,38 @@ app.get("/api/listing", async (req, res) => {
   }
 });
 
+
+
+
+app.get("/api/test-email", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: "nukhet.tuncbilek@kpu.ca",
+      subject: "Campus Marketplace test email",
+      text: "The backend successfully sent this email."
+    });
+
+    res.json({
+      message: "Test email sent successfully."
+    });
+  } catch (error) {
+    console.error("Email error:", error);
+
+    res.status(500).json({
+      message: "Email could not be sent.",
+      error: error.message
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
