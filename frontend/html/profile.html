@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Account / Profile | Campus Marketplace</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js" crossorigin></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../css/navbar.css" />
+<style>
+  body { margin: 0; }
+  #root { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+<div id="root"></div>
+<script src="../js/common.js"></script>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+// ─── Profile content ─────────────────────────────────────────────────────
+
+const MY_LISTINGS = [];
+
+// ─── Shared building blocks ────────────────────────────────────────────────
+
+function getStoredUser() {
+  const rawUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+
+  if (!rawUser) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawUser);
+  } catch (error) {
+    return null;
+  }
+}
+
+function getDisplayName(user) {
+  if (!user) return "Guest";
+  if (user.fullName) return user.fullName;
+  if (user.name) return user.name;
+  if (user.first_name || user.last_name) {
+    return `${user.first_name || ""} ${user.last_name || ""}`.trim();
+  }
+  return "User";
+}
+
+function getEmail(user) {
+  return user?.email || user?.email_addr || "";
+}
+
+function ImgBox() {
+  return (
+    <div className="w-full h-full border border-black relative bg-white overflow-hidden">
+      <svg width="100%" height="100%" className="absolute inset-0">
+        <line x1="0" y1="0" x2="100%" y2="100%" stroke="black" strokeWidth="1" />
+        <line x1="100%" y1="0" x2="0" y2="100%" stroke="black" strokeWidth="1" />
+      </svg>
+    </div>
+  );
+}
+
+function Input({ label, value, onChange, type = "text" }) {
+  return (
+    <div className="mb-4">
+      <div className="text-xs mb-1">{label}</div>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        className="w-full border border-black px-3 py-2 text-sm bg-white outline-none"
+      />
+    </div>
+  );
+}
+
+function Btn({ label, onClick }) {
+  return (
+    <button onClick={onClick} className="w-full py-2 text-sm border border-black bg-black text-white">
+      {label}
+    </button>
+  );
+}
+
+// ─── Profile page ───────────────────────────────────────────────────────────
+
+function Profile() {
+  const [tab, setTab] = useState("listings");
+  const [user, setUser] = useState(() => getStoredUser());
+  const [formData, setFormData] = useState({
+    displayName: "",
+    email: "",
+  });
+  const [myListings, setMyListings] = useState([]);
+  const [savedListings, setSavedListings] = useState([]);
+  const [profilePic, setProfilePic] = useState(() => localStorage.getItem("profilePic") || null);
+  const tabs = ["listings", "saved", "settings"];
+
+  function handleProfilePicChange(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      setProfilePic(dataUrl);
+      localStorage.setItem("profilePic", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleRemoveProfilePic() {
+    setProfilePic(null);
+    localStorage.removeItem("profilePic");
+  }
+
+  useEffect(() => {
+    const syncUser = async () => {
+      const storedUser = getStoredUser();
+      setUser(storedUser);
+      setFormData({
+        displayName: getDisplayName(storedUser),
+        email: getEmail(storedUser),
+      });
+
+      if (!storedUser) {
+        return;
+      }
+
+      try {
+        const params = new URLSearchParams();
+
+        if (storedUser.user_id) {
+          params.set("userId", storedUser.user_id);
+        } else if (storedUser.email || storedUser.email_addr) {
+          params.set("email", storedUser.email || storedUser.email_addr);
+        }
+
+        const response = await fetch(`http://localhost:3000/api/user/me?${params.toString()}`);
+
+        if (!response.ok) {
+          throw new Error("Could not load profile");
+        }
+
+        const freshUser = await response.json();
+        setUser(freshUser);
+        setFormData({
+          displayName: getDisplayName(freshUser),
+          email: getEmail(freshUser),
+        });
+
+        const listingResponse = await fetch(`http://localhost:3000/api/listing?userId=${freshUser.user_id}`);
+        if (listingResponse.ok) {
+          const listingData = await listingResponse.json();
+          setMyListings(listingData || []);
+        }
+
+        const favoriteResponse = await fetch(`http://localhost:3000/api/favorite?userId=${freshUser.user_id}`);
+        if (favoriteResponse.ok) {
+          const favoriteData = await favoriteResponse.json();
+          setSavedListings(favoriteData || []);
+        }
+      } catch (error) {
+        console.error("Profile fetch failed:", error);
+      }
+    };
+
+    syncUser();
+    window.addEventListener("storage", syncUser);
+    return () => window.removeEventListener("storage", syncUser);
+  }, []);
+
+  useEffect(() => {
+    setFormData({
+      displayName: getDisplayName(user),
+      email: getEmail(user),
+    });
+  }, [user]);
+
+  async function handleDeleteListing(listingId) {
+    if (!user?.user_id) {
+      console.error("Delete failed: missing user");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/listing/${listingId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.user_id })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Delete listing failed:", errorData.message);
+        return;
+      }
+
+      setMyListings((current) => current.filter((item) => item.listing_id !== listingId));
+    } catch (error) {
+      console.error("Delete listing error:", error);
+    }
+  }
+
+  async function handleUnfavorite(listingId) {
+    if (!user?.user_id) return;
+
+    try {
+      await fetch(`/api/favorite/${listingId}?userId=${user.user_id}`, { method: "DELETE" });
+      setSavedListings((current) => current.filter((item) => item.listing_id !== listingId));
+    } catch (error) {
+      console.error("Unfavorite error:", error);
+    }
+  }
+
+  const displayName = getDisplayName(user);
+  const email = getEmail(user);
+  const listingCount = user?.listingCount || user?.listingsCount || "00";
+  const soldCount = user?.soldCount || user?.salesCount || "00";
+  const rating = user?.rating || "0.0";
+
+  return (
+    <>
+      <div className="px-4 py-6 max-w-xl mx-auto">
+        <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
+          <div className="w-16 h-16 shrink-0">
+            {profilePic ? (
+              <img src={profilePic} alt="Profile" className="w-full h-full object-cover border border-black" />
+            ) : (
+              <ImgBox />
+            )}
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-sm">{displayName}</div>
+            <div className="text-xs text-gray-500">{email || "No email on file"}</div>
+            <div className="flex gap-6 text-xs mt-2">
+              <div>Listings: <b>{myListings.length}</b></div>
+              <div>Sold: <b>{soldCount}</b></div>
+              <div>Rating: <b>{rating}</b></div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <a
+              href="login.html"
+              onClick={() => {
+                localStorage.removeItem("user");
+                sessionStorage.removeItem("user");
+              }}
+              className="border border-black px-2 py-1 text-xs h-fit text-center"
+            >
+              Log out
+            </a>
+          </div>
+        </div>
+
+        <div className="flex border border-black mb-4 bg-white">
+          {tabs.map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`flex-1 py-1.5 text-xs capitalize border-r border-black last:border-0 ${tab === t ? "bg-black text-white" : "bg-white"}`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {tab === "listings" && (
+          <>
+            <a
+              href="create_listing.html"
+              className="block w-full text-center border border-black px-2 py-2 text-xs mb-3 bg-black text-white"
+            >
+              + Create Listing
+            </a>
+            {myListings.length === 0 ? (
+              <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+                No listings yet
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {myListings.map((item) => (
+                    <div key={item.listing_id} className="border border-black bg-white">
+                     <div className="h-24 overflow-hidden bg-gray-50">
+                        {/* Verify your database field mapping matches 'item.photo' */}
+                        {item.photo ? (
+                            <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                        ) : (
+                            <ImgBox />
+                       )}
+                 </div>
+                 <div className="p-1.5">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <div className="text-xs">{item.listing_title}</div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteListing(item.listing_id)}
+                        className="text-[10px] border border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
+                 </div>
+             </div>
+            ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {tab === "saved" && (
+          savedListings.length === 0 ? (
+            <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+              No saved items
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-2">
+              {savedListings.map((item) => (
+                <div key={item.listing_id} className="border border-black bg-white">
+                  <a href={`listing.html?id=${item.listing_id}`} className="block">
+                    <div className="h-20 overflow-hidden bg-gray-50">
+                      {item.photo ? (
+                        <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                      ) : (
+                        <ImgBox />
+                      )}
+                    </div>
+                    <div className="p-1.5">
+                      <div className="text-xs">{item.listing_title}</div>
+                      <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
+                    </div>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleUnfavorite(item.listing_id)}
+                    className="w-full text-[10px] border-t border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )
+        )}
+
+        {tab === "settings" && (
+          <div className="border border-black p-4 bg-white">
+            <div className="mb-5">
+              <div className="text-xs mb-2">Profile Picture</div>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 shrink-0">
+                  {profilePic ? (
+                    <img src={profilePic} alt="Profile" className="w-full h-full object-cover border border-black" />
+                  ) : (
+                    <ImgBox />
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="border border-black px-3 py-1.5 text-xs bg-white text-center cursor-pointer">
+                    Upload Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfilePicChange}
+                      className="hidden"
+                    />
+                  </label>
+                  {profilePic && (
+                    <button
+                      onClick={handleRemoveProfilePic}
+                      className="border border-black px-3 py-1.5 text-xs bg-white"
+                    >
+                      Remove Photo
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+            <Input
+              label="Display Name"
+              value={formData.displayName}
+              onChange={(event) => setFormData((current) => ({ ...current, displayName: event.target.value }))}
+            />
+            <a href="#" className="text-xs underline cursor-pointer mb-4 block">
+              Change Password
+            </a>
+            <Btn label="Save" />
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ─── Public profile (viewing another user, e.g. a seller) ─────────────────
+
+function PublicProfile({ userId }) {
+  const [profile, setProfile] = useState(null);
+  const [listings, setListings] = useState([]);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const profileResponse = await fetch(`/api/user/${userId}`);
+        if (!profileResponse.ok) {
+          setNotFound(true);
+          return;
+        }
+        const profileData = await profileResponse.json();
+        setProfile(profileData);
+
+        const listingResponse = await fetch(`/api/listing?userId=${userId}`);
+        if (listingResponse.ok) {
+          const listingData = await listingResponse.json();
+          setListings(listingData || []);
+        }
+      } catch (error) {
+        console.error("Public profile fetch failed:", error);
+        setNotFound(true);
+      }
+    }
+
+    load();
+  }, [userId]);
+
+  if (notFound) {
+    return (
+      <>
+        <div className="px-4 py-6 max-w-xl mx-auto text-center text-sm text-gray-500">
+          This user could not be found.
+        </div>
+      </>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <>
+        <div className="px-4 py-6 max-w-xl mx-auto text-center text-sm text-gray-500">
+          Loading profile...
+        </div>
+      </>
+    );
+  }
+
+  const ratingLabel = profile.avgRating ? `${profile.avgRating} \u2605 (${profile.reviewCount})` : "No ratings yet";
+
+  return (
+    <>
+      <div className="px-4 py-6 max-w-xl mx-auto">
+        <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
+          <div className="w-16 h-16 shrink-0">
+            <ImgBox />
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-sm">{profile.fullName}</div>
+            <div className="flex gap-6 text-xs mt-2">
+              <div>Listings: <b>{profile.listingCount}</b></div>
+              <div>Rating: <b>{ratingLabel}</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs font-semibold mb-2">Active Listings</div>
+        {listings.length === 0 ? (
+          <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+            No active listings
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {listings.map((item) => (
+              <a key={item.listing_id} href={`listing.html?id=${item.listing_id}`} className="border border-black bg-white block">
+                <div className="h-24 overflow-hidden bg-gray-50">
+                  {item.photo ? (
+                    <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                  ) : (
+                    <ImgBox />
+                  )}
+                </div>
+                <div className="p-1.5">
+                  <div className="text-xs">{item.listing_title}</div>
+                  <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+function ProfilePage() {
+  const viewedUserId = new URLSearchParams(window.location.search).get("id");
+  const currentUser = getStoredUser();
+  const isViewingOther = viewedUserId && String(viewedUserId) !== String(currentUser?.user_id);
+
+  return isViewingOther ? <PublicProfile userId={viewedUserId} /> : <Profile />;
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<ProfilePage />);
+</script>
+</body>
+</html>

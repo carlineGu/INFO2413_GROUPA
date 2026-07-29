@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/navbar.css" />
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <main class="container mt-4" style="max-width: 900px; margin: 0 auto; padding: 20px;">
+    <div id="chatHeader"></div>
+    <div id="messagesContainer" style="margin-top: 18px; display: flex; flex-direction: column; gap: 12px;"></div>
+    <form id="messageForm" style="margin-top: 18px; display: flex; gap: 8px; align-items: center;">
+      <input id="messageInput" type="text" placeholder="Write a message..." style="flex: 1; padding: 10px; border: 1px solid #222;" />
+      <button type="submit" style="padding: 10px 16px; border: 1px solid #222; background: #000; color: #fff; cursor: pointer;">Send</button>
+    </form>
+  </main>
+
+  <script src="../js/common.js"></script>
+  <script src="../js/chat.js"></script>
+</body>
+</html>
