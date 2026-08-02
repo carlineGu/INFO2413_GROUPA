@@ -21,4 +21,22 @@ VALUES
 (1,1,1,1,'Gaming Keyboard', 'Mechanical keyboard with blue switches', 40.00);
 
 
-select * FROM Listing;
+SET SQL_SAFE_UPDATES = 0;
+select * FROM User;
+
+DELETE FROM User WHERE account_status = 'INACTIVE';
+DELETE FROM User WHERE user_role ='USER';
+
+select * FROM User;		
+
+SELECT * FROM Listing;
+
+
+
+SELECT
+        listing_id,
+        listing_title,
+        listing_description,
+        price
+      FROM Listing
+      ORDER BY listing_id ASC
