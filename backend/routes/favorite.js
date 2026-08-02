@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// GET /api/favorite?userId=X  -> list of listings the user has favorited
 router.get("/", async (req, res) => {
   const { userId } = req.query;
 
@@ -33,7 +32,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /api/favorite  { userId, listingId } -> favorite a listing
 router.post("/", async (req, res) => {
   try {
     const userId = Number(req.body.userId);
@@ -69,7 +67,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// DELETE /api/favorite/:listingId?userId=X -> remove a favorite
 router.delete("/:listingId", async (req, res) => {
   try {
     const listingId = Number(req.params.listingId);
