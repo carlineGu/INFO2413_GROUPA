@@ -171,7 +171,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  try {
+  try{
     const { userId, title, description, price, category, condition, location, photo } = req.body;
 
     if (!userId || !title || !description || !price || !category) {
@@ -221,8 +221,10 @@ router.post("/", async (req, res) => {
         }
 
         res.json(rows[0]);
+      }
+    }
 
-    } catch (error) {
+  }catch (error) {
 
         console.error(error);
 
@@ -230,7 +232,7 @@ router.post("/", async (req, res) => {
             message: "Could not load listing."
         });
 
-    }
+  }
 
 });
 console.log("listing router type:", typeof router);
