@@ -1,76 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Marketplace - Create Listing</title>
-
-    <link rel="stylesheet" href="../css/navbar.css">
-    <link rel="stylesheet" href="../css/listing.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listing | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/listing.css">
 </head>
-
 <body>
-    <div id="navbar"></div>
-    <div id="menu-overlay" class="menu-overlay"></div>
-    <div id="listing"></div>
-    
-<main class="main-content"> 
+  <div id="navbar"></div>
 
-    <a href="index.html" class="back-link">
-        ← Back to Listings
-    </a>
-
-    <div class="listing-image">
-        <img id="listing-photo" alt="Listing Pic">
+  <main class="listing-page">
+    <a href="index.html" class="listing-back-link">&larr; Back to Listings</a>
+    <div id="listing-root" aria-live="polite">
+      <p class="listing-status-message">Loading listing...</p>
     </div>
+  </main>
 
-    <div class="listing-details">
-        <div class="listing-header">
-            <h3 id="listing-title">Name </h3>
-                <div class="listing-actions">
-                    <span id="listing-price">Price</span>
-                     <button
-                     class="favorite-btn"
-                    onclick="toggleFavorite()"> 
-                    <img id="heart-img" class="heart-img" src="../pictures/heart-outline.png">
-                    </button>
-                </div>
-        </div>
-
-    <div id="listing-meta" class="listing-meta">meta</div> <br>
-    
-    <p id="listing-description">description</p>
-    <br>
-    <a href="/html/report.html" class="report-link">
-        Report Listing
-    </a>
-    </div>
-   
-
-<div class="seller-card">
-    <div class="seller-left">
-        <div class="seller-avatar">
-            <img src="../pictures/user-pro-placeholder.jpg" id="seller-avatar" alt="Seller Photo">
-        </div>
-    <div class="seller-info">
-        <h3 id="seller-name">Name</h3>
-        <p id="seller-department">Depart</p>
-    </div>
-</div>
- <a id="view-profile" class="view-profile">
-    View profile →
-</a>
-</div>
-
-<button class="publish-btn" onclick="contactSeller()">
-    Contact Seller 
-</button>
-
-</main>
-  <script src="../js/listing.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/navbar.js"></script>
-
-</body> 
+  <script src="../js/listing.js"></script>
+</body>
 </html>

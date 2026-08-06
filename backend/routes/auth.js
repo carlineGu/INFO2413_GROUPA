@@ -35,16 +35,21 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
+    if (user.account_status !== "ACTIVE") {
+      return res.status(403).json({
+        message: "Please verify your email before logging in."
+      });
+    }
+
     return res.json({
       message: "Login successful.",
       user: {
-        user_id: user.user_id,
-        first_name: user.first_name,
-        last_name: user.last_name,
+        userId: Number(user.user_id),
+        firstName: user.first_name,
+        lastName: user.last_name,
         fullName: `${user.first_name} ${user.last_name}`.trim(),
         email: user.email_addr,
-        email_addr: user.email_addr,
-        account_status: user.account_status
+        accountStatus: user.account_status
       }
     });
   } catch (error) {

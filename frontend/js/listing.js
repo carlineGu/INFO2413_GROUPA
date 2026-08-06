@@ -1,239 +1,287 @@
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem("user") || "null");
-  } catch (error) {
-    return null;
-  }
-}
+"use strict";
+
+const marketplace = window.CampusMarketplace;
+const listingRoot = document.getElementById("listing-root");
+const currentUser = marketplace.getCurrentUser();
+
+let activePhotoIndex = 0;
+let listingPhotos = [];
 
 function getQueryParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
 
-function escapeHtml(value) {
-  const div = document.createElement("div");
-  div.textContent = value ?? "";
-  return div.innerHTML;
+function normalizeListing(rawListing) {
+  const rawSeller = rawListing.seller || {};
+  const primaryPhoto = rawListing.photo || rawListing.image_url || null;
+  const photos = Array.isArray(rawListing.photos)
+    ? rawListing.photos.filter(Boolean)
+    : primaryPhoto
+      ? [primaryPhoto]
+      : [];
+
+  return {
+    listingId: Number(rawListing.listingId ?? rawListing.listing_id),
+    userId: Number(rawListing.userId ?? rawListing.user_id),
+    title: rawListing.title ?? rawListing.listing_title ?? "Untitled listing",
+    description: rawListing.description ?? rawListing.listing_description ?? "",
+    price: Number(rawListing.price),
+    condition: rawListing.condition ?? rawListing.listing_condition ?? "",
+    status: rawListing.status ?? rawListing.listing_status ?? "ACTIVE",
+    categoryName: rawListing.categoryName ?? rawListing.category_name ?? "",
+    departmentName: rawListing.departmentName ?? rawListing.department_name ?? "",
+    locationName: rawListing.locationName ?? rawListing.location_name ?? "",
+    photos,
+    isFavorited: Boolean(rawListing.isFavorited ?? rawListing.favorited),
+    seller: {
+      userId: Number(rawSeller.userId ?? rawSeller.user_id ?? rawListing.userId ?? rawListing.user_id),
+      fullName: rawSeller.fullName ?? rawSeller.name ?? rawListing.seller_name ?? "Unknown seller",
+      averageRating: Number(rawSeller.averageRating ?? rawSeller.avgRating ?? 0),
+      reviewCount: Number(rawSeller.reviewCount ?? 0)
+    }
+  };
 }
 
-const root = document.getElementById("listingRoot");
-const user = getCurrentUser();
-let currentIndex = 0;
-let photos = [];
-
 function renderGallery(listing) {
-  photos = listing.photos && listing.photos.length > 0 ? listing.photos : [];
+  listingPhotos = listing.photos;
+  activePhotoIndex = 0;
 
-  const mainImage = photos.length > 0
-    ? `<img id="mainImage" src="${photos[0]}" alt="${escapeHtml(listing.listing_title)}" />`
-    : `<div class="listing-gallery-placeholder">No photos for this listing yet</div>`;
+  if (listingPhotos.length === 0) {
+    return `
+      <section class="listing-gallery" aria-label="Listing photos">
+        <div class="listing-gallery-placeholder">No photos for this listing yet.</div>
+      </section>
+    `;
+  }
 
-  const arrows = photos.length > 1
+  const escapedTitle = marketplace.escapeHtml(listing.title);
+  const thumbnails = listingPhotos.length > 1
     ? `
-      <button type="button" class="gallery-arrow prev" id="prevPhoto" aria-label="Previous photo">‹</button>
-      <button type="button" class="gallery-arrow next" id="nextPhoto" aria-label="Next photo">›</button>
+      <div class="listing-thumbnail-strip" aria-label="Choose a listing photo">
+        ${listingPhotos.map((photo, index) => `
+          <button
+            type="button"
+            class="listing-thumbnail ${index === 0 ? "is-active" : ""}"
+            data-photo-index="${index}"
+            aria-label="Show photo ${index + 1}"
+            aria-pressed="${index === 0}"
+          >
+            <img src="${marketplace.escapeHtml(photo)}" alt="${escapedTitle}, photo ${index + 1}">
+          </button>
+        `).join("")}
+      </div>
     `
     : "";
 
-  const thumbs = photos.length > 1
-    ? `<div class="listing-thumb-strip" id="thumbStrip">
-        ${photos.map((url, index) => `
-          <img src="${url}" class="listing-thumb ${index === 0 ? "active" : ""}" data-index="${index}" alt="Photo ${index + 1}" />
-        `).join("")}
-      </div>`
-    : "";
-
   return `
-    <div class="listing-gallery">
+    <section class="listing-gallery" aria-label="Listing photos">
       <div class="listing-gallery-main">
-        ${mainImage}
-        ${arrows}
+        <img id="listing-main-photo" src="${marketplace.escapeHtml(listingPhotos[0])}" alt="${escapedTitle}">
+        ${listingPhotos.length > 1 ? `
+          <button type="button" class="listing-gallery-arrow is-previous" id="previous-photo" aria-label="Previous photo">&lsaquo;</button>
+          <button type="button" class="listing-gallery-arrow is-next" id="next-photo" aria-label="Next photo">&rsaquo;</button>
+        ` : ""}
       </div>
-      ${thumbs}
-    </div>
+      ${thumbnails}
+    </section>
   `;
 }
 
 function setActivePhoto(index) {
-  if (photos.length === 0) return;
-  currentIndex = (index + photos.length) % photos.length;
+  if (listingPhotos.length === 0) return;
 
-  const mainImage = document.getElementById("mainImage");
-  if (mainImage) {
-    mainImage.src = photos[currentIndex];
+  activePhotoIndex = (index + listingPhotos.length) % listingPhotos.length;
+  const mainPhoto = document.getElementById("listing-main-photo");
+  if (mainPhoto) {
+    mainPhoto.src = listingPhotos[activePhotoIndex];
   }
 
-  document.querySelectorAll(".listing-thumb").forEach((thumb) => {
-    thumb.classList.toggle("active", Number(thumb.dataset.index) === currentIndex);
+  document.querySelectorAll("[data-photo-index]").forEach((button) => {
+    const isActive = Number(button.dataset.photoIndex) === activePhotoIndex;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
   });
 }
 
 function wireGalleryEvents() {
-  const prevButton = document.getElementById("prevPhoto");
-  const nextButton = document.getElementById("nextPhoto");
-
-  if (prevButton) prevButton.addEventListener("click", () => setActivePhoto(currentIndex - 1));
-  if (nextButton) nextButton.addEventListener("click", () => setActivePhoto(currentIndex + 1));
-
-  document.querySelectorAll(".listing-thumb").forEach((thumb) => {
-    thumb.addEventListener("click", () => setActivePhoto(Number(thumb.dataset.index)));
+  document.getElementById("previous-photo")?.addEventListener("click", () => {
+    setActivePhoto(activePhotoIndex - 1);
+  });
+  document.getElementById("next-photo")?.addEventListener("click", () => {
+    setActivePhoto(activePhotoIndex + 1);
+  });
+  document.querySelectorAll("[data-photo-index]").forEach((button) => {
+    button.addEventListener("click", () => setActivePhoto(Number(button.dataset.photoIndex)));
   });
 }
 
-async function toggleFavorite(listing, button) {
-  if (!user || !user.user_id) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  const isFavorited = button.dataset.favorited === "true";
-
-  try {
-    if (isFavorited) {
-      await fetch(`/api/favorite/${listing.listing_id}?userId=${user.user_id}`, {
-        method: "DELETE"
-      });
-      button.dataset.favorited = "false";
-      button.textContent = "♡";
-      button.classList.remove("favorited");
-    } else {
-      await fetch("/api/favorite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user_id, listingId: listing.listing_id })
-      });
-      button.dataset.favorited = "true";
-      button.textContent = "♥";
-      button.classList.add("favorited");
-    }
-  } catch (error) {
-    console.error("Could not update favorite:", error);
-  }
-}
-
-async function startConversation(listing) {
-  if (!user || !user.user_id) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  try {
-    const response = await fetch("/api/message/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId: listing.listing_id, buyerId: user.user_id })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error(data.message || "Could not start conversation.");
-      return;
-    }
-
-    window.location.href = `chat.html?conversationId=${data.conversationId}`;
-  } catch (error) {
-    console.error("Could not start conversation:", error);
-  }
-}
-
 function renderSellerCard(listing) {
-  const isOwnListing = user && user.user_id === listing.user_id;
   const seller = listing.seller;
-  const ratingText = seller.avgRating
-    ? `${seller.avgRating} \u2605 (${seller.reviewCount} review${seller.reviewCount === 1 ? "" : "s"})`
+  const isOwnListing = currentUser?.userId === listing.userId;
+  const rating = seller.reviewCount > 0
+    ? `${seller.averageRating.toFixed(1)} star rating (${seller.reviewCount} review${seller.reviewCount === 1 ? "" : "s"})`
     : "No ratings yet";
 
   return `
-    <div class="seller-card">
+    <section class="listing-seller-card" aria-labelledby="seller-heading">
       <div>
-        <a class="seller-name" href="profile.html?id=${seller.user_id}">${escapeHtml(seller.name)}</a>
-        <div class="seller-meta">${ratingText}</div>
+        <p class="listing-section-label" id="seller-heading">Seller</p>
+        <a class="listing-seller-name" href="profile.html?id=${seller.userId}">
+          ${marketplace.escapeHtml(seller.fullName)}
+        </a>
+        <p class="listing-seller-meta">${marketplace.escapeHtml(listing.departmentName || "Department not provided")}</p>
+        <p class="listing-seller-meta">${marketplace.escapeHtml(rating)}</p>
       </div>
-      <div class="seller-actions">
-        <a class="btn btn-outline-dark btn-sm" href="profile.html?id=${seller.user_id}">View Profile</a>
+      <div class="listing-seller-actions">
+        <a class="secondary-button" href="profile.html?id=${seller.userId}">View Profile</a>
         ${isOwnListing
-          ? `<span class="btn btn-outline-secondary btn-sm disabled">This is your listing</span>`
-          : `<button type="button" class="btn btn-dark btn-sm" id="messageSellerBtn">Message Seller</button>`}
+          ? `<span class="secondary-button is-disabled">Your listing</span>`
+          : `<button type="button" class="primary-button" id="message-seller-button">Message Seller</button>`}
       </div>
-    </div>
+    </section>
   `;
 }
 
 function renderListing(listing) {
-  const isOwnListing = user && user.user_id === listing.user_id;
-  const statusBadge = listing.listing_status !== "ACTIVE"
-    ? `<span class="badge bg-secondary ms-2">${listing.listing_status}</span>`
-    : "";
+  const isOwnListing = currentUser?.userId === listing.userId;
+  const price = Number.isFinite(listing.price) ? listing.price.toFixed(2) : "0.00";
 
-  root.innerHTML = `
-    <div class="row">
-      <div class="col-lg-7">
-        ${renderGallery(listing)}
-      </div>
-      <div class="col-lg-5">
-        <div class="d-flex justify-content-between align-items-start">
-          <h2 class="mb-1">${escapeHtml(listing.listing_title)}${statusBadge}</h2>
-          ${!isOwnListing ? `
-          <button type="button" id="favoriteBtn" class="listing-favorite-btn" data-favorited="${listing.favorited}" aria-label="Favorite this listing">
-            ${listing.favorited ? "♥" : "♡"}
-          </button>
-          ` : ""}
+  listingRoot.innerHTML = `
+    <div class="listing-layout">
+      ${renderGallery(listing)}
+      <article class="listing-details-card">
+        <div class="listing-title-row">
+          <div>
+            <p class="listing-status">${marketplace.escapeHtml(listing.status)}</p>
+            <h1>${marketplace.escapeHtml(listing.title)}</h1>
+          </div>
+          ${isOwnListing ? "" : `
+            <button
+              type="button"
+              class="listing-favorite-button ${listing.isFavorited ? "is-favorited" : ""}"
+              id="listing-favorite-button"
+              aria-label="${listing.isFavorited ? "Remove from favorites" : "Add to favorites"}"
+              aria-pressed="${listing.isFavorited}"
+            >${listing.isFavorited ? "&#9829;" : "&#9825;"}</button>
+          `}
         </div>
-        <p class="fs-4 fw-bold">$${Number(listing.price).toFixed(2)}</p>
-        <p class="text-muted mb-1">Condition: ${escapeHtml(listing.listing_condition)}</p>
-        <p class="text-muted mb-1">${listing.category_name ? `Category: ${escapeHtml(listing.category_name)}` : ""}</p>
-        <p class="text-muted mb-3">${listing.location_name ? `Location: ${escapeHtml(listing.location_name)}` : ""}</p>
 
-        <h5>Description</h5>
-        <p style="white-space: pre-wrap;">${escapeHtml(listing.listing_description)}</p>
+        <p class="listing-price">$${price}</p>
+        <dl class="listing-metadata">
+          <div><dt>Condition</dt><dd>${marketplace.escapeHtml(listing.condition || "Not specified")}</dd></div>
+          <div><dt>Category</dt><dd>${marketplace.escapeHtml(listing.categoryName || "Not specified")}</dd></div>
+          <div><dt>Meetup</dt><dd>${marketplace.escapeHtml(listing.locationName || "Not specified")}</dd></div>
+        </dl>
 
+        <section class="listing-description">
+          <h2>Description</h2>
+          <p>${marketplace.escapeHtml(listing.description)}</p>
+        </section>
+
+        <div class="listing-action-links">
+          ${isOwnListing ? "" : `
+            <a class="listing-report-link" href="reporting.html?listingId=${listing.listingId}">Report this listing</a>
+            <a class="listing-review-link" href="review.html?listingId=${listing.listingId}&reviewedUserId=${listing.seller.userId}">Review this seller</a>
+          `}
+        </div>
         ${renderSellerCard(listing)}
-      </div>
+      </article>
     </div>
+    <p class="listing-feedback" id="listing-feedback" role="status"></p>
   `;
 
-  if (listing.favorited) {
-    root.querySelector("#favoriteBtn")?.classList.add("favorited");
-  }
-
   wireGalleryEvents();
-
-  const favoriteBtn = document.getElementById("favoriteBtn");
-  if (favoriteBtn) {
-    favoriteBtn.addEventListener("click", () => toggleFavorite(listing, favoriteBtn));
-  }
-
-  const messageBtn = document.getElementById("messageSellerBtn");
-  if (messageBtn) {
-    messageBtn.addEventListener("click", () => startConversation(listing));
-  }
+  wireListingEvents(listing);
 }
 
-async function loadListing() {
-  const listingId = getQueryParam("id");
+function setFeedback(message, isError = false) {
+  const feedback = document.getElementById("listing-feedback");
+  if (!feedback) return;
+  feedback.textContent = message;
+  feedback.classList.toggle("is-error", isError);
+}
 
-  if (!listingId) {
-    root.innerHTML = `<p class="text-danger">No listing was specified.</p>`;
+async function toggleFavorite(listing, button) {
+  if (!currentUser?.userId) {
+    window.location.href = "login.html";
     return;
   }
 
+  const isFavorited = button.getAttribute("aria-pressed") === "true";
+  button.disabled = true;
+
   try {
-    const params = new URLSearchParams();
-    if (user && user.user_id) params.set("userId", user.user_id);
-
-    const response = await fetch(`/api/listing/${listingId}?${params.toString()}`);
-    const data = await response.json();
-
-    if (!response.ok) {
-      root.innerHTML = `<p class="text-danger">${escapeHtml(data.message || "Listing could not be loaded.")}</p>`;
-      return;
+    if (isFavorited) {
+      await marketplace.request(`favorite/${listing.listingId}?userId=${currentUser.userId}`, {
+        method: "DELETE"
+      });
+    } else {
+      await marketplace.request("favorite", {
+        method: "POST",
+        body: { userId: currentUser.userId, listingId: listing.listingId }
+      });
     }
 
-    renderListing(data);
+    const nextState = !isFavorited;
+    button.setAttribute("aria-pressed", String(nextState));
+    button.setAttribute("aria-label", nextState ? "Remove from favorites" : "Add to favorites");
+    button.classList.toggle("is-favorited", nextState);
+    button.innerHTML = nextState ? "&#9829;" : "&#9825;";
+    setFeedback(nextState ? "Added to favorites." : "Removed from favorites.");
   } catch (error) {
-    console.error("Could not load listing:", error);
-    root.innerHTML = `<p class="text-danger">Could not connect to the backend server.</p>`;
+    setFeedback(error.message || "Could not update favorites.", true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function startConversation(listing) {
+  if (!currentUser?.userId) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const button = document.getElementById("message-seller-button");
+  if (button) button.disabled = true;
+
+  try {
+    const result = await marketplace.request("message/start", {
+      method: "POST",
+      body: { listingId: listing.listingId, buyerId: currentUser.userId }
+    });
+    window.location.href = `chat.html?conversationId=${result.conversationId}`;
+  } catch (error) {
+    setFeedback(error.message || "Could not start a conversation.", true);
+    if (button) button.disabled = false;
+  }
+}
+
+function wireListingEvents(listing) {
+  const favoriteButton = document.getElementById("listing-favorite-button");
+  favoriteButton?.addEventListener("click", () => toggleFavorite(listing, favoriteButton));
+  document.getElementById("message-seller-button")?.addEventListener("click", () => {
+    startConversation(listing);
+  });
+}
+
+async function loadListing() {
+  const listingId = Number(getQueryParam("id"));
+  if (!Number.isFinite(listingId) || listingId <= 0) {
+    listingRoot.innerHTML = `<p class="listing-status-message is-error">No valid listing was specified.</p>`;
+    return;
+  }
+
+  const query = currentUser?.userId ? `?viewerId=${currentUser.userId}` : "";
+
+  try {
+    const result = await marketplace.request(`listing/${listingId}${query}`);
+    renderListing(normalizeListing(result));
+  } catch (error) {
+    listingRoot.innerHTML = `
+      <p class="listing-status-message is-error">
+        ${marketplace.escapeHtml(error.message || "Could not load this listing.")}
+      </p>
+    `;
   }
 }
 

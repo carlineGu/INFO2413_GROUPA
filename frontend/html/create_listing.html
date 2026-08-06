@@ -1,146 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Marketplace - Create Listing</title>
-
-    <link rel="stylesheet" href="../css/navbar.css">
-    <link rel="stylesheet" href="../css/create_listing.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Listing | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/create_listing.css">
 </head>
-
 <body>
-    <div id="navbar"></div>
-    <div id="menu-overlay" class="menu-overlay"></div>
+  <div id="navbar"></div>
 
-    <div id="create_listing"></div>
-    
-<main class="main-content">
-
-<h1 class="page-title">Create Listing</h1>
- <div class="form-container">
-
-
-    <div class="form-group">
-      <label class="photo-label">
-        Photos <span>(up to 4)</span>
-      </label>
-
-      <div class="photo-grid">
-
-        <label class="photo-upload">
-            <span class="plus">+</span>
-            <span>Add</span>
-            <input type="file" accept="image/*">
-        </label>
-
-        <label class="photo-upload">
-            <span class="plus">+</span>
-            <span>Add</span>
-            <input type="file" accept="image/*">
-        </label>
-
-        <label class="photo-upload">
-            <span class="plus">+</span>
-            <span>Add</span>
-            <input type="file" accept="image/*">
-        </label>
-
-        <label class="photo-upload">
-            <span class="plus">+</span>
-            <span>Add</span>
-            <input type="file" accept="image/*">
-        </label>
-      </div>  
-    </div>  
-
-    <div class="form-group">
-        <label>Title</label>
-        <input
-            id="title"
-            type="text"
-            placeholder="e.g. Used Calculus Textbook">
+  <main class="create-listing-page">
+    <div class="create-listing-heading">
+      <a href="index.html">&larr; Back to Listings</a>
+      <h1>Create Listing</h1>
+      <p>Add clear details so buyers know exactly what you are offering.</p>
     </div>
 
-    <div class="form-group">
-        <label>Price</label>
-        <input
-            id="price"
-            type="text" 
-            placeholder="$0.00"
-        >
-    </div>
+    <form id="create-listing-form" class="create-listing-form" novalidate>
+      <fieldset class="create-listing-section">
+        <legend>Photos <span>(up to 4)</span></legend>
+        <p class="field-help">PNG, JPEG, or WebP. Maximum 4 MB per photo.</p>
+        <div class="photo-grid">
+          <label class="photo-upload">
+            <input type="file" accept="image/png,image/jpeg,image/webp" data-photo-slot="0">
+            <span class="photo-placeholder"><strong>+</strong>Add photo</span>
+            <img class="photo-preview" alt="First listing preview">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/png,image/jpeg,image/webp" data-photo-slot="1">
+            <span class="photo-placeholder"><strong>+</strong>Add photo</span>
+            <img class="photo-preview" alt="Second listing preview">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/png,image/jpeg,image/webp" data-photo-slot="2">
+            <span class="photo-placeholder"><strong>+</strong>Add photo</span>
+            <img class="photo-preview" alt="Third listing preview">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/png,image/jpeg,image/webp" data-photo-slot="3">
+            <span class="photo-placeholder"><strong>+</strong>Add photo</span>
+            <img class="photo-preview" alt="Fourth listing preview">
+          </label>
+        </div>
+      </fieldset>
 
-    <div class="form-group">
-        <label>Department</label>
-        <select id="department">
-            <option value="">Select...</option>
-            <option value="1">Computer Science</option>
-            <option value="2">Business</option>
-            <option value="3">Engineering</option>
-        </select>
-    </div>
+      <div class="form-grid">
+        <label class="form-field form-field-wide">
+          <span>Title</span>
+          <input id="listing-title" name="title" type="text" maxlength="100" required placeholder="Used Calculus Textbook">
+        </label>
 
-    <div class="form-group">
-        <label>Category</label>
-        <select id="category" onchange="updateSubcategories()">
-            <option value="">Select...</option>
-            <option value="Books">Books & Textbooks</option>
+        <label class="form-field">
+          <span>Price</span>
+          <input id="listing-price" name="price" type="number" min="0.01" max="99999999.99" step="0.01" required placeholder="0.00">
+        </label>
+
+        <label class="form-field">
+          <span>Department</span>
+          <select id="listing-department" name="department" required>
+            <option value="">Select a department</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Business">Business</option>
+            <option value="Engineering">Engineering</option>
+            <option value="General">General</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Category</span>
+          <select id="listing-category" name="category" required>
+            <option value="">Select a category</option>
+            <option value="Books &amp; Textbooks">Books &amp; Textbooks</option>
             <option value="Electronics">Electronics</option>
-            <option value="Furniture">Dorm & Furniture</option>
-            <option value="Clothing">Clothing & Accessories</option>
-        </select>
-    </div>
+            <option value="Dorm &amp; Furniture">Dorm &amp; Furniture</option>
+            <option value="Clothing &amp; Accessories">Clothing &amp; Accessories</option>
+          </select>
+        </label>
 
-    <div class="form-group">
-        <label>Subcategory</label>
-        <select id="subcategory">
-            <option>Select...</option>
-        </select>
-    </div>
+        <label class="form-field">
+          <span>Condition</span>
+          <select id="listing-condition" name="condition">
+            <option value="">Select a condition</option>
+            <option value="NEW">New</option>
+            <option value="LIKE NEW">Like New</option>
+            <option value="GOOD">Good</option>
+            <option value="FAIR">Fair</option>
+            <option value="USED">Used</option>
+          </select>
+        </label>
 
-    <div class="form-group">
-        <label>Condition<span>(optional)</span></label>
-        <select id="condition">
-            <option>Select...</option>
-            <option>New</option>
-            <option>Like New</option>
-            <option>Good</option>
-            <option>Fair</option>
-            <option>Used</option>
-        </select>
-    </div>
+        <label class="form-field">
+          <span>Meetup location</span>
+          <select id="listing-location" name="location">
+            <option value="">Select a location</option>
+            <option value="Richmond Campus">Richmond Campus</option>
+            <option value="Surrey Campus">Surrey Campus</option>
+            <option value="Langley Campus">Langley Campus</option>
+          </select>
+        </label>
 
-    <div class="form-group">
-        <label>Meetup Location <span>(optional)</span></label>
-        <select id="location">
-            <option>Select...</option>
-            <option>Richmond Campus</option>
-            <option>Surrey Campus</option>
-            <option>Langley Campus</option>
-        </select>
-    </div>
+        <label class="form-field form-field-wide">
+          <span>Description</span>
+          <textarea id="listing-description" name="description" maxlength="3000" required placeholder="Condition, details, and anything else a buyer should know."></textarea>
+        </label>
+      </div>
 
-    <div class="form-group">
-        <label>Description</label>
-        <textarea 
-            id="description"
-            placeholder="Condition, details, and any other notes about the item..."></textarea>
-    </div>
+      <p id="create-listing-feedback" class="form-feedback" role="status" aria-live="polite"></p>
+      <button id="publish-listing-button" class="publish-button" type="submit">Publish Listing</button>
+    </form>
+  </main>
 
-    <button class="publish-btn" onclick="publishListing()">
-        Publish Listing
-    </button>
-
-   </div>
-      
-       
-
-</main>
-  <script src="../js/create_listing.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/navbar.js"></script>
-
-</body> 
+  <script src="../js/create-listing.js"></script>
+</body>
 </html>

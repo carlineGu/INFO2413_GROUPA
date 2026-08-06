@@ -1,127 +1,126 @@
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem("user") || "null");
-  } catch (error) {
-    return null;
-  }
+"use strict";
+
+const marketplace = window.CampusMarketplace;
+
+function normalizeListingSummary(rawListing) {
+  return {
+    listingId: Number(rawListing.listingId ?? rawListing.listing_id),
+    userId: Number(rawListing.userId ?? rawListing.user_id),
+    title: rawListing.title ?? rawListing.listing_title ?? "Untitled listing",
+    description: rawListing.description ?? rawListing.listing_description ?? "",
+    price: Number(rawListing.price),
+    status: rawListing.status ?? rawListing.listing_status ?? "ACTIVE",
+    photo: rawListing.photo ?? rawListing.image_url ?? null,
+    isFavorited: Boolean(rawListing.isFavorited ?? rawListing.favorited)
+  };
+}
+
+function setConnectionMessage(message, isError = false) {
+  const element = document.getElementById("connectionMessage");
+  if (!element) return;
+  element.textContent = message;
+  element.classList.toggle("text-danger", isError);
 }
 
 async function testConnection() {
-  const messageElement = document.getElementById("connectionMessage");
-
   try {
-    const response = await fetch("/api/test");
-
-    if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    messageElement.textContent = data.message;
+    const result = await marketplace.request("test");
+    setConnectionMessage(result.message || "Connected to the backend.");
   } catch (error) {
-    console.error("Connection error:", error);
-    messageElement.textContent = "Could not connect to backend.";
+    setConnectionMessage("Could not connect to the backend.", true);
   }
 }
 
-async function toggleFavorite(event, listingId, button) {
-  event.preventDefault();
-  event.stopPropagation();
-
-  const user = getCurrentUser();
-  if (!user || !user.user_id) {
+async function toggleFavorite(listingId, button) {
+  const user = marketplace.getCurrentUser();
+  if (!user?.userId) {
     window.location.href = "login.html";
     return;
   }
 
-  const isFavorited = button.dataset.favorited === "true";
+  const isFavorited = button.getAttribute("aria-pressed") === "true";
+  button.disabled = true;
 
   try {
     if (isFavorited) {
-      await fetch(`/api/favorite/${listingId}?userId=${user.user_id}`, {
-        method: "DELETE"
-      });
-      button.dataset.favorited = "false";
-      button.textContent = "♡";
-      button.classList.remove("favorited");
+      await marketplace.request(`favorite/${listingId}?userId=${user.userId}`, { method: "DELETE" });
     } else {
-      await fetch("/api/favorite", {
+      await marketplace.request("favorite", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user_id, listingId })
+        body: { userId: user.userId, listingId }
       });
-      button.dataset.favorited = "true";
-      button.textContent = "♥";
-      button.classList.add("favorited");
     }
+
+    const nextState = !isFavorited;
+    button.setAttribute("aria-pressed", String(nextState));
+    button.setAttribute("aria-label", nextState ? "Remove from favorites" : "Add to favorites");
+    button.classList.toggle("favorited", nextState);
+    button.innerHTML = nextState ? "&#9829;" : "&#9825;";
   } catch (error) {
-    console.error("Could not update favorite:", error);
+    setConnectionMessage(error.message || "Could not update favorites.", true);
+  } finally {
+    button.disabled = false;
   }
+}
+
+function renderListingCard(listing, currentUser) {
+  const column = document.createElement("div");
+  column.className = "col-md-4 mb-4";
+  const isOwnListing = currentUser?.userId === listing.userId;
+  const price = Number.isFinite(listing.price) ? listing.price.toFixed(2) : "0.00";
+
+  column.innerHTML = `
+    <article class="card h-100 position-relative">
+      ${isOwnListing ? "" : `
+        <button
+          type="button"
+          class="favorite-heart ${listing.isFavorited ? "favorited" : ""}"
+          aria-label="${listing.isFavorited ? "Remove from favorites" : "Add to favorites"}"
+          aria-pressed="${listing.isFavorited}"
+        >${listing.isFavorited ? "&#9829;" : "&#9825;"}</button>
+      `}
+      <a href="listing.html?id=${listing.listingId}" class="text-decoration-none text-reset">
+        ${listing.photo ? `
+          <img src="${marketplace.escapeHtml(listing.photo)}" class="card-img-top" alt="${marketplace.escapeHtml(listing.title)}" style="height:200px;object-fit:cover;">
+        ` : `<div class="d-flex align-items-center justify-content-center bg-light text-muted" style="height:200px;">No photo</div>`}
+        <div class="card-body">
+          <h2 class="card-title h5">${marketplace.escapeHtml(listing.title)}</h2>
+          <p class="card-text">${marketplace.escapeHtml(listing.description)}</p>
+          <p class="fw-bold mb-0">$${price}</p>
+        </div>
+      </a>
+    </article>
+  `;
+
+  column.querySelector(".favorite-heart")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleFavorite(listing.listingId, event.currentTarget);
+  });
+
+  return column;
 }
 
 async function loadListings() {
   const container = document.getElementById("listingContainer");
-  const user = getCurrentUser();
+  if (!container) return;
+
+  const currentUser = marketplace.getCurrentUser();
+  const query = currentUser?.userId ? `?viewerId=${currentUser.userId}` : "";
 
   try {
-    const response = await fetch("/api/listing");
-
-    if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status}`);
-    }
-
-    const listings = await response.json();
-
+    const result = await marketplace.request(`listing${query}`);
+    const listings = Array.isArray(result) ? result.map(normalizeListingSummary) : [];
     container.innerHTML = "";
 
-    listings.forEach((listing) => {
-      const column = document.createElement("div");
-      column.className = "col-md-4 mb-4";
+    if (listings.length === 0) {
+      container.innerHTML = `<p class="text-muted">No active listings are available yet.</p>`;
+      return;
+    }
 
-      const isOwnListing = user && user.user_id === listing.user_id;
-
-      column.innerHTML = `
-        <a href="listing.html?id=${listing.listing_id}" class="text-decoration-none text-reset">
-          <div class="card h-100 position-relative">
-            ${!isOwnListing ? `
-            <button type="button" class="favorite-heart" data-favorited="false" aria-label="Favorite this listing">♡</button>
-            ` : ""}
-            ${listing.photo ? `
-            <img src="${listing.photo}" class="card-img-top" alt="${listing.listing_title}" style="height: 200px; object-fit: cover;" />
-            ` : ""}
-            <div class="card-body">
-              <h5 class="card-title">${listing.listing_title}</h5>
-
-              <p class="card-text">
-                ${listing.listing_description}
-              </p>
-
-              <p class="fw-bold">
-                $${Number(listing.price).toFixed(2)}
-              </p>
-            </div>
-          </div>
-        </a>
-      `;
-
-      const heartButton = column.querySelector(".favorite-heart");
-      if (heartButton) {
-        heartButton.addEventListener("click", (event) =>
-          toggleFavorite(event, listing.listing_id, heartButton)
-        );
-      }
-
-      container.appendChild(column);
-    });
+    listings.forEach((listing) => container.appendChild(renderListingCard(listing, currentUser)));
   } catch (error) {
-    console.error("Could not load listings:", error);
-
-    container.innerHTML = `
-      <p class="text-danger">
-        Listings could not be loaded.
-      </p>
-    `;
+    container.innerHTML = `<p class="text-danger">${marketplace.escapeHtml(error.message || "Listings could not be loaded.")}</p>`;
   }
 }
 
