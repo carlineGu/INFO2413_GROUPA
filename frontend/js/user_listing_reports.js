@@ -41,8 +41,17 @@
 
     const reasonCounts = new Map();
     reports.forEach((r) => {
-      reasonCounts.set(r.reason, (reasonCounts.get(r.reason) || 0) + 1);
+      const normalizedReason = String(r.reason || "")
+        .split(":")[0]
+        .trim();
+
+      if (!normalizedReason) {
+        return;
+      }
+
+      reasonCounts.set(normalizedReason, (reasonCounts.get(normalizedReason) || 0) + 1);
     });
+
     let topReason = "\u2013";
     let topCount = 0;
     reasonCounts.forEach((count, reason) => {

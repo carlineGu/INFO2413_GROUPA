@@ -6,10 +6,10 @@
   <title>Reports | Campus Marketplace</title>
   <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
+<body class="admin-page">
   <header class="admin-header">
     <div class="admin-header-left">
-      <button type="button" aria-label="Menu">
+      <button type="button" id="adminMenuButton" aria-label="Menu" aria-controls="adminSideMenu" aria-expanded="false">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div class="admin-header-titles">
@@ -20,7 +20,7 @@
     <button type="button" id="signOutButton" class="sign-out-button">Sign Out</button>
   </header>
 
-  <main>
+  <main class="admin-main">
     <div class="page-title">
       <h2>Listing &amp; User Moderation Report</h2>
       <p>Review flagged listings and user reports submitted by the community.</p>
@@ -41,12 +41,12 @@
       </div>
       <div class="stat-card issue">
         <div class="stat-number" id="statIssue">&ndash;</div>
-        <div class="stat-label">Most Common Issue</div>
+        <div class="stat-label">Most Common Report Type</div>
       </div>
     </div>
 
-    <section class="reports-panel">
-      <div class="reports-panel-header">
+    <section class="admin-panel">
+      <div class="admin-panel-header">
         <h3>Reported Items</h3>
         <span id="reportsCount"></span>
       </div>
@@ -69,7 +69,9 @@
       </table>
     </section>
   </main>
-    <script src="../js/api.js" defer></script>
-    <script src="../js/user_listing_reports.js" defer></script>
+
+  <script src="../js/api.js" defer></script>
+  <script src="../js/admin_navbar.js" defer></script>
+  <script src="../js/user_listing_reports.js" defer></script>
 </body>
 </html>
