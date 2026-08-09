@@ -32,6 +32,10 @@
         <div class="stat-label">Total Listings</div>
       </div>
       <div class="stat-card">
+        <div class="stat-number" id="statRegisteredUsers">&ndash;</div>
+        <div class="stat-label">Registered Users</div>
+      </div>
+      <div class="stat-card">
         <div class="stat-number" id="statPendingReports">&ndash;</div>
         <div class="stat-label">Pending Reports</div>
       </div>
@@ -39,7 +43,59 @@
         <div class="stat-number" id="statTotalReports">&ndash;</div>
         <div class="stat-label">Total Reports</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statOpenMessages">&ndash;</div>
+        <div class="stat-label">Open Support Messages</div>
+      </div>
     </div>
+
+    <section class="admin-dashboard-quick-access">
+      <div class="admin-panel-header compact-header">
+        <h3>Quick Access</h3>
+      </div>
+      <div class="nav-tiles">
+        <a class="nav-tile" href="user_listing_reports.html">
+          <div class="nav-tile-top">
+            <span class="nav-tile-icon">!</span>
+            <span class="nav-tile-badge" id="quickReportsBadge" hidden></span>
+          </div>
+          <h3>Review Reports</h3>
+          <p>Inspect and resolve reported listings and users.</p>
+        </a>
+        <a class="nav-tile" href="admin_dashboard.html">
+          <div class="nav-tile-top">
+            <span class="nav-tile-icon">↺</span>
+            <span class="nav-tile-badge" id="quickActivityBadge" hidden></span>
+          </div>
+          <h3>Marketplace Activity</h3>
+          <p>Monitor overall list and report activity.</p>
+        </a>
+        <a class="nav-tile" href="create_listing.html">
+          <div class="nav-tile-top">
+            <span class="nav-tile-icon">+</span>
+            <span class="nav-tile-badge" id="quickListingsBadge" hidden></span>
+          </div>
+          <h3>Manage Listings</h3>
+          <p>Create and maintain marketplace listings.</p>
+        </a>
+        <a class="nav-tile" href="profile.html">
+          <div class="nav-tile-top">
+            <span class="nav-tile-icon">U</span>
+            <span class="nav-tile-badge" id="quickUsersBadge" hidden></span>
+          </div>
+          <h3>Manage Users</h3>
+          <p>Review user profiles and account activity.</p>
+        </a>
+        <a class="nav-tile" href="message.html">
+          <div class="nav-tile-top">
+            <span class="nav-tile-icon">✉</span>
+            <span class="nav-tile-badge" id="quickMessagesBadge" hidden></span>
+          </div>
+          <h3>Support Messages</h3>
+          <p>Access support conversations and user messages.</p>
+        </a>
+      </div>
+    </section>
   </main>
 
   <script src="../js/api.js" defer></script>

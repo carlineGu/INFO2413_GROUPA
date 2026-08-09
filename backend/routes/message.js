@@ -2,6 +2,34 @@ const express = require("express");
 const db = require("../db");
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT m.message_id, m.message_status, m.sent_at, c.conversation_id,
+              CONCAT(u.first_name, ' ', u.last_name) AS sender_name,
+              m.content
+         FROM Message m
+         JOIN Conversation c ON c.conversation_id = m.conversation_id
+         JOIN User u ON u.user_id = m.sender_id
+        ORDER BY m.sent_at DESC`
+    );
+
+    const messages = rows.map((row) => ({
+      messageId: row.message_id,
+      conversationId: row.conversation_id,
+      senderName: row.sender_name,
+      status: row.message_status,
+      sentAt: row.sent_at,
+      content: row.content
+    }));
+
+    return res.json({ messages, total: messages.length });
+  } catch (error) {
+    console.error("List support messages error:", error);
+    return res.status(500).json({ message: "Could not load support messages." });
+  }
+});
+
 router.get("/inbox", async (req, res) => {
   const userId = req.query.userId;
 

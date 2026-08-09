@@ -16,6 +16,32 @@ function toPrivateUserDto(user) {
   };
 }
 
+router.get("/", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT user_id, first_name, last_name, email_addr, account_status, created_at
+         FROM User
+        ORDER BY created_at DESC`
+    );
+
+    return res.json({
+      users: rows.map((user) => ({
+        userId: Number(user.user_id),
+        firstName: user.first_name,
+        lastName: user.last_name,
+        fullName: `${user.first_name} ${user.last_name}`.trim(),
+        email: user.email_addr,
+        accountStatus: user.account_status,
+        createdAt: user.created_at
+      })),
+      total: rows.length
+    });
+  } catch (error) {
+    console.error("List users error:", error);
+    return res.status(500).json({ message: "Could not list users." });
+  }
+});
+
 router.get("/me", async (req, res) => {
   const userId = Number(req.query.userId ?? req.query.user_id);
   const email = String(req.query.email ?? req.query.email_addr ?? "").trim().toLowerCase();
