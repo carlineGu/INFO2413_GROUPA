@@ -56,6 +56,26 @@ router.get("/inbox", async (req, res) => {
   }
 });
 
+router.get("/unread-count", async (req, res) => {
+    // console.log("Req query:", req.query);
+    const userId = req.query.userId;
+
+    const [rows] = await db.query(`
+        SELECT COUNT(*) AS unread_count
+        FROM Message m
+        JOIN Conversation c
+            ON m.conversation_id = c.conversation_id
+        WHERE (c.buyer_id = ? OR c.seller_id = ?)
+          AND m.sender_id != ?
+          AND m.message_status = 'SENT'
+    `, [userId, userId, userId]);
+
+    res.json({
+        unreadCount: rows[0].unread_count
+    });
+});
+
+
 router.get("/thread/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
   const userId = req.query.userId;
@@ -188,6 +208,32 @@ router.post("/send", async (req, res) => {
     console.error("Send error:", error);
     res.status(500).json({ message: "Could not send message." });
   }
+});
+
+router.get("/mark-read/:conversationId", async (req, res) => {
+    const userId = req.query.userId;
+    const { conversationId } = req.params;
+
+    if (!userId || !conversationId) {
+        return res.status(400).json({ message: "userId and conversationId are required." });
+    }
+
+    try {
+        const [result] = await db.query(`
+            UPDATE Message m
+            JOIN Conversation c ON m.conversation_id = c.conversation_id
+            SET m.message_status = 'READ'
+            WHERE (c.buyer_id = ? OR c.seller_id = ?)
+              AND m.sender_id != ?
+              AND m.conversation_id = ?
+              AND m.message_status = 'SENT'
+        `, [userId, userId, userId, conversationId]);
+
+        res.json({ message: "Messages marked as read." });
+    } catch (error) {
+        console.error("Mark read error:", error);
+        res.status(500).json({ message: "Could not mark messages as read." });
+    }
 });
 
 module.exports = router;

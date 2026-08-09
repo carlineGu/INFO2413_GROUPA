@@ -17,42 +17,31 @@
 <body>
 <div id="navbar"></div>
 <div id="root"></div>
-<script src="../js/common.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/navbar.js"></script>
 <script type="text/babel" data-presets="react">
 const { useState, useEffect } = React;
 
 // ─── Profile content ─────────────────────────────────────────────────────
 
-const MY_LISTINGS = [];
-
 // ─── Shared building blocks ────────────────────────────────────────────────
 
 function getStoredUser() {
-  const rawUser = localStorage.getItem("user") || sessionStorage.getItem("user");
-
-  if (!rawUser) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(rawUser);
-  } catch (error) {
-    return null;
-  }
+  return window.CampusMarketplace.getCurrentUser();
 }
 
 function getDisplayName(user) {
   if (!user) return "Guest";
   if (user.fullName) return user.fullName;
   if (user.name) return user.name;
-  if (user.first_name || user.last_name) {
-    return `${user.first_name || ""} ${user.last_name || ""}`.trim();
+  if (user.firstName || user.lastName) {
+    return `${user.firstName || ""} ${user.lastName || ""}`.trim();
   }
   return "User";
 }
 
 function getEmail(user) {
-  return user?.email || user?.email_addr || "";
+  return user?.email || "";
 }
 
 function ImgBox() {
@@ -66,37 +55,11 @@ function ImgBox() {
   );
 }
 
-function Input({ label, value, onChange, type = "text" }) {
-  return (
-    <div className="mb-4">
-      <div className="text-xs mb-1">{label}</div>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="w-full border border-black px-3 py-2 text-sm bg-white outline-none"
-      />
-    </div>
-  );
-}
-
-function Btn({ label, onClick }) {
-  return (
-    <button onClick={onClick} className="w-full py-2 text-sm border border-black bg-black text-white">
-      {label}
-    </button>
-  );
-}
-
 // ─── Profile page ───────────────────────────────────────────────────────────
 
 function Profile() {
   const [tab, setTab] = useState("listings");
   const [user, setUser] = useState(() => getStoredUser());
-  const [formData, setFormData] = useState({
-    displayName: "",
-    email: "",
-  });
   const [myListings, setMyListings] = useState([]);
   const [savedListings, setSavedListings] = useState([]);
   const [profilePic, setProfilePic] = useState(() => localStorage.getItem("profilePic") || null);
@@ -123,48 +86,30 @@ function Profile() {
     const syncUser = async () => {
       const storedUser = getStoredUser();
       setUser(storedUser);
-      setFormData({
-        displayName: getDisplayName(storedUser),
-        email: getEmail(storedUser),
-      });
 
       if (!storedUser) {
+        window.location.replace("login.html");
         return;
       }
 
       try {
         const params = new URLSearchParams();
 
-        if (storedUser.user_id) {
-          params.set("userId", storedUser.user_id);
-        } else if (storedUser.email || storedUser.email_addr) {
-          params.set("email", storedUser.email || storedUser.email_addr);
+        if (storedUser.userId) {
+          params.set("userId", storedUser.userId);
+        } else if (storedUser.email) {
+          params.set("email", storedUser.email);
         }
 
-        const response = await fetch(`http://localhost:3000/api/user/me?${params.toString()}`);
-
-        if (!response.ok) {
-          throw new Error("Could not load profile");
-        }
-
-        const freshUser = await response.json();
-        setUser(freshUser);
-        setFormData({
-          displayName: getDisplayName(freshUser),
-          email: getEmail(freshUser),
-        });
-
-        const listingResponse = await fetch(`http://localhost:3000/api/listing?userId=${freshUser.user_id}`);
-        if (listingResponse.ok) {
-          const listingData = await listingResponse.json();
-          setMyListings(listingData || []);
-        }
-
-        const favoriteResponse = await fetch(`http://localhost:3000/api/favorite?userId=${freshUser.user_id}`);
-        if (favoriteResponse.ok) {
-          const favoriteData = await favoriteResponse.json();
-          setSavedListings(favoriteData || []);
-        }
+        const freshUser = await window.CampusMarketplace.request(`user/me?${params.toString()}`);
+        const [listingData, favoriteData, publicProfile] = await Promise.all([
+          window.CampusMarketplace.request(`listing?ownerId=${freshUser.userId}`),
+          window.CampusMarketplace.request(`favorite?userId=${freshUser.userId}`),
+          window.CampusMarketplace.request(`user/${freshUser.userId}`)
+        ]);
+        setUser({ ...freshUser, ...publicProfile });
+        setMyListings(listingData || []);
+        setSavedListings(favoriteData || []);
       } catch (error) {
         console.error("Profile fetch failed:", error);
       }
@@ -175,44 +120,29 @@ function Profile() {
     return () => window.removeEventListener("storage", syncUser);
   }, []);
 
-  useEffect(() => {
-    setFormData({
-      displayName: getDisplayName(user),
-      email: getEmail(user),
-    });
-  }, [user]);
-
   async function handleDeleteListing(listingId) {
-    if (!user?.user_id) {
+    if (!user?.userId) {
       console.error("Delete failed: missing user");
       return;
     }
 
     try {
-      const response = await fetch(`/api/listing/${listingId}`, {
+      await window.CampusMarketplace.request(`listing/${listingId}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user_id })
+        body: { userId: user.userId }
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Delete listing failed:", errorData.message);
-        return;
-      }
-
-      setMyListings((current) => current.filter((item) => item.listing_id !== listingId));
+      setMyListings((current) => current.filter((item) => item.listingId !== listingId));
     } catch (error) {
       console.error("Delete listing error:", error);
     }
   }
 
   async function handleUnfavorite(listingId) {
-    if (!user?.user_id) return;
+    if (!user?.userId) return;
 
     try {
-      await fetch(`/api/favorite/${listingId}?userId=${user.user_id}`, { method: "DELETE" });
-      setSavedListings((current) => current.filter((item) => item.listing_id !== listingId));
+      await window.CampusMarketplace.request(`favorite/${listingId}?userId=${user.userId}`, { method: "DELETE" });
+      setSavedListings((current) => current.filter((item) => item.listingId !== listingId));
     } catch (error) {
       console.error("Unfavorite error:", error);
     }
@@ -220,9 +150,9 @@ function Profile() {
 
   const displayName = getDisplayName(user);
   const email = getEmail(user);
-  const listingCount = user?.listingCount || user?.listingsCount || "00";
-  const soldCount = user?.soldCount || user?.salesCount || "00";
-  const rating = user?.rating || "0.0";
+  const rating = user?.reviewCount > 0
+    ? `${Number(user.averageRating || 0).toFixed(1)} \u2605 (${user.reviewCount})`
+    : "No ratings yet";
 
   return (
     <>
@@ -236,11 +166,10 @@ function Profile() {
             )}
           </div>
           <div className="flex-1">
-            <div className="font-semibold text-sm">{displayName}</div>
+            <h1 className="font-semibold text-sm">{displayName}</h1>
             <div className="text-xs text-gray-500">{email || "No email on file"}</div>
             <div className="flex gap-6 text-xs mt-2">
               <div>Listings: <b>{myListings.length}</b></div>
-              <div>Sold: <b>{soldCount}</b></div>
               <div>Rating: <b>{rating}</b></div>
             </div>
           </div>
@@ -248,8 +177,7 @@ function Profile() {
             <a
               href="login.html"
               onClick={() => {
-                localStorage.removeItem("user");
-                sessionStorage.removeItem("user");
+                window.CampusMarketplace.clearCurrentUser();
               }}
               className="border border-black px-2 py-1 text-xs h-fit text-center"
             >
@@ -285,21 +213,20 @@ function Profile() {
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {myListings.map((item) => (
-                    <div key={item.listing_id} className="border border-black bg-white">
+                    <div key={item.listingId} className="border border-black bg-white">
                      <div className="h-24 overflow-hidden bg-gray-50">
-                        {/* Verify your database field mapping matches 'item.photo' */}
                         {item.photo ? (
-                            <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                            <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
                         ) : (
                             <ImgBox />
                        )}
                  </div>
                  <div className="p-1.5">
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <div className="text-xs">{item.listing_title}</div>
+                      <div className="text-xs">{item.title}</div>
                       <button
                         type="button"
-                        onClick={() => handleDeleteListing(item.listing_id)}
+                        onClick={() => handleDeleteListing(item.listingId)}
                         className="text-[10px] border border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
                       >
                         Delete
@@ -322,23 +249,23 @@ function Profile() {
           ) : (
             <div className="grid grid-cols-3 gap-2">
               {savedListings.map((item) => (
-                <div key={item.listing_id} className="border border-black bg-white">
-                  <a href={`listing.html?id=${item.listing_id}`} className="block">
+                <div key={item.listingId} className="border border-black bg-white">
+                  <a href={`listing.html?id=${item.listingId}`} className="block">
                     <div className="h-20 overflow-hidden bg-gray-50">
                       {item.photo ? (
-                        <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                        <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
                       ) : (
                         <ImgBox />
                       )}
                     </div>
                     <div className="p-1.5">
-                      <div className="text-xs">{item.listing_title}</div>
+                      <div className="text-xs">{item.title}</div>
                       <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
                     </div>
                   </a>
                   <button
                     type="button"
-                    onClick={() => handleUnfavorite(item.listing_id)}
+                    onClick={() => handleUnfavorite(item.listingId)}
                     className="w-full text-[10px] border-t border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
                   >
                     Remove
@@ -382,15 +309,22 @@ function Profile() {
                 </div>
               </div>
             </div>
-            <Input
-              label="Display Name"
-              value={formData.displayName}
-              onChange={(event) => setFormData((current) => ({ ...current, displayName: event.target.value }))}
-            />
-            <a href="#" className="text-xs underline cursor-pointer mb-4 block">
-              Change Password
-            </a>
-            <Btn label="Save" />
+            <div className="border-t border-black pt-4">
+              <div className="text-xs font-semibold mb-2">Account details</div>
+              <dl className="text-xs space-y-2">
+                <div>
+                  <dt className="text-gray-500">Name</dt>
+                  <dd>{displayName}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500">Email</dt>
+                  <dd>{email || "No email on file"}</dd>
+                </div>
+              </dl>
+              <p className="text-xs text-gray-500 mt-3">
+                Account details are read-only in this class-project build.
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -408,19 +342,11 @@ function PublicProfile({ userId }) {
   useEffect(() => {
     async function load() {
       try {
-        const profileResponse = await fetch(`/api/user/${userId}`);
-        if (!profileResponse.ok) {
-          setNotFound(true);
-          return;
-        }
-        const profileData = await profileResponse.json();
+        const profileData = await window.CampusMarketplace.request(`user/${userId}`);
         setProfile(profileData);
 
-        const listingResponse = await fetch(`/api/listing?userId=${userId}`);
-        if (listingResponse.ok) {
-          const listingData = await listingResponse.json();
-          setListings(listingData || []);
-        }
+        const listingData = await window.CampusMarketplace.request(`listing?ownerId=${userId}`);
+        setListings(listingData || []);
       } catch (error) {
         console.error("Public profile fetch failed:", error);
         setNotFound(true);
@@ -450,7 +376,7 @@ function PublicProfile({ userId }) {
     );
   }
 
-  const ratingLabel = profile.avgRating ? `${profile.avgRating} \u2605 (${profile.reviewCount})` : "No ratings yet";
+  const ratingLabel = profile.averageRating ? `${profile.averageRating} \u2605 (${profile.reviewCount})` : "No ratings yet";
 
   return (
     <>
@@ -460,7 +386,7 @@ function PublicProfile({ userId }) {
             <ImgBox />
           </div>
           <div className="flex-1">
-            <div className="font-semibold text-sm">{profile.fullName}</div>
+            <h1 className="font-semibold text-sm">{profile.fullName}</h1>
             <div className="flex gap-6 text-xs mt-2">
               <div>Listings: <b>{profile.listingCount}</b></div>
               <div>Rating: <b>{ratingLabel}</b></div>
@@ -476,16 +402,16 @@ function PublicProfile({ userId }) {
         ) : (
           <div className="grid grid-cols-3 gap-2">
             {listings.map((item) => (
-              <a key={item.listing_id} href={`listing.html?id=${item.listing_id}`} className="border border-black bg-white block">
+              <a key={item.listingId} href={`listing.html?id=${item.listingId}`} className="border border-black bg-white block">
                 <div className="h-24 overflow-hidden bg-gray-50">
                   {item.photo ? (
-                    <img src={item.photo} alt={item.listing_title} className="w-full h-full object-cover" />
+                    <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
                   ) : (
                     <ImgBox />
                   )}
                 </div>
                 <div className="p-1.5">
-                  <div className="text-xs">{item.listing_title}</div>
+                  <div className="text-xs">{item.title}</div>
                   <div className="text-xs font-bold">${Number(item.price).toFixed(2)}</div>
                 </div>
               </a>
@@ -500,7 +426,7 @@ function PublicProfile({ userId }) {
 function ProfilePage() {
   const viewedUserId = new URLSearchParams(window.location.search).get("id");
   const currentUser = getStoredUser();
-  const isViewingOther = viewedUserId && String(viewedUserId) !== String(currentUser?.user_id);
+  const isViewingOther = viewedUserId && String(viewedUserId) !== String(currentUser?.userId);
 
   return isViewingOther ? <PublicProfile userId={viewedUserId} /> : <Profile />;
 }

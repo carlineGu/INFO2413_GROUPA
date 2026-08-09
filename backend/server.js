@@ -1,40 +1,56 @@
+require("dotenv").config();
 const express = require("express");
-const path = require("path");
-const db = require("./db");
+const path = require("node:path");
 const authRoutes = require("./routes/auth");
-const messageRoutes = require("./routes/message");
-const userRoutes = require("./routes/user");
-const listingRoutes = require("./routes/listing");
 const favoriteRoutes = require("./routes/favorite");
+const listingRoutes = require("./routes/listing");
+const messageRoutes = require("./routes/message");
+const reportRoutes = require("./routes/report");
+const reviewRoutes = require("./routes/review");
+const userRoutes = require("./routes/user");
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = Number(process.env.PORT) || 3000;
 
-//this allows backend to receive JSON
-app.use(express.json({ limit: "20mb" }));
-app.use(express.urlencoded({ extended: true, limit: "20mb" }));
+app.disable("x-powered-by");
+app.use(express.json({ limit: "24mb" }));
+app.use(express.urlencoded({ extended: true, limit: "24mb" }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/listing", listingRoutes);
 app.use("/api/favorite", favoriteRoutes);
+app.use("/api/review", reviewRoutes);
+app.use("/api/report", reportRoutes);
 
-//this provides frontend folder 'Relative' path
-app.use(express.static(path.join(__dirname, "../frontend")));
-
-//when you type http://localhost:3000/api/test you get to see message from backend
 app.get("/api/test", (req, res) => {
-  res.json({
-    message: "Frontend successfully connected to backend!"
-  });
+  res.json({ message: "Frontend successfully connected to backend!" });
 });
 
-//this shows homepage
+app.use(express.static(path.join(__dirname, "../frontend")));
+
 app.get("/", (req, res) => {
   res.redirect("/html/index.html");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+app.use((error, req, res, next) => {
+  if (error.type === "entity.too.large") {
+    return res.status(413).json({ message: "The request body is too large." });
+  }
+
+  if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
+    return res.status(400).json({ message: "The request body contains invalid JSON." });
+  }
+
+  console.error("Unhandled server error:", error);
+  return res.status(500).json({ message: "An unexpected server error occurred." });
 });
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

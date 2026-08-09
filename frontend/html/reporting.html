@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report a Concern | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/navbar.css">
+  <style>
+    .report-page {
+      width: min(100% - 32px, 680px);
+      margin: 0 auto;
+      padding: 36px 0 64px;
+      color: #111;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #111;
+      font-size: 14px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .report-card {
+      border: 1px solid #111;
+      background: #fff;
+      padding: 28px;
+    }
+
+    .report-card h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .intro {
+      margin: 10px 0 22px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .target-summary {
+      margin: 0 0 24px;
+      padding: 14px 16px;
+      border: 1px solid #bbb;
+      background: #f7f7f7;
+      line-height: 1.45;
+    }
+
+    .form-field {
+      margin-bottom: 20px;
+    }
+
+    .form-field label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      border: 1px solid #111;
+      border-radius: 0;
+      background: #fff;
+      color: #111;
+      font: inherit;
+    }
+
+    .form-field select {
+      min-height: 44px;
+      padding: 9px 12px;
+    }
+
+    .form-field textarea {
+      min-height: 160px;
+      padding: 12px;
+      resize: vertical;
+    }
+
+    .field-note,
+    .character-count,
+    .privacy-note {
+      color: #666;
+      font-size: 12px;
+    }
+
+    .character-count {
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    .privacy-note {
+      margin: -4px 0 20px;
+      line-height: 1.45;
+    }
+
+    .submit-button {
+      min-height: 46px;
+      width: 100%;
+      border: 1px solid #111;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .submit-button:hover:not(:disabled),
+    .submit-button:focus-visible:not(:disabled) {
+      background: #333;
+    }
+
+    .submit-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .form-message {
+      min-height: 22px;
+      margin: 14px 0 0;
+      line-height: 1.45;
+    }
+
+    .form-message.error {
+      color: #a40000;
+    }
+
+    .form-message.success {
+      color: #176b2c;
+    }
+
+    @media (max-width: 520px) {
+      .report-page {
+        width: min(100% - 24px, 680px);
+        padding-top: 24px;
+      }
+
+      .report-card {
+        padding: 20px;
+      }
+
+      .report-card h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/navbar.js" defer></script>
+  <script src="../js/reporting.js" defer></script>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <main class="report-page">
+    <a id="backLink" class="back-link" href="/html/index.html">&larr; Back</a>
+
+    <section class="report-card" aria-labelledby="pageTitle">
+      <h1 id="pageTitle">Report a concern</h1>
+      <p class="intro">Tell us what happened. Reports are sent to the marketplace team for review.</p>
+      <p id="targetSummary" class="target-summary">Loading report target&hellip;</p>
+
+      <form id="reportForm" novalidate>
+        <div class="form-field">
+          <label for="reasonCategory">What is the main concern?</label>
+          <select id="reasonCategory" name="reasonCategory" required>
+            <option value="">Choose a reason</option>
+            <option value="Misleading or inaccurate listing">Misleading or inaccurate listing</option>
+            <option value="Prohibited or unsafe item">Prohibited or unsafe item</option>
+            <option value="Spam or duplicate listing">Spam or duplicate listing</option>
+            <option value="Harassment or suspicious behaviour">Harassment or suspicious behaviour</option>
+            <option value="Other concern">Other concern</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="reasonDetails">Details</label>
+          <textarea
+            id="reasonDetails"
+            name="reasonDetails"
+            minlength="10"
+            maxlength="1900"
+            required
+            placeholder="Provide enough detail for the marketplace team to understand the concern."
+          ></textarea>
+          <div id="reasonCount" class="character-count">0 / 1900</div>
+        </div>
+
+        <p class="privacy-note">The reported seller will not see who submitted this report.</p>
+        <button id="submitButton" class="submit-button" type="submit">Submit report</button>
+        <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

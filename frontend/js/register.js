@@ -44,11 +44,11 @@ registerForm.addEventListener("submit", async (event) => {
     );
 
     isValid = false;
-  } else if (!email.endsWith("@student.kpu.ca")) {
+  } else if (!email.endsWith("@student.kpu.ca")&& !email.endsWith("@kpu.ca")) {
     showFieldError(
       emailInput,
       emailError,
-      "Please use an email ending in @student.kpu.ca."
+      "Please use an email ending in @student.kpu.ca or @kpu.ca."
     );
 
     isValid = false;
@@ -81,31 +81,10 @@ registerForm.addEventListener("submit", async (event) => {
     submitButton.disabled = true;
     submitButton.textContent = "Creating account...";
 
-    const response = await fetch(
-      "http://localhost:3000/api/auth/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          fullName,
-          email,
-          password
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      showMessage(
-        data.message || "Registration failed.",
-        "error"
-      );
-
-      return;
-    }
+    await window.CampusMarketplace.request("auth/register", {
+      method: "POST",
+      body: { fullName, email, password }
+    });
 
     showMessage(
       "Account created successfully. Redirecting...",
@@ -121,7 +100,7 @@ registerForm.addEventListener("submit", async (event) => {
     console.error("Registration request failed:", error);
 
     showMessage(
-      "Could not connect to the backend server.",
+      error.message || "Could not connect to the backend server.",
       "error"
     );
   } finally {

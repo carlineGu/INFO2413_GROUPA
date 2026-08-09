@@ -34,22 +34,12 @@ loginForm.addEventListener("submit", async (event) => {
     submitButton.disabled = true;
     submitButton.textContent = "Logging in...";
 
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+    const data = await window.CampusMarketplace.request("auth/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
+      body: { email, password }
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      showMessage(data.message || "Login failed.", "error");
-      return;
-    }
-
-    localStorage.setItem("user", JSON.stringify(data.user));
+    window.CampusMarketplace.setCurrentUser(data.user);
     showMessage("Login successful. Redirecting...", "success");
 
     setTimeout(() => {
@@ -57,7 +47,7 @@ loginForm.addEventListener("submit", async (event) => {
     }, 800);
   } catch (error) {
     console.error("Login request failed:", error);
-    showMessage("Could not connect to the backend server.", "error");
+    showMessage(error.message || "Could not connect to the backend server.", "error");
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = "Log In";

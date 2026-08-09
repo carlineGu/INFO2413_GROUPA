@@ -1,13 +1,31 @@
+"use strict";
+
 const express = require("express");
-const router = express.Router();
 const db = require("../db");
 
-// GET /api/favorite?userId=X  -> list of listings the user has favorited
-router.get("/", async (req, res) => {
-  const { userId } = req.query;
+const router = express.Router();
 
-  if (!userId) {
-    return res.status(401).json({ message: "userId is required." });
+
+function toFavoriteDto(row) {
+  return {
+    listingId: Number(row.listing_id),
+    userId: Number(row.user_id),
+    title: row.listing_title,
+    description: row.listing_description,
+    price: Number(row.price),
+    condition: row.listing_condition,
+    status: row.listing_status,
+    createdAt: row.created_at,
+    photo: row.photo || null,
+    favoritedAt: row.favorited_at,
+    sellerName: row.seller_name
+  };
+}
+
+router.get("/", async (req, res) => {
+  const userId = Number(req.query.userId ?? req.query.user_id);
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return res.status(400).json({ message: "A valid userId is required." });
   }
 
   try {
@@ -20,31 +38,31 @@ router.get("/", async (req, res) => {
          FROM Favorite f
          JOIN Listing l ON l.listing_id = f.listing_id
          JOIN User u ON u.user_id = l.user_id
-         LEFT JOIN Listing_image li ON li.listing_id = l.listing_id AND li.is_primary = TRUE
+         LEFT JOIN Listing_image li
+           ON li.listing_id = l.listing_id AND li.is_primary = TRUE
         WHERE f.user_id = ?
         ORDER BY f.created_at DESC`,
       [userId]
     );
 
-    res.json(rows);
+    return res.json(rows.map(toFavoriteDto));
   } catch (error) {
     console.error("Load favorites error:", error);
-    res.status(500).json({ message: "Could not load favorites." });
+    return res.status(500).json({ message: "Could not load favorites." });
   }
 });
 
-// POST /api/favorite  { userId, listingId } -> favorite a listing
 router.post("/", async (req, res) => {
+  const userId = Number(req.body.userId ?? req.body.user_id);
+  const listingId = Number(req.body.listingId ?? req.body.listing_id);
+
+  if (!Number.isInteger(userId) || userId <= 0 || !Number.isInteger(listingId) || listingId <= 0) {
+    return res.status(400).json({ message: "Valid userId and listingId values are required." });
+  }
+
   try {
-    const userId = Number(req.body.userId);
-    const listingId = Number(req.body.listingId);
-
-    if (!userId || !listingId) {
-      return res.status(400).json({ message: "userId and listingId are required." });
-    }
-
     const [listingRows] = await db.query(
-      `SELECT listing_id, user_id FROM Listing WHERE listing_id = ?`,
+      "SELECT listing_id, user_id FROM Listing WHERE listing_id = ? AND listing_status = 'ACTIVE'",
       [listingId]
     );
 
@@ -52,7 +70,7 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ message: "Listing not found." });
     }
 
-    if (listingRows[0].user_id === userId) {
+    if (Number(listingRows[0].user_id) === userId) {
       return res.status(400).json({ message: "You cannot favorite your own listing." });
     }
 
@@ -62,32 +80,40 @@ router.post("/", async (req, res) => {
       [userId, listingId]
     );
 
-    res.status(201).json({ message: "Listing favorited." });
+    return res.status(201).json({ message: "Listing added to favorites.", listingId });
   } catch (error) {
     console.error("Add favorite error:", error);
-    res.status(500).json({ message: "Could not favorite listing." });
+    return res.status(500).json({ message: "Could not favorite listing." });
   }
 });
 
-// DELETE /api/favorite/:listingId?userId=X -> remove a favorite
 router.delete("/:listingId", async (req, res) => {
+  // console.log("Req.params = ", req.params);
+  const listingId = Number(req.params.listingId);
+  //console.log("Req = ",req); 
+  //console.log("Req.body =", req.body);
+  //console.log("Req.body.userId =", req.body.userId);
+
+  const userId = Number(req.body.userId ?? req.body.user_id ?? req.query.userId ?? req.query.user_id);
+
+  //console.log(userId,listingId);
+  if (!Number.isInteger(listingId) || listingId <= 0 || !Number.isInteger(userId) || userId <= 0) {
+    return res.status(400).json({ message: "Valid userId and listingId values are required." });
+  }
+
   try {
-    const listingId = Number(req.params.listingId);
-    const userId = Number(req.body.userId || req.query.userId);
-
-    if (!listingId || !userId) {
-      return res.status(400).json({ message: "userId and listingId are required." });
-    }
-
-    await db.query(
-      `DELETE FROM Favorite WHERE user_id = ? AND listing_id = ?`,
+    const [result] = await db.query(
+      "DELETE FROM Favorite WHERE user_id = ? AND listing_id = ?",
       [userId, listingId]
     );
 
-    res.json({ message: "Listing unfavorited." });
+    return res.json({
+      message: result.affectedRows ? "Listing removed from favorites." : "Listing was not in favorites.",
+      listingId
+    });
   } catch (error) {
     console.error("Remove favorite error:", error);
-    res.status(500).json({ message: "Could not unfavorite listing." });
+    return res.status(500).json({ message: "Could not remove favorite." });
   }
 });
 

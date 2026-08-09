@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave a Review | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/navbar.css">
+  <style>
+    .feedback-page {
+      width: min(100% - 32px, 680px);
+      margin: 0 auto;
+      padding: 36px 0 64px;
+      color: #111;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #111;
+      font-size: 14px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .feedback-card {
+      border: 1px solid #111;
+      background: #fff;
+      padding: 28px;
+    }
+
+    .feedback-card h1,
+    .reviews-panel h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .intro {
+      margin: 10px 0 22px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .target-summary {
+      margin: 0 0 24px;
+      padding: 14px 16px;
+      border: 1px solid #bbb;
+      background: #f7f7f7;
+      line-height: 1.45;
+    }
+
+    .form-field {
+      margin-bottom: 20px;
+    }
+
+    .form-field label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      border: 1px solid #111;
+      border-radius: 0;
+      background: #fff;
+      color: #111;
+      font: inherit;
+    }
+
+    .form-field select {
+      min-height: 44px;
+      padding: 9px 12px;
+    }
+
+    .form-field textarea {
+      min-height: 140px;
+      padding: 12px;
+      resize: vertical;
+    }
+
+    .field-note,
+    .character-count {
+      color: #666;
+      font-size: 12px;
+    }
+
+    .character-count {
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    .submit-button {
+      min-height: 46px;
+      width: 100%;
+      border: 1px solid #111;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .submit-button:hover:not(:disabled),
+    .submit-button:focus-visible:not(:disabled) {
+      background: #333;
+    }
+
+    .submit-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .form-message {
+      min-height: 22px;
+      margin: 14px 0 0;
+      line-height: 1.45;
+    }
+
+    .form-message.error {
+      color: #a40000;
+    }
+
+    .form-message.success {
+      color: #176b2c;
+    }
+
+    .reviews-panel {
+      margin-top: 24px;
+      border: 1px solid #111;
+      padding: 24px 28px;
+      background: #fff;
+    }
+
+    .reviews-panel h2 {
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+
+    .review-item {
+      padding: 14px 0;
+      border-top: 1px solid #ccc;
+    }
+
+    .review-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .review-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .review-comment {
+      margin: 0;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 520px) {
+      .feedback-page {
+        width: min(100% - 24px, 680px);
+        padding-top: 24px;
+      }
+
+      .feedback-card,
+      .reviews-panel {
+        padding: 20px;
+      }
+
+      .feedback-card h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/navbar.js" defer></script>
+  <script src="../js/review.js" defer></script>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <main class="feedback-page">
+    <a id="backLink" class="back-link" href="/html/index.html">&larr; Back</a>
+
+    <section class="feedback-card" aria-labelledby="pageTitle">
+      <h1 id="pageTitle">Leave a review</h1>
+      <p class="intro">Share an honest rating of your experience with this seller.</p>
+      <p id="targetSummary" class="target-summary">Loading listing details&hellip;</p>
+
+      <form id="reviewForm" novalidate>
+        <div class="form-field">
+          <label for="rating">Rating</label>
+          <select id="rating" name="rating" required>
+            <option value="">Choose a rating</option>
+            <option value="5">5 stars &mdash; Excellent</option>
+            <option value="4">4 stars &mdash; Good</option>
+            <option value="3">3 stars &mdash; Okay</option>
+            <option value="2">2 stars &mdash; Poor</option>
+            <option value="1">1 star &mdash; Very poor</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="comment">Comment <span class="field-note">(optional)</span></label>
+          <textarea
+            id="comment"
+            name="comment"
+            maxlength="2000"
+            placeholder="Describe what went well or what could have been better."
+          ></textarea>
+          <div id="commentCount" class="character-count">0 / 2000</div>
+        </div>
+
+        <button id="submitButton" class="submit-button" type="submit">Submit review</button>
+        <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="reviewsPanel" class="reviews-panel" aria-labelledby="reviewsTitle" hidden>
+      <h2 id="reviewsTitle">Recent reviews for this seller</h2>
+      <div id="reviewsList"></div>
+    </section>
+  </main>
+</body>
+</html>
