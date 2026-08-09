@@ -492,3 +492,36 @@ body {
   .admin-panel { overflow-x: auto; }
   .admin-panel table { min-width: 600px; }
 }
+
+
+.quick-access-section {
+    margin-top: 40px;
+}
+
+.quick-access-section h3 {
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.quick-access-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+    text-decoration: none;
+    color: #111827;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.quick-access-card:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
