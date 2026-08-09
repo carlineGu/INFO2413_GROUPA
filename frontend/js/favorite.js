@@ -34,6 +34,7 @@ async function loadFavorites() {
     }
 
     favorites.forEach((listing) => {
+      // console.log("Listing = ", listing.listingId);
       const column = document.createElement("div");
       const price = Number.isFinite(listing.price) ? listing.price.toFixed(2) : "0.00";
       column.className = "col-md-4 mb-4";
@@ -57,12 +58,17 @@ async function loadFavorites() {
       column.querySelector(".favorite-heart").addEventListener("click", async (event) => {
         event.currentTarget.disabled = true;
         try {
-          await marketplace.request(`favorite/${listing.listingId}?userId=${user.userId}`, { method: "DELETE" });
+          await marketplace.request(`favorite/${listing.listingId}`, {
+            method: "DELETE",
+            body: { userId: user.userId, listingId: listing.listingId }
+          });
+          
           column.remove();
           if (!container.querySelector(".col-md-4")) {
             container.innerHTML = `<p class="text-muted">You haven't saved any listings yet.</p>`;
           }
         } catch (error) {
+          console.error(error);
           event.currentTarget.disabled = false;
           container.insertAdjacentHTML("afterbegin", `<p class="text-danger">${marketplace.escapeHtml(error.message)}</p>`);
         }

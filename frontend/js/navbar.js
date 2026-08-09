@@ -2,9 +2,14 @@
   "use strict";
 
   const notifications = [
-    { text: "New message from John", href: "message.html" },
-    { text: "Someone favorited your listing", href: "favorite.html" },
+    // { text: "New message from John", href: "message.html" },
+    // { text: "Someone favorited your listing", href: "favorite.html" },
+
+    
   ];
+  const marketplace = window.CampusMarketplace;
+  const chatList = document.getElementById("chatList");
+  const currentUser = marketplace.getCurrentUser();
 
   function initializeNavbar() {
     const navbarContainer = document.getElementById("navbar");
@@ -197,7 +202,31 @@
       }
     }
 
+    async function updateNotifications() {
+
+      if (!currentUser) {
+          return;
+      }
+
+      const result = await marketplace.request(
+          `message/unread-count?userId=${currentUser.userId}`
+      );
+
+      const count = result.unreadCount;
+
+      if (count > 0) {
+        notifications.push({
+            text: `${count} unread message(s)`,
+            href: "message.html"
+        });
+      }
+   
+
+      // Update bell badge here
+    }
+
     function renderNotifications() {
+      console.log("Rendering notification");
       notificationList.replaceChildren();
 
       if (notifications.length === 0) {
@@ -223,6 +252,7 @@
           ? "Notifications, none unread"
           : `Notifications, ${notifications.length} unread`
       );
+      notifications.pop(); // Clear notifications after rendering
     }
 
     function markCurrentPage() {
@@ -313,6 +343,11 @@
 
     renderNotifications();
     markCurrentPage();
+
+    setInterval(() => {
+      updateNotifications();
+      renderNotifications();
+    }, 5000); // refresh every 5 seconds
   }
 
   if (document.readyState === "loading") {
@@ -320,4 +355,9 @@
   } else {
     initializeNavbar();
   }
+
+
+
+
 })();
+

@@ -28,6 +28,7 @@ async function loadChats() {
   }
 
   try {
+    // const markreadResponse = await marketplace.request(`message/mark-read?userId=${currentUser.userId}`);
     const result = await marketplace.request(`message/inbox?userId=${currentUser.userId}`);
     const chats = Array.isArray(result.chats) ? result.chats : [];
     chatList.innerHTML = "";
@@ -44,3 +45,6 @@ async function loadChats() {
 }
 
 loadChats();
+setInterval(() => {
+  loadChats();
+}, 5000); // refresh every 5 seconds

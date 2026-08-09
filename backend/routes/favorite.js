@@ -5,6 +5,7 @@ const db = require("../db");
 
 const router = express.Router();
 
+
 function toFavoriteDto(row) {
   return {
     listingId: Number(row.listing_id),
@@ -87,9 +88,15 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/:listingId", async (req, res) => {
+  // console.log("Req.params = ", req.params);
   const listingId = Number(req.params.listingId);
+  //console.log("Req = ",req); 
+  //console.log("Req.body =", req.body);
+  //console.log("Req.body.userId =", req.body.userId);
+
   const userId = Number(req.body.userId ?? req.body.user_id ?? req.query.userId ?? req.query.user_id);
 
+  //console.log(userId,listingId);
   if (!Number.isInteger(listingId) || listingId <= 0 || !Number.isInteger(userId) || userId <= 0) {
     return res.status(400).json({ message: "Valid userId and listingId values are required." });
   }

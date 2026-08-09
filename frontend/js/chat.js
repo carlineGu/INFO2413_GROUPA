@@ -42,6 +42,7 @@ async function loadThread() {
 
   try {
     const result = await marketplace.request(`message/thread/${conversationId}?userId=${currentUser.userId}`);
+    await marketplace.request(`message/mark-read/${conversationId}?userId=${currentUser.userId}`);
     chatHeader.innerHTML = `
       <div>
         <h1>${marketplace.escapeHtml(result.partnerName)}</h1>

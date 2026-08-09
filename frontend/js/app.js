@@ -43,11 +43,18 @@ async function toggleFavorite(listingId, button) {
 
   try {
     if (isFavorited) {
-      await marketplace.request(`favorite/${listingId}?userId=${user.userId}`, { method: "DELETE" });
+      // await marketplace.request(`favorite/${listingId}?userId=${user.userId}`, { method: "DELETE" });
+      console.log("ListingId = ", listingId);
+      
+      await marketplace.request(`favorite/${listingId}`, {
+            method: "DELETE",
+            body: { userId: user.userId, listingId: listingId }
+          });
+      
     } else {
       await marketplace.request("favorite", {
         method: "POST",
-        body: { userId: user.userId, listingId }
+        body: { userId: user.userId, listingId: listingId }
       });
     }
 
@@ -57,6 +64,7 @@ async function toggleFavorite(listingId, button) {
     button.classList.toggle("favorited", nextState);
     button.innerHTML = nextState ? "&#9829;" : "&#9825;";
   } catch (error) {
+    console.error("Toggle favorite error:", error);
     setConnectionMessage(error.message || "Could not update favorites.", true);
   } finally {
     button.disabled = false;
@@ -93,6 +101,8 @@ function renderListingCard(listing, currentUser) {
   `;
 
   column.querySelector(".favorite-heart")?.addEventListener("click", (event) => {
+    console.log("Favorite clicked");
+    
     event.preventDefault();
     event.stopPropagation();
     toggleFavorite(listing.listingId, event.currentTarget);
@@ -120,6 +130,7 @@ async function loadListings() {
 
     listings.forEach((listing) => container.appendChild(renderListingCard(listing, currentUser)));
   } catch (error) {
+    console.error("Load listings error:", error);
     container.innerHTML = `<p class="text-danger">${marketplace.escapeHtml(error.message || "Listings could not be loaded.")}</p>`;
   }
 }

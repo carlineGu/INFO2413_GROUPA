@@ -577,6 +577,7 @@ router.post("/", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
+    console.log("Req.params = ", req.params);
     const listingId = parsePositiveInteger(req.params.id, "Listing id");
     const userId = parsePositiveInteger(
       req.body?.userId ?? req.query.userId,
