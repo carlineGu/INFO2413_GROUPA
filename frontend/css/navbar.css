@@ -9,11 +9,11 @@ body.cmp-nav-menu-open {
 }
 
 #navbar {
-  --cmp-nav-border: #111;
-  --cmp-nav-background: #fff;
-  --cmp-nav-foreground: #111;
-  --cmp-nav-muted: #f2f2f2;
-  --cmp-nav-focus: #2457d6;
+  --cmp-nav-border: #704050;
+  --cmp-nav-background: #704050;
+  --cmp-nav-foreground: #fff;
+  --cmp-nav-muted: rgba(255, 255, 255, 0.2);
+  --cmp-nav-focus: #fff;
   position: relative;
   z-index: 100;
   min-height: 70px;
@@ -36,7 +36,7 @@ body.cmp-nav-menu-open {
   position: relative;
   z-index: 110;
   display: grid;
-  grid-template-columns: minmax(44px, 1fr) auto minmax(88px, 1fr);
+  grid-template-columns: auto auto 1fr auto;
   align-items: center;
   width: 100%;
   height: 70px;
@@ -51,7 +51,7 @@ body.cmp-nav-menu-open {
 }
 
 #navbar button {
-  color: inherit;
+  color: #fff;
   font: inherit;
 }
 
@@ -63,6 +63,7 @@ body.cmp-nav-menu-open {
   border: 0;
   background: transparent;
   cursor: pointer;
+  color: #fff;
 }
 
 #navbar .cmp-icon-button {
@@ -77,7 +78,7 @@ body.cmp-nav-menu-open {
 #navbar .cmp-icon-button:focus-visible,
 #navbar .cmp-close-menu-button:hover,
 #navbar .cmp-close-menu-button:focus-visible {
-  background: var(--cmp-nav-muted);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 #navbar a:focus-visible,
@@ -90,22 +91,66 @@ body.cmp-nav-menu-open {
   justify-self: start;
   font-size: 28px;
   line-height: 1;
+  color: #fff;
 }
 
 #navbar .cmp-brand {
   justify-self: center;
-  padding: 8px clamp(12px, 3vw, 30px);
+  padding: 8px 16px;
   border: 1px solid var(--cmp-nav-border);
   background: var(--cmp-nav-background);
-  font-size: clamp(16px, 2vw, 20px);
-  line-height: 1.15;
-  white-space: nowrap;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
 }
 
-#navbar .cmp-brand:hover,
-#navbar .cmp-brand:focus-visible,
-#navbar [aria-current="page"] {
-  background: var(--cmp-nav-muted);
+#navbar .cmp-brand-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 0;
+}
+
+#navbar .cmp-brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
+}
+
+#navbar .cmp-brand-left-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  line-height: 1.1;
+}
+
+#navbar .cmp-university-name {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+#navbar .cmp-brand-center {
+  justify-self: center;
+  padding: 8px 20px;
+  border: 1px solid var(--cmp-nav-border);
+  background: var(--cmp-nav-background);
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#navbar .cmp-brand-center:hover,
+#navbar .cmp-brand-center:focus-visible {
+  background: rgba(0, 0, 0, 0.15);
 }
 
 #navbar .cmp-brand-short {
@@ -129,6 +174,7 @@ body.cmp-nav-menu-open {
   width: 32px;
   height: 32px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 #navbar .cmp-notification-badge {
@@ -143,7 +189,7 @@ body.cmp-nav-menu-open {
   padding: 0 4px;
   border: 1px solid var(--cmp-nav-background);
   border-radius: 999px;
-  background: #d60000;
+  background: #704050;
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -181,6 +227,7 @@ body.cmp-nav-menu-open {
   font-size: 20px;
   font-weight: 700;
   line-height: 1.2;
+  color: #fff;
 }
 
 #navbar .cmp-notification-item,
@@ -193,7 +240,7 @@ body.cmp-nav-menu-open {
   border: 0;
   border-bottom: 1px solid var(--cmp-nav-border);
   background: var(--cmp-nav-background);
-  color: var(--cmp-nav-foreground);
+  color: #fff;
   text-align: left;
   cursor: pointer;
 }
@@ -209,14 +256,14 @@ body.cmp-nav-menu-open {
 #navbar .cmp-profile-dropdown a:focus-visible,
 #navbar .cmp-profile-dropdown button:hover,
 #navbar .cmp-profile-dropdown button:focus-visible {
-  background: var(--cmp-nav-foreground);
-  color: var(--cmp-nav-background);
+  background: rgba(0, 0, 0, 0.15);
+  color: #fff;
 }
 
 #navbar .cmp-notification-empty {
   margin: 0;
   padding: 16px;
-  color: #555;
+  color: #fff;
 }
 
 #navbar .cmp-menu-overlay {
@@ -285,7 +332,7 @@ body.cmp-nav-menu-open {
 
 @media (max-width: 600px) {
   #navbar .cmp-navbar {
-    grid-template-columns: minmax(40px, 1fr) auto minmax(84px, 1fr);
+    grid-template-columns: auto auto 1fr auto;
     padding-inline: 8px;
   }
 
@@ -304,9 +351,18 @@ body.cmp-nav-menu-open {
     gap: 2px;
   }
 
-  #navbar .cmp-brand {
-    padding: 7px 10px;
-    font-size: 15px;
+  #navbar .cmp-brand-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  #navbar .cmp-brand-left-text {
+    display: none;
+  }
+
+  #navbar .cmp-brand-center {
+    padding: 6px 12px;
+    font-size: 14px;
   }
 
   #navbar .cmp-notification-dropdown {
@@ -320,12 +376,14 @@ body.cmp-nav-menu-open {
 }
 
 @media (max-width: 390px) {
-  #navbar .cmp-brand-full {
-    display: none;
+  #navbar .cmp-brand-center {
+    padding: 6px 10px;
+    font-size: 12px;
   }
 
-  #navbar .cmp-brand-short {
-    display: inline;
+  #navbar .cmp-brand-logo {
+    width: 28px;
+    height: 28px;
   }
 }
 

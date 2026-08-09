@@ -1,7 +1,7 @@
 :root {
-  --form-border: #222;
-  --form-muted: #666;
-  --form-error: #b42318;
+  --form-border: #704050;
+  --form-muted: #111;
+  --form-error: #704050;
 }
 
 body {
@@ -17,7 +17,7 @@ body {
 }
 
 .create-listing-heading { margin-bottom: 22px; }
-.create-listing-heading a { color: #333; font-size: 0.85rem; text-underline-offset: 3px; }
+.create-listing-heading a { color: #704050; font-size: 0.85rem; text-underline-offset: 3px; }
 .create-listing-heading h1 { margin: 18px 0 6px; font-size: clamp(1.8rem, 4vw, 2.5rem); }
 .create-listing-heading p { margin: 0; color: var(--form-muted); }
 
@@ -99,10 +99,39 @@ body {
   background: #fff;
   color: #111;
   font: inherit;
+  pointer-events: auto;
+}
+
+.form-field input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.form-field input[type="number"]::-webkit-outer-spin-button,
+.form-field input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: outer-spin-button;
+  appearance: outer-spin-button;
+  height: auto;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.form-field input::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.form-field select,
+.form-field textarea {
+  color: #111;
 }
 
 .form-field textarea { min-height: 135px; resize: vertical; line-height: 1.5; }
-.form-field :focus { outline: 2px solid #111; outline-offset: 2px; }
+.form-field :focus { outline: 2px solid #704050; outline-offset: 2px; }
+
+.form-field select option {
+  color: #111;
+  background: #fff;
+}
 
 .form-feedback {
   min-height: 1.5em;
@@ -115,15 +144,15 @@ body {
 .publish-button {
   width: 100%;
   padding: 13px 18px;
-  border: 1px solid #111;
-  background: #111;
+  border: 1px solid #704050;
+  background: #704050;
   color: #fff;
   cursor: pointer;
   font: inherit;
   font-weight: 700;
 }
 
-.publish-button:hover { background: #333; }
+.publish-button:hover { background: rgba(112, 64, 80, 0.85); }
 .publish-button:disabled { cursor: wait; opacity: 0.65; }
 
 @media (max-width: 620px) {

@@ -46,10 +46,10 @@ function getEmail(user) {
 
 function ImgBox() {
   return (
-    <div className="w-full h-full border border-black relative bg-white overflow-hidden">
+    <div className="w-full h-full border border-[#704050] relative bg-white overflow-hidden">
       <svg width="100%" height="100%" className="absolute inset-0">
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="black" strokeWidth="1" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="black" strokeWidth="1" />
+        <line x1="0" y1="0" x2="100%" y2="100%" stroke="#704050" strokeWidth="1" />
+        <line x1="100%" y1="0" x2="0" y2="100%" stroke="#704050" strokeWidth="1" />
       </svg>
     </div>
   );
@@ -157,10 +157,10 @@ function Profile() {
   return (
     <>
       <div className="px-4 py-6 max-w-xl mx-auto">
-        <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
+          <div className="border border-[#704050] p-4 flex gap-4 mb-4 bg-white">
           <div className="w-16 h-16 shrink-0">
             {profilePic ? (
-              <img src={profilePic} alt="Profile" className="w-full h-full object-cover border border-black" />
+              <img src={profilePic} alt="Profile" className="w-full h-full object-cover border border-[#704050]" />
             ) : (
               <ImgBox />
             )}
@@ -179,19 +179,19 @@ function Profile() {
               onClick={() => {
                 window.CampusMarketplace.clearCurrentUser();
               }}
-              className="border border-black px-2 py-1 text-xs h-fit text-center"
+              className="border border-[#704050] px-2 py-1 text-xs h-fit text-center text-[#704050]"
             >
               Log out
             </a>
           </div>
         </div>
 
-        <div className="flex border border-black mb-4 bg-white">
+        <div className="flex border border-[#704050] mb-4 bg-white">
           {tabs.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`flex-1 py-1.5 text-xs capitalize border-r border-black last:border-0 ${tab === t ? "bg-black text-white" : "bg-white"}`}
+              className={`flex-1 py-1.5 text-xs capitalize border-r border-[#704050] last:border-0 transition-colors ${tab === t ? "bg-[#704050] text-white" : "bg-white hover:bg-[rgba(0,0,0,0.05)]"}`}
             >
               {t}
             </button>
@@ -202,18 +202,18 @@ function Profile() {
           <>
             <a
               href="create_listing.html"
-              className="block w-full text-center border border-black px-2 py-2 text-xs mb-3 bg-black text-white"
+              className="block w-full text-center border border-[#704050] px-2 py-2 text-xs mb-3 bg-[#704050] text-white hover:bg-[#5a3340]"
             >
               + Create Listing
             </a>
             {myListings.length === 0 ? (
-              <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+              <div className="border border-[#704050] p-8 text-center text-xs text-gray-400 bg-white">
                 No listings yet
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {myListings.map((item) => (
-                    <div key={item.listingId} className="border border-black bg-white">
+                    <div key={item.listingId} className="border border-[#704050] bg-white">
                      <div className="h-24 overflow-hidden bg-gray-50">
                         {item.photo ? (
                             <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
@@ -227,7 +227,7 @@ function Profile() {
                       <button
                         type="button"
                         onClick={() => handleDeleteListing(item.listingId)}
-                        className="text-[10px] border border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                        className="text-[10px] border border-[#704050] px-2 py-1 bg-white hover:bg-[#704050] hover:text-white"
                       >
                         Delete
                       </button>
@@ -243,13 +243,13 @@ function Profile() {
 
         {tab === "saved" && (
           savedListings.length === 0 ? (
-            <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+            <div className="border border-[#704050] p-8 text-center text-xs text-gray-400 bg-white">
               No saved items
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
               {savedListings.map((item) => (
-                <div key={item.listingId} className="border border-black bg-white">
+                <div key={item.listingId} className="border border-[#704050] bg-white">
                   <a href={`listing.html?id=${item.listingId}`} className="block">
                     <div className="h-20 overflow-hidden bg-gray-50">
                       {item.photo ? (
@@ -266,7 +266,7 @@ function Profile() {
                   <button
                     type="button"
                     onClick={() => handleUnfavorite(item.listingId)}
-                    className="w-full text-[10px] border-t border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                      className="w-full text-[10px] border-t border-[#704050] px-2 py-1 bg-white hover:bg-[#704050] hover:text-white"
                   >
                     Remove
                   </button>
@@ -277,19 +277,19 @@ function Profile() {
         )}
 
         {tab === "settings" && (
-          <div className="border border-black p-4 bg-white">
+            <div className="border border-[#704050] p-4 bg-white">
             <div className="mb-5">
               <div className="text-xs mb-2">Profile Picture</div>
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 shrink-0">
                   {profilePic ? (
-                    <img src={profilePic} alt="Profile" className="w-full h-full object-cover border border-black" />
+                  <img src={profilePic} alt="Profile" className="w-full h-full object-cover border border-[#704050]" />
                   ) : (
                     <ImgBox />
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="border border-black px-3 py-1.5 text-xs bg-white text-center cursor-pointer">
+                  <label className="border border-[#704050] px-3 py-1.5 text-xs bg-white text-center cursor-pointer text-[#704050] hover:bg-[#f5f5f5]">
                     Upload Photo
                     <input
                       type="file"
@@ -301,7 +301,7 @@ function Profile() {
                   {profilePic && (
                     <button
                       onClick={handleRemoveProfilePic}
-                      className="border border-black px-3 py-1.5 text-xs bg-white"
+                      className="border border-[#704050] px-3 py-1.5 text-xs bg-white text-[#704050] hover:bg-[#f5f5f5]"
                     >
                       Remove Photo
                     </button>
@@ -309,7 +309,7 @@ function Profile() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-black pt-4">
+            <div className="border-t border-[#704050] pt-4">
               <div className="text-xs font-semibold mb-2">Account details</div>
               <dl className="text-xs space-y-2">
                 <div>
@@ -381,7 +381,7 @@ function PublicProfile({ userId }) {
   return (
     <>
       <div className="px-4 py-6 max-w-xl mx-auto">
-        <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
+        <div className="border border-[#704050] p-4 flex gap-4 mb-4 bg-white">
           <div className="w-16 h-16 shrink-0">
             <ImgBox />
           </div>
@@ -396,13 +396,13 @@ function PublicProfile({ userId }) {
 
         <div className="text-xs font-semibold mb-2">Active Listings</div>
         {listings.length === 0 ? (
-          <div className="border border-black p-8 text-center text-xs text-gray-400 bg-white">
+          <div className="border border-[#704050] p-8 text-center text-xs text-gray-400 bg-white">
             No active listings
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-2">
             {listings.map((item) => (
-              <a key={item.listingId} href={`listing.html?id=${item.listingId}`} className="border border-black bg-white block">
+              <a key={item.listingId} href={`listing.html?id=${item.listingId}`} className="border border-[#704050] bg-white block">
                 <div className="h-24 overflow-hidden bg-gray-50">
                   {item.photo ? (
                     <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
