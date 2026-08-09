@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <button type="button" id="adminMenuButton" aria-label="Menu" aria-controls="adminSideMenu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="admin-header-titles">
+        <h1>Admin Dashboard</h1>
+        <p>Campus Marketplace</p>
+      </div>
+    </div>
+    <button type="button" id="signOutButton" class="sign-out-button">Sign Out</button>
+  </header>
+
+  <main class="admin-main">
+    <div class="page-title">
+      <h2>Manage Listings</h2>
+      <p>View and moderate all active marketplace listings</p>
+    </div>
+  
+  <div class="listings-container">
+    <table id="listingsTable">
+      <thead>
+        <tr>
+          <th>Listing</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Seller</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="listingsBody">
+        <!-- inserted by js -->
+      </tbody>
+    </table>
+    </div>
+  </main>
+
+  <script src="../js/api.js" defer></script>
+  <script src="../js/admin_dashboard.js" defer></script>
+  <script src="../js/admin_navbar.js" defer></script>
+  <script src="../js/admin_man_listings.js" defer></script>
+  <link rel="stylesheet" href="../css/admin_manage_listings.css" defer>
+</body>
+</html>
