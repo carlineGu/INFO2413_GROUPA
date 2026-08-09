@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Marketplace Activity | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <button type="button" id="adminMenuButton" aria-label="Menu" aria-controls="adminSideMenu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="admin-header-titles">
+        <h1>Admin Dashboard</h1>
+        <p>Campus Marketplace</p>
+      </div>
+    </div>
+    <button type="button" id="signOutButton" class="sign-out-button">Sign Out</button>
+  </header>
+
+<main class="admin-main">
+
+<div class="page-title">
+    <h2>Marketplace Activity Report</h2>
+    <p>Summary of overall platform usage, listings, and seller performance</p>
+</div>
+
+
+<div class="stat-cards">
+
+    <div class="stat-card">
+      <div class="stat-number" id="total-users">&ndash;</div>
+      <div class="stat-label">TOTAL USERS</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number" id="total-listings">&ndash;</div>
+      <div class="stat-label">TOTAL LISTINGS</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number" id="avg-listings">&ndash;</div>
+      <div class="stat-label">AVG LISTINGS / USER</div>
+    </div>
+
+</div>
+
+<div class="activity-grid">
+
+  <div class="report-card">
+     <h3>Listings by Category</h3>
+     <div id="category-list">
+      <!-- JS inserts categories -->
+    </div>
+  </div>
+
+  <div class="report-card">
+     <h3>Most Active Sellers</h3>
+     <table class="seller-table">
+      <thead>
+        <tr>
+          <th>Seller</th>
+          <th>Listings</th>
+        </tr>
+      </thead>
+     <tbody id="seller-body">
+     </tbody>
+     </table>
+  </div>
+
+</div>
+
+ 
+  </main>
+
+  <script src="../js/api.js" defer></script>
+  <script src="../js/admin_navbar.js" defer></script>
+
+  <script src="../js/admin_marketplace_activity.js" defer></script>
+  <link rel="stylesheet" href="../css/admin_activity.css">
+</body>
+</html>
