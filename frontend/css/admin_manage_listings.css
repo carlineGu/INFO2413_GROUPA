@@ -5,19 +5,19 @@
   margin-top: 20px;
 }
 
-#listingsTable {
+#listings-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-#listingsTable th,
-#listingsTable td {
+#listings-table th,
+#listings-table td {
   padding: 16px;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
 
-#listingsTable th {
+#listings-table th {
   color: #666;
   font-size: 14px;
 }

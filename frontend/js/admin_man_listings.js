@@ -4,7 +4,7 @@ async function loadListings() {
   try {
     const listings = await CampusMarketplace.request("/listing");
 
-    const tbody = document.getElementById("listingsBody");
+    const tbody = document.getElementById("listings-body");
     tbody.innerHTML = "";
 
     listings.forEach((listing) => {

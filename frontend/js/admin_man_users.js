@@ -8,7 +8,7 @@ async function loadUsers() {
     
 
     const tbody =
-      document.getElementById("usersBody");
+      document.getElementById("users-body");
 
     tbody.innerHTML = "";
 
