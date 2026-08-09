@@ -137,3 +137,112 @@ router.post("/", async (req, res) => {
 });
 
 module.exports = router;
+
+router.get("/", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT
+         r.report_id,
+         r.reason,
+         r.report_status,
+         r.created_at,
+         r.listing_id,
+         r.target_user_id,
+         reporter.email_addr AS reporter_email,
+         l.listing_title,
+         tu.first_name AS target_first_name,
+         tu.last_name AS target_last_name
+       FROM Report r
+       JOIN User reporter ON reporter.user_id = r.reporter_id
+       LEFT JOIN Listing l ON l.listing_id = r.listing_id
+       LEFT JOIN User tu ON tu.user_id = r.target_user_id
+       ORDER BY r.created_at DESC`
+    );
+
+    const reports = rows.map((row) => ({
+      reportId: row.report_id,
+      type: row.listing_id ? "LISTING" : "USER",
+      name: row.listing_id
+        ? row.listing_title
+        : `${row.target_first_name} ${row.target_last_name}`,
+      reason: row.reason,
+      reportedBy: row.reporter_email,
+      createdAt: row.created_at,
+      status: row.report_status,
+      listingId: row.listing_id,
+      targetUserId: row.target_user_id
+    }));
+
+    return res.json({ reports });
+  } catch (error) {
+    console.error("List reports error:", error);
+    return res.status(500).json({ message: "Could not load reports." });
+  }
+});
+
+router.patch("/:reportId/dismiss", async (req, res) => {
+  const reportId = parsePositiveInteger(req.params.reportId);
+
+  if (!reportId) {
+    return res.status(400).json({ message: "reportId must be a valid positive integer." });
+  }
+
+  try {
+    const [result] = await db.query(
+      "UPDATE Report SET report_status = 'REJECTED' WHERE report_id = ?",
+      [reportId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Report not found." });
+    }
+
+    return res.json({ message: "Report dismissed.", reportId, status: "REJECTED" });
+  } catch (error) {
+    console.error("Dismiss report error:", error);
+    return res.status(500).json({ message: "Could not dismiss the report." });
+  }
+});
+
+router.patch("/:reportId/remove", async (req, res) => {
+  const reportId = parsePositiveInteger(req.params.reportId);
+
+  if (!reportId) {
+    return res.status(400).json({ message: "reportId must be a valid positive integer." });
+  }
+
+  try {
+    const [reportRows] = await db.query(
+      "SELECT listing_id, target_user_id FROM Report WHERE report_id = ?",
+      [reportId]
+    );
+
+    if (reportRows.length === 0) {
+      return res.status(404).json({ message: "Report not found." });
+    }
+
+    const { listing_id: listingId, target_user_id: targetUserId } = reportRows[0];
+    const actions = [
+      db.query("UPDATE Report SET report_status = 'RESOLVED' WHERE report_id = ?", [reportId])
+    ];
+
+    if (listingId) {
+      actions.push(
+        db.query("UPDATE Listing SET listing_status = 'REMOVED' WHERE listing_id = ?", [listingId])
+      );
+    }
+
+    if (targetUserId) {
+      actions.push(
+        db.query("UPDATE User SET account_status = 'SUSPENDED' WHERE user_id = ?", [targetUserId])
+      );
+    }
+
+    await Promise.all(actions);
+
+    return res.json({ message: "Report resolved and content removed.", reportId, status: "RESOLVED" });
+  } catch (error) {
+    console.error("Remove report error:", error);
+    return res.status(500).json({ message: "Could not remove the reported content." });
+  }
+});

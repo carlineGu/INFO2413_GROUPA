@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <button type="button" id="adminMenuButton" aria-label="Menu" aria-controls="adminSideMenu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="admin-header-titles">
+        <h1>Reports</h1>
+        <p>Campus Marketplace</p>
+      </div>
+    </div>
+    <button type="button" id="signOutButton" class="sign-out-button">Sign Out</button>
+  </header>
+
+  <main class="admin-main">
+    <div class="page-title">
+      <h2>Listing &amp; User Moderation Report</h2>
+      <p>Review flagged listings and user reports submitted by the community.</p>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-number" id="statTotal">&ndash;</div>
+        <div class="stat-label">Total Reports</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statPending">&ndash;</div>
+        <div class="stat-label">Pending Reviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statResolved">&ndash;</div>
+        <div class="stat-label">Resolved Reports</div>
+      </div>
+      <div class="stat-card issue">
+        <div class="stat-number" id="statIssue">&ndash;</div>
+        <div class="stat-label">Most Common Report Type</div>
+      </div>
+    </div>
+
+    <section class="admin-panel">
+      <div class="admin-panel-header">
+        <h3>Reported Items</h3>
+        <span id="reportsCount"></span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Reason</th>
+            <th>Reported By</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reportsTableBody">
+          <tr><td colspan="7" class="loading-state">Loading reports&hellip;</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="../js/api.js" defer></script>
+  <script src="../js/admin_navbar.js" defer></script>
+  <script src="../js/user_listing_reports.js" defer></script>
+</body>
+</html>
