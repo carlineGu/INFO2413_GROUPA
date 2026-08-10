@@ -9,11 +9,11 @@ body.cmp-nav-menu-open {
 }
 
 #navbar {
-  --cmp-nav-border: #111;
-  --cmp-nav-background: #fff;
-  --cmp-nav-foreground: #111;
-  --cmp-nav-muted: #f2f2f2;
-  --cmp-nav-focus: #2457d6;
+  --cmp-nav-border: #7A3E52;
+  --cmp-nav-background: #7A3E52;
+  --cmp-nav-foreground: #fff;
+  --cmp-nav-muted: rgba(255, 255, 255, 0.2);
+  --cmp-nav-focus: #fff;
   position: relative;
   z-index: 100;
   min-height: 70px;
@@ -90,6 +90,16 @@ body.cmp-nav-menu-open {
   justify-self: start;
   font-size: 28px;
   line-height: 1;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+#navbar .cmp-menu-button:hover,
+#navbar .cmp-menu-button:focus-visible {
+  background: rgba(0, 0, 0, 0.15);
 }
 
 #navbar .cmp-brand {
@@ -143,7 +153,7 @@ body.cmp-nav-menu-open {
   padding: 0 4px;
   border: 1px solid var(--cmp-nav-background);
   border-radius: 999px;
-  background: #d60000;
+  background: #7A3E52;
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -279,8 +289,8 @@ body.cmp-nav-menu-open {
 #navbar .cmp-side-menu > a:hover,
 #navbar .cmp-side-menu > a:focus-visible,
 #navbar .cmp-side-menu > a[aria-current="page"] {
-  background: var(--cmp-nav-foreground);
-  color: var(--cmp-nav-background);
+  background: rgba(0, 0, 0, 0.15);
+  color: #fff;
 }
 
 @media (max-width: 600px) {
