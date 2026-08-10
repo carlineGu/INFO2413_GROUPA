@@ -35,9 +35,17 @@
             <span aria-hidden="true">&#9776;</span>
           </button>
 
-          <a class="cmp-brand" href="index.html" data-nav-link>
-            <span class="cmp-brand-full">Campus Marketplace</span>
-            <span class="cmp-brand-short">Marketplace</span>
+          <div class="cmp-brand-left">
+            <img src="../pictures/icon pic.png" alt="KPU Logo" class="cmp-brand-logo" />
+            <div class="cmp-brand-left-text">
+              <div class="cmp-university-name">Kwantlen</div>
+              <div class="cmp-university-name">Polytechnic</div>
+              <div class="cmp-university-name">University</div>
+            </div>
+          </div>
+
+          <a class="cmp-brand-center" href="index.html" data-nav-link>
+            Campus Marketplace
           </a>
 
           <div class="cmp-navbar-actions">
