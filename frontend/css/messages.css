@@ -90,11 +90,13 @@ body {
 
 #messageForm button {
   padding: 10px 16px;
-  border: 1px solid #7A3e52;
-  background: #7A3e52;
+  border: 1px solid #4A0E1A;
+  background: #4A0E1A;
   color: #fff;
   cursor: pointer;
 }
+
+#messageForm button:hover:not(:disabled) { background: #fdfbf6; color: #4A0E1A; border-color: #4A0E1A; }
 
 #messageForm button:disabled { cursor: wait; opacity: 0.65; }
 

@@ -37,7 +37,6 @@
 
           <a class="cmp-brand" href="index.html" data-nav-link>
             <span class="cmp-brand-full">Campus Marketplace</span>
-            <span class="cmp-brand-short">Marketplace</span>
           </a>
 
           <div class="cmp-navbar-actions">

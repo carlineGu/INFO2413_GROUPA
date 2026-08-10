@@ -12,8 +12,6 @@ body.cmp-nav-menu-open {
   --cmp-nav-border: #4A0E1A;
   --cmp-nav-background: #7A3e52;
   --cmp-nav-foreground: #FDFBF6;
-  --cmp-nav-muted: rgba(253, 251, 246, 0.12);
-  --cmp-nav-focus: #f9f7ee;
   position: relative;
   z-index: 100;
   min-height: 70px;
@@ -42,7 +40,7 @@ body.cmp-nav-menu-open {
   height: 70px;
   padding: 10px clamp(12px, 3vw, 30px);
   border-bottom: 1px solid var(--cmp-nav-border);
-  background: var(--cmp-nav-background);
+  background:#4A0E1A;
 }
 
 #navbar a {
@@ -104,11 +102,8 @@ body.cmp-nav-menu-open {
 }
 
 #navbar .cmp-brand:hover,
-#navbar .cmp-brand:focus-visible,
-
-
-#navbar .cmp-brand-short {
-  display: none;
+#navbar .cmp-brand:focus-visible {
+  background: var(--cmp-nav-muted);
 }
 
 #navbar .cmp-navbar-actions {
@@ -240,7 +235,7 @@ body.cmp-nav-menu-open {
   padding: 0;
   overflow-y: auto;
   border-right: 1px solid var(--cmp-nav-border);
-  background: var(--cmp-nav-background);
+  background: #4A0E1A;
   visibility: hidden;
   transform: translateX(-100%);
   transition: transform 220ms ease, visibility 0s linear 220ms;
