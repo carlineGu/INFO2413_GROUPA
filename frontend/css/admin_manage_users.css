@@ -1,9 +1,9 @@
 .users-container {
-    background: #fff;
+    background: #f9f7ee;
     border-radius: 12px;
     margin-top: 24px;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D8D0BF;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
@@ -13,7 +13,7 @@
 }
 
 #users-table thead {
-    background-color: #f8f9fa;
+    background-color: #f9f7ee;
 }
 
 #users-table th {
@@ -21,13 +21,13 @@
     padding: 18px 20px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #6b7280;
+    color: #7A7768;
     text-transform: uppercase;
 }
 
 #users-table td {
     padding: 18px 20px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #D8D0BF;
     vertical-align: middle;
 }
 
@@ -41,22 +41,22 @@
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: #f1f5f9;
-    border: 1px solid #d1d5db;
+    background: #f9f7ee;
+    border: 1px solid #D8D0BF;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    color: #111827;
+    color: #5A332E;
 }
 
 .user-name {
     font-weight: 600;
-    color: #111827;
+    color: #4A0E1A;
 }
 
 .user-email {
-    color: #6b7280;
+    color: #7A7768;
     font-size: 0.9rem;
 }
 
@@ -64,8 +64,8 @@
     display: inline-block;
     padding: 5px 10px;
     border-radius: 6px;
-    background: #dcfce7;
-    color: #15803d;
+    background: #D8D0BF;
+    color: #1C5A4E;
     font-size: 0.85rem;
 }
 
@@ -73,8 +73,8 @@
     display: inline-block;
     padding: 5px 10px;
     border-radius: 6px;
-    background: #111827;
-    color: white;
+    background: #8B1238;
+    color: #FDFBF6;
     font-size: 0.85rem;
 }
 
@@ -82,8 +82,9 @@
     padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-    border: 1px solid #d1d5db;
-    background: white;
+    border: 1px solid #7A3e52;
+    background: #7A3e52;
+    color: #fff;
 }
 
 .remove-btn {
@@ -91,12 +92,13 @@
     border-radius: 6px;
     cursor: pointer;
     border: none;
-    background: #000;
-    color: white;
+    background: #7A3e52;
+    color: #FDFBF6;
     margin-left: 8px;
 }
 
 .action-btn:hover,
 .remove-btn:hover {
     opacity: 0.9;
+    background: #782F40;
 }

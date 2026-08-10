@@ -1,6 +1,6 @@
 body.cmp-nav-page {
   margin: 0;
-  background: #fff;
+  background: #f9f7ee;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -9,11 +9,11 @@ body.cmp-nav-menu-open {
 }
 
 #navbar {
-  --cmp-nav-border: #111;
-  --cmp-nav-background: #fff;
-  --cmp-nav-foreground: #111;
-  --cmp-nav-muted: #f2f2f2;
-  --cmp-nav-focus: #2457d6;
+  --cmp-nav-border: #4A0E1A;
+  --cmp-nav-background: #7A3e52;
+  --cmp-nav-foreground: #FDFBF6;
+  --cmp-nav-muted: rgba(253, 251, 246, 0.12);
+  --cmp-nav-focus: #f9f7ee;
   position: relative;
   z-index: 100;
   min-height: 70px;
@@ -63,6 +63,7 @@ body.cmp-nav-menu-open {
   border: 0;
   background: transparent;
   cursor: pointer;
+  color: var(--cmp-nav-foreground);
 }
 
 #navbar .cmp-icon-button {
@@ -95,8 +96,8 @@ body.cmp-nav-menu-open {
 #navbar .cmp-brand {
   justify-self: center;
   padding: 8px clamp(12px, 3vw, 30px);
-  border: 1px solid var(--cmp-nav-border);
-  background: var(--cmp-nav-background);
+  border: none;
+  background: transparent;
   font-size: clamp(16px, 2vw, 20px);
   line-height: 1.15;
   white-space: nowrap;
@@ -127,6 +128,7 @@ body.cmp-nav-menu-open {
   width: 32px;
   height: 32px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 #navbar .cmp-notification-badge {
@@ -139,10 +141,10 @@ body.cmp-nav-menu-open {
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
-  border: 1px solid var(--cmp-nav-background);
+  border: 1px solid #f9f7ee;
   border-radius: 999px;
-  background: #d60000;
-  color: #fff;
+  background: #f9f7ee;
+  color: #4A0E1A;
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -160,7 +162,7 @@ body.cmp-nav-menu-open {
   right: 0;
   z-index: 120;
   border: 1px solid var(--cmp-nav-border);
-  background: var(--cmp-nav-background);
+  background: #f9f7ee; /* use site surface for dropdown */
   box-shadow: 0 8px 20px rgb(0 0 0 / 14%);
 }
 
@@ -175,10 +177,11 @@ body.cmp-nav-menu-open {
 #navbar .cmp-dropdown-heading {
   margin: 0;
   padding: 16px;
-  border-bottom: 1px solid var(--cmp-nav-border);
+  border-bottom: 1px solid #D8D0BF;
   font-size: 20px;
   font-weight: 700;
   line-height: 1.2;
+  color: #4A0E1A;
 }
 
 #navbar .cmp-notification-item,
@@ -189,9 +192,9 @@ body.cmp-nav-menu-open {
   margin: 0;
   padding: 14px 16px;
   border: 0;
-  border-bottom: 1px solid var(--cmp-nav-border);
-  background: var(--cmp-nav-background);
-  color: var(--cmp-nav-foreground);
+  border-bottom: 1px solid #D8D0BF;
+  background: #f9f7ee;
+  color: #5A332E;
   text-align: left;
   cursor: pointer;
 }
@@ -207,14 +210,15 @@ body.cmp-nav-menu-open {
 #navbar .cmp-profile-dropdown a:focus-visible,
 #navbar .cmp-profile-dropdown button:hover,
 #navbar .cmp-profile-dropdown button:focus-visible {
-  background: var(--cmp-nav-foreground);
-  color: var(--cmp-nav-background);
+  background: #7A3e52;
+  color: #fff;
 }
 
 #navbar .cmp-notification-empty {
   margin: 0;
   padding: 16px;
-  color: #555;
+  color: #7A7768;
+  background: #f9f7ee;
 }
 
 #navbar .cmp-menu-overlay {

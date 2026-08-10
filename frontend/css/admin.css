@@ -6,8 +6,8 @@ html {
 
 body {
   margin: 0;
-  background: #f5f6f8;
-  color: #111;
+  background: #f9f7ee;
+  color: #5A332E;
   font-family: inherit;
 }
 
@@ -16,8 +16,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 14px 28px;
-  background: #14161a;
-  color: #fff;
+  background: #4A0E1A;
+  color: #FDFBF6;
 }
 
 .admin-header-left {
@@ -29,10 +29,21 @@ body {
 .admin-header-left button {
   background: none;
   border: none;
-  color: #fff;
+  color: #FDFBF6;
   cursor: pointer;
   padding: 4px;
   display: inline-flex;
+  border-radius: 4px;
+}
+
+.admin-header-left button:hover,
+.admin-header-left button:focus-visible {
+  background: rgba(253, 251, 246, 0.12);
+}
+
+.admin-header-left button:focus-visible {
+  outline: 3px solid #f9f7ee;
+  outline-offset: 2px;
 }
 
 .admin-header-titles h1 {
@@ -44,13 +55,13 @@ body {
 .admin-header-titles p {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #b7bac1;
+  color: #D8D0BF;
 }
 
 .sign-out-button {
-  border: 1px solid #3a3d44;
+  border: 1px solid #D8D0BF;
   background: transparent;
-  color: #fff;
+  color: #FDFBF6;
   padding: 9px 16px;
   font: inherit;
   font-size: 13px;
@@ -59,7 +70,7 @@ body {
 }
 
 .sign-out-button:hover {
-  background: #24262c;
+  background: #782F40;
 }
 
 .admin-main {
@@ -75,7 +86,7 @@ body {
 
 .page-title p {
   margin: 6px 0 26px;
-  color: #666;
+  color: #7A7768;
   font-size: 14px;
 }
 
@@ -87,8 +98,8 @@ body {
 }
 
 .stat-card {
-  background: #fff;
-  border: 1px solid #e2e3e7;
+  background: #f9f7ee;
+  border: 1px solid #D8D0BF;
   border-radius: 6px;
   padding: 20px 22px;
 }
@@ -103,7 +114,7 @@ body {
   margin-top: 8px;
   font-size: 12px;
   letter-spacing: 0.03em;
-  color: #777;
+  color: #7A7768;
   text-transform: uppercase;
 }
 
@@ -113,8 +124,8 @@ body {
 }
 
 .admin-panel {
-  background: #fff;
-  border: 1px solid #e2e3e7;
+  background: #f9f7ee;
+  border: 1px solid #D8D0BF;
   border-radius: 6px;
   overflow-x: auto;
 }
@@ -124,7 +135,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 18px 22px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: 1px solid #D8D0BF;
 }
 
 .admin-panel-header h3 {
@@ -147,15 +158,15 @@ body {
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #8a8d94;
+  color: #7A7768;
   padding: 12px 22px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: 1px solid #D8D0BF;
   white-space: nowrap;
 }
 
 .admin-panel tbody td {
   padding: 12px 14px;
-  border-bottom: 1px solid #f0f1f3;
+  border-bottom: 1px solid #D8D0BF;
   font-size: 12px;
   vertical-align: middle;
   white-space: nowrap;
@@ -166,7 +177,7 @@ body {
 }
 
 .admin-panel tbody tr:nth-child(even) {
-  background: #fafafb;
+  background: #f9f7ee;
 }
 
 .name-toggle {
@@ -175,7 +186,7 @@ body {
   padding: 0;
   font: inherit;
   font-size: 14px;
-  color: #111;
+  color: #4A0E1A;
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
@@ -183,12 +194,12 @@ body {
 }
 
 .name-toggle:hover {
-  color: #333;
+  color: #4A0E1A;
 }
 
 .detail-row td {
   white-space: normal;
-  background: #fafbfc;
+  background: #f9f7ee;
   padding: 0;
 }
 
@@ -198,7 +209,7 @@ body {
 
 .detail-loading,
 .detail-error {
-  color: #777;
+  color: #7A7768;
   font-size: 13px;
 }
 
@@ -219,7 +230,7 @@ body {
 
 .detail-field .detail-label {
   display: block;
-  color: #8a8d94;
+  color: #7A7768;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -228,7 +239,7 @@ body {
 
 .detail-description {
   font-size: 13px;
-  color: #333;
+  color: #5A332E;
   margin: 0 0 14px;
   line-height: 1.5;
   max-width: 640px;
@@ -244,12 +255,12 @@ body {
   width: 120px;
   height: 120px;
   object-fit: cover;
-  border: 1px solid #e2e3e7;
+  border: 1px solid #D8D0BF;
   border-radius: 4px;
 }
 
 .detail-no-photos {
-  color: #999;
+  color: #7A7768;
   font-size: 13px;
 }
 
@@ -261,8 +272,8 @@ body {
 
 .nav-tile {
   display: block;
-  background: #fff;
-  border: 1px solid #e2e3e7;
+  background: #f9f7ee;
+  border: 1px solid #D8D0BF;
   border-radius: 6px;
   padding: 22px;
   text-decoration: none;
@@ -270,8 +281,8 @@ body {
 }
 
 .nav-tile:hover {
-  background: #f7f7f8;
-  border-color: #cfd1d6;
+  background: #f9f7ee;
+  border-color: #D8D0BF;
 }
 
 .nav-tile-top {
@@ -285,8 +296,8 @@ body {
   width: 34px;
   height: 34px;
   border-radius: 6px;
-  background: #14161a;
-  color: #fff;
+  background: #4A0E1A;
+  color: #FDFBF6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,9 +308,9 @@ body {
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 4px;
-  background: #fdf3d6;
-  color: #8a6d1a;
-  border: 1px solid #eddca0;
+  background: #f9f7ee;
+  color: #4A0E1A;
+  border: 1px solid #D8D0BF;
 }
 
 .nav-tile h3 {
@@ -310,7 +321,7 @@ body {
 .nav-tile p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: #7A7768;
   line-height: 1.4;
 }
 
@@ -333,8 +344,8 @@ body {
   left: 0;
   bottom: 0;
   width: min(280px, 80vw);
-  background: #14161a;
-  color: #fff;
+  background: #4A0E1A;
+  color: #FDFBF6;
   transform: translateX(-100%);
   transition: transform 0.2s ease;
   z-index: 50;
@@ -353,7 +364,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  border-bottom: 1px solid #26282e;
+  border-bottom: 1px solid #D8D0BF;
   margin-bottom: 6px;
   font-size: 14px;
 }
@@ -361,11 +372,22 @@ body {
 .admin-menu-close {
   background: none;
   border: none;
-  color: #fff;
+  color: #FDFBF6;
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
   padding: 0 4px;
+ border-radius: 4px;
+}
+
+.admin-menu-close:hover,
+.admin-menu-close:focus-visible {
+ background: rgba(253, 251, 246, 0.12);
+}
+
+.admin-menu-close:focus-visible {
+ outline: 3px solid #f9f7ee;
+ outline-offset: 2px;
 }
 
 .admin-side-menu-link {
@@ -374,29 +396,29 @@ body {
   justify-content: space-between;
   gap: 10px;
   padding: 12px 20px;
-  color: #d5d7db;
+  color: #FDFBF6;
   text-decoration: none;
   font-size: 14px;
 }
 
 .admin-side-menu-link:hover {
-  background: #1e2025;
-  color: #fff;
+  background: #5A332E;
+  color: #FDFBF6;
 }
 
 .admin-side-menu-link.is-active {
-  background: #1e2025;
-  color: #fff;
+  background: #5A332E;
+  color: #FDFBF6;
   font-weight: 600;
 }
 
 .type-pill {
   display: inline-block;
   padding: 3px 10px;
-  border: 1px solid #d7d9de;
+  border: 1px solid #D8D0BF;
   border-radius: 4px;
   font-size: 12px;
-  color: #333;
+  color: #4A0E1A;
 }
 
 .status-pill {
@@ -408,27 +430,27 @@ body {
 }
 
 .status-pending {
-  background: #fdf3d6;
-  color: #8a6d1a;
-  border: 1px solid #eddca0;
+  background: #f9f7ee;
+  color: #4A0E1A;
+  border: 1px solid #D8D0BF;
 }
 
 .status-resolved {
-  background: #eceef1;
-  color: #666;
-  border: 1px solid #dcdee2;
+  background: #f9f7ee;
+  color: #7A7768;
+  border: 1px solid #D8D0BF;
 }
 
 .status-under_review {
-  background: #dbe8fd;
-  color: #1b4f9c;
-  border: 1px solid #b9d2f7;
+  background: #f9f7ee;
+  color: #1C5A4E;
+  border: 1px solid #D8D0BF;
 }
 
 .status-rejected {
-  background: #f4dede;
-  color: #8a2020;
-  border: 1px solid #e6bcbc;
+  background: #f9f7ee;
+  color: #8B1238;
+  border: 1px solid #D8D0BF;
 }
 
 .actions-cell {
@@ -442,16 +464,19 @@ body {
   padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
+  background: #f9f7ee;
+  border: 1px solid #D8D0BF;
+  color: #4A0E1A;
 }
 
 .dismiss-button {
-  background: #fff;
-  border: 1px solid #d7d9de;
-  color: #111;
+  background: #f9f7ee;
+  border: 1px solid #D8D0BF;
+  color: #4A0E1A;
 }
 
 .dismiss-button:hover:not(:disabled) {
-  background: #f2f2f2;
+  background: #f9f7ee;
 }
 
 .dismiss-button:disabled {
@@ -459,17 +484,26 @@ body {
   cursor: not-allowed;
 }
 
-.remove-button {
-  background: #111;
-  border: 1px solid #111;
-  color: #fff;
+.remove-button,
+.suspend-button {
+  background: #7A3e52;
+  border: 1px solid #7A3e52;
+  color: #FDFBF6;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
 }
 
-.remove-button:hover:not(:disabled) {
-  background: #333;
+.remove-button:hover:not(:disabled),
+.suspend-button:hover:not(:disabled) {
+  background: #782F40;
 }
 
-.remove-button:disabled {
+.remove-button:disabled,
+.suspend-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -479,7 +513,7 @@ body {
 .error-state {
   padding: 40px 22px;
   text-align: center;
-  color: #777;
+  color: #7A7768;
   font-size: 14px;
 }
 
@@ -511,17 +545,17 @@ body {
 }
 
 .quick-access-card {
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: #f9f7ee;
+    border: 1px solid #D8D0BF;
     border-radius: 10px;
     padding: 20px;
     text-decoration: none;
-    color: #111827;
+    color: #4A0E1A;
     font-weight: 500;
     transition: all 0.2s ease;
 }
 
 .quick-access-card:hover {
-    background: #f9fafb;
-    border-color: #d1d5db;
+    background: #fef7df;
+    border-color: #D8D0BF;
 }

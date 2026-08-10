@@ -4,14 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Account / Profile | Campus Marketplace</title>
+<link rel="icon" href="../pictures/icon pic.png" type="image/png">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js" crossorigin></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="../css/navbar.css" />
+<link rel="stylesheet" href="../css/style.css" />
 <style>
   body { margin: 0; }
   #root { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  /* Profile page overrides to match site palette */
+  .profile-page .border-black { border-color: #D8D0BF !important; }
+  .profile-page .text-gray-500, .profile-page .text-gray-400 { color: #7A7768 !important; }
+  .profile-page .bg-white { background: #fff !important; }
 </style>
 </head>
 <body>
@@ -156,7 +163,7 @@ function Profile() {
 
   return (
     <>
-      <div className="px-4 py-6 max-w-xl mx-auto">
+      <div className="profile-page px-4 py-6 max-w-xl mx-auto">
         <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
           <div className="w-16 h-16 shrink-0">
             {profilePic ? (
@@ -191,7 +198,7 @@ function Profile() {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`flex-1 py-1.5 text-xs capitalize border-r border-black last:border-0 ${tab === t ? "bg-black text-white" : "bg-white"}`}
+              className={`flex-1 py-1.5 text-xs capitalize ${tab === t ? "primary-button" : "secondary-button"}`}
             >
               {t}
             </button>
@@ -202,7 +209,7 @@ function Profile() {
           <>
             <a
               href="create_listing.html"
-              className="block w-full text-center border border-black px-2 py-2 text-xs mb-3 bg-black text-white"
+              className="primary-button block w-full text-center px-2 py-2 text-xs mb-3"
             >
               + Create Listing
             </a>
@@ -227,7 +234,7 @@ function Profile() {
                       <button
                         type="button"
                         onClick={() => handleDeleteListing(item.listingId)}
-                        className="text-[10px] border border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                        className="secondary-button text-[10px] px-2 py-1"
                       >
                         Delete
                       </button>
@@ -266,7 +273,7 @@ function Profile() {
                   <button
                     type="button"
                     onClick={() => handleUnfavorite(item.listingId)}
-                    className="w-full text-[10px] border-t border-black px-2 py-1 bg-white hover:bg-black hover:text-white"
+                    className="w-full secondary-button text-[10px] px-2 py-1"
                   >
                     Remove
                   </button>
@@ -380,7 +387,7 @@ function PublicProfile({ userId }) {
 
   return (
     <>
-      <div className="px-4 py-6 max-w-xl mx-auto">
+      <div className="profile-page px-4 py-6 max-w-xl mx-auto">
         <div className="border border-black p-4 flex gap-4 mb-4 bg-white">
           <div className="w-16 h-16 shrink-0">
             <ImgBox />

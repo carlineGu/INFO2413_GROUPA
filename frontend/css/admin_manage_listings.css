@@ -1,5 +1,5 @@
 .listings-container {
-  background: white;
+  background: #f9f7ee;
   border-radius: 10px;
   overflow: hidden;
   margin-top: 20px;
@@ -14,17 +14,17 @@
 #listings-table td {
   padding: 16px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #D8D0BF;
 }
 
 #listings-table th {
-  color: #666;
+  color: #7A7768;
   font-size: 14px;
 }
 
 .remove-btn {
-  background: black;
-  color: white;
+  background: #7A3e52;
+  color: #FDFBF6;
   border: none;
   padding: 8px 14px;
   border-radius: 6px;
@@ -32,5 +32,5 @@
 }
 
 .remove-btn:hover {
-  background: #333;
+  background: #782F40;
 }
