@@ -33,7 +33,7 @@ app.get("/api/test", (req, res) => {
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 app.get("/", (req, res) => {
-  res.redirect("/html/index.html");
+  res.redirect("/html/landing.html");
 });
 
 app.use((error, req, res, next) => {

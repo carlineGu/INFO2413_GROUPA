@@ -1,6 +1,11 @@
 "use strict";
 
 const marketplace = window.CampusMarketplace;
+const user = marketplace.getCurrentUser();
+
+if(!user || !user.userId) {
+  window.location.href = "login.html";
+}
 
 function normalizeListingSummary(rawListing) {
   return {
