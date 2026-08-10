@@ -575,6 +575,43 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.delete("/admin/:id", async (req, res) => {
+  try {
+    const listingId = parsePositiveInteger(
+      req.params.id,
+      "Listing id"
+    );
+
+    const [result] = await db.query(
+      `UPDATE Listing
+          SET listing_status = 'REMOVED'
+        WHERE listing_id = ?
+          AND listing_status = 'ACTIVE'`,
+      [listingId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "Listing not found or already removed."
+      });
+    }
+
+    return res.json({
+      message: "Listing removed by admin.",
+      listingId,
+      status: "REMOVED"
+    });
+
+  } catch (error) {
+    return sendRouteError(
+      res,
+      error,
+      "Admin delete listing error",
+      "Could not remove listing."
+    );
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     console.log("Req.params = ", req.params);

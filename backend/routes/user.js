@@ -45,6 +45,84 @@ router.get("/me", async (req, res) => {
   }
 });
 
+router.get("/admin", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT
+        u.user_id,
+        u.first_name,
+        u.last_name,
+        u.email_addr,
+        u.account_status,
+        COUNT(l.listing_id) AS listing_count
+      FROM User u
+      LEFT JOIN Listing l
+        ON u.user_id = l.user_id
+        AND l.listing_status = 'ACTIVE'
+      GROUP BY u.user_id
+      ORDER BY u.last_name, u.first_name
+    `);
+
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Could not load users."
+    });
+  }
+});
+
+router.patch("/admin/:id/suspend", async (req, res) => {
+  try {
+    await db.query(
+      `UPDATE User
+       SET account_status = 'SUSPENDED'
+       WHERE user_id = ?`,
+      [req.params.id]
+    );
+
+    res.json({ message: "User suspended." });
+  } catch (error) {
+    res.status(500).json({
+      message: "Could not suspend user."
+    });
+  }
+});
+
+router.patch("/admin/:id/reinstate", async (req, res) => {
+  try {
+    await db.query(
+      `UPDATE User
+       SET account_status = 'ACTIVE'
+       WHERE user_id = ?`,
+      [req.params.id]
+    );
+
+    res.json({ message: "User reinstated." });
+  } catch (error) {
+    res.status(500).json({
+      message: "Could not reinstate user."
+    });
+  }
+});
+
+router.patch("/admin/:id/remove", async (req, res) => {
+  try {
+    await db.query(
+      `UPDATE User
+       SET account_status = 'INACTIVE'
+       WHERE user_id = ?`,
+      [req.params.id]
+    );
+
+    res.json({ message: "User removed." });
+  } catch (error) {
+    res.status(500).json({
+      message: "Could not remove user."
+    });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const userId = Number(req.params.id);
   if (!Number.isInteger(userId) || userId <= 0) {
@@ -87,5 +165,11 @@ router.get("/:id", async (req, res) => {
     return res.status(500).json({ message: "Could not load user profile." });
   }
 });
+
+
+
+
+
+
 
 module.exports = router;

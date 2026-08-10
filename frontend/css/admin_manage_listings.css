@@ -1,0 +1,36 @@
+.listings-container {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+#listings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#listings-table th,
+#listings-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+#listings-table th {
+  color: #666;
+  font-size: 14px;
+}
+
+.remove-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #333;
+}
