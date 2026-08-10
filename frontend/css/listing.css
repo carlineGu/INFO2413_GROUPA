@@ -1,9 +1,9 @@
 :root {
-  --listing-border: #A66A7D;
+  --listing-border: #202020;
   --listing-muted: #5f6368;
   --listing-surface: #ffffff;
   --listing-soft: #f5f5f5;
-  --listing-danger: #7A3E52;
+  --listing-danger: #b42318;
 }
 
 body {
@@ -21,7 +21,7 @@ body {
 .listing-back-link,
 .listing-report-link,
 .listing-review-link {
-  color: #7A3E52;
+  color: #333;
   font-size: 0.85rem;
   text-underline-offset: 3px;
 }
@@ -109,7 +109,7 @@ body {
   cursor: pointer;
 }
 
-.listing-thumbnail.is-active { border-color: #7A3E52; }
+.listing-thumbnail.is-active { border-color: #111; }
 .listing-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 
 .listing-details-card {
@@ -215,20 +215,17 @@ body {
   align-items: center;
   justify-content: center;
   padding: 8px 12px;
-  border: 1px solid #7A3E52;
-  color: #7A3E52;
+  border: 1px solid #111;
+  color: #111;
   cursor: pointer;
   font: inherit;
   font-size: 0.85rem;
   text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.primary-button { background: #7A3E52; color: #fff; }
-.primary-button:hover { background: #5E2D3C; }
+.primary-button { background: #111; color: #fff; }
 .secondary-button { background: #fff; }
-.secondary-button:hover { background: #5E2D3C; color: #fff; }
-.secondary-button.is-disabled { cursor: default; color: var(--listing-muted); border-color: var(--listing-muted); }
+.secondary-button.is-disabled { cursor: default; color: var(--listing-muted); }
 
 .listing-feedback,
 .listing-status-message {

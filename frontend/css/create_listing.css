@@ -1,7 +1,7 @@
 :root {
-  --form-border: #A66A7D;
-  --form-muted: #111;
-  --form-error: #7A3E52;
+  --form-border: #222;
+  --form-muted: #666;
+  --form-error: #b42318;
 }
 
 body {
@@ -17,7 +17,7 @@ body {
 }
 
 .create-listing-heading { margin-bottom: 22px; }
-.create-listing-heading a { color: #7A3E52; font-size: 0.85rem; text-underline-offset: 3px; }
+.create-listing-heading a { color: #333; font-size: 0.85rem; text-underline-offset: 3px; }
 .create-listing-heading h1 { margin: 18px 0 6px; font-size: clamp(1.8rem, 4vw, 2.5rem); }
 .create-listing-heading p { margin: 0; color: var(--form-muted); }
 
@@ -102,12 +102,7 @@ body {
 }
 
 .form-field textarea { min-height: 135px; resize: vertical; line-height: 1.5; }
-.form-field :focus { outline: 2px solid #7A3E52; outline-offset: 2px; }
-
-.form-field select option {
-  color: #111;
-  background: #fff;
-}
+.form-field :focus { outline: 2px solid #111; outline-offset: 2px; }
 
 .form-feedback {
   min-height: 1.5em;
@@ -120,15 +115,15 @@ body {
 .publish-button {
   width: 100%;
   padding: 13px 18px;
-  border: 1px solid #7A3E52;
-  background: #7A3E52;
+  border: 1px solid #111;
+  background: #111;
   color: #fff;
   cursor: pointer;
   font: inherit;
   font-weight: 700;
 }
 
-.publish-button:hover { background: #5E2D3C; }
+.publish-button:hover { background: #333; }
 .publish-button:disabled { cursor: wait; opacity: 0.65; }
 
 @media (max-width: 620px) {
