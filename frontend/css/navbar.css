@@ -114,9 +114,7 @@ body.cmp-nav-menu-open {
 
 #navbar .cmp-brand:hover,
 #navbar .cmp-brand:focus-visible,
-#navbar [aria-current="page"] {
-  background: var(--cmp-nav-muted);
-}
+
 
 #navbar .cmp-brand-short {
   display: none;
