@@ -2,6 +2,7 @@
   "use strict";
 
   const API_PREFIX = "/api";
+  const ACCESS_TOKEN_KEY = "accessToken";
 
   function normalizeUser(rawUser) {
     if (!rawUser || typeof rawUser !== "object") {
@@ -43,7 +44,14 @@
     }
   }
 
-  function setCurrentUser(user) {
+  function getAccessToken() {
+    return (
+      global.localStorage.getItem(ACCESS_TOKEN_KEY) ??
+      global.sessionStorage.getItem(ACCESS_TOKEN_KEY)
+    );
+  }
+
+  function setCurrentUser(user, accessToken) {
     const normalized = normalizeUser(user);
     if (!normalized || !normalized.userId) {
       throw new Error("Cannot store a user without a valid userId.");
@@ -51,12 +59,23 @@
 
     global.localStorage.setItem("user", JSON.stringify(normalized));
     global.sessionStorage.removeItem("user");
+
+    if (typeof accessToken === "string" && accessToken.trim()) {
+      global.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+      global.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    } else {
+      global.localStorage.removeItem(ACCESS_TOKEN_KEY);
+      global.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    }
+
     return normalized;
   }
 
   function clearCurrentUser() {
     global.localStorage.removeItem("user");
     global.sessionStorage.removeItem("user");
+    global.localStorage.removeItem(ACCESS_TOKEN_KEY);
+    global.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
   }
 
   function buildApiUrl(path) {
@@ -69,7 +88,12 @@
 
   async function request(path, options = {}) {
     const headers = new Headers(options.headers || {});
+    const accessToken = getAccessToken();
     let body = options.body;
+
+    if (accessToken && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${accessToken}`);
+    }
 
     if (body && typeof body === "object" && !(body instanceof FormData)) {
       headers.set("Content-Type", "application/json");
@@ -110,6 +134,7 @@
   global.CampusMarketplace = Object.freeze({
     clearCurrentUser,
     escapeHtml,
+    getAccessToken,
     getCurrentUser,
     normalizeUser,
     request,

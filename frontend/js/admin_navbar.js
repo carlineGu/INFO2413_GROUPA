@@ -22,6 +22,9 @@
   ];
 
   const currentPage = window.location.pathname.split("/").pop();
+  const activeMenuPage = currentPage === "admin_support_chat.html"
+    ? "admin_support_messages.html"
+    : currentPage;
 
   const overlay = document.createElement("div");
   overlay.className = "admin-menu-overlay";
@@ -41,7 +44,7 @@
     ${menuItems
       .map(
         (item) => `
-      <a href="${item.href}" class="admin-side-menu-link${item.href === currentPage ? " is-active" : ""}">
+      <a href="${item.href}" class="admin-side-menu-link${item.href === activeMenuPage ? " is-active" : ""}">
         <span>${item.label}</span>
         ${item.badgeId ? `<span class="nav-tile-badge" id="${item.badgeId}" hidden></span>` : ""}
       </a>`
@@ -115,11 +118,10 @@
 
   async function loadSupportBadge() {
     try {
-      const { messages } = await CampusMarketplace.request("support");
-      const openMessages = (messages || []).filter((m) => m.status === "OPEN").length;
-      setBadge("menuMessagesBadge", openMessages, "open");
+      const { unreadCount } = await CampusMarketplace.request("support/unread-count");
+      setBadge("menuMessagesBadge", Number(unreadCount) || 0, "unread");
     } catch (error) {
-      // Support messages may not be set up yet - fail quietly and leave the badge hidden.
+      console.error("Failed to load support unread count:", error);
     }
   }
 
@@ -132,4 +134,10 @@
 
   loadReportsBadge();
   loadSupportBadge();
+
+  window.setInterval(() => {
+    if (!document.hidden) {
+      loadSupportBadge();
+    }
+  }, 5000);
 })();

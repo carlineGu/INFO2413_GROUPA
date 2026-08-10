@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support Conversation | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/messages.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <button type="button" id="adminMenuButton" aria-label="Menu" aria-controls="adminSideMenu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="admin-header-titles">
+        <h1>Support Conversation</h1>
+        <p>Campus Marketplace</p>
+      </div>
+    </div>
+    <button type="button" id="signOutButton" class="sign-out-button">Sign Out</button>
+  </header>
+
+  <main class="admin-main support-chat-page admin-support-chat-page" aria-labelledby="adminSupportHeading">
+    <div id="chatHeader">
+      <div>
+        <h2 id="adminSupportHeading">Support Conversation</h2>
+        <p>Loading conversation&hellip;</p>
+      </div>
+      <a href="admin_support_messages.html">&larr; Back to Support Messages</a>
+    </div>
+    <p id="supportFeedback" class="support-feedback" role="status" aria-live="polite"></p>
+    <div id="messagesContainer" role="log" aria-live="polite" aria-relevant="additions text"></div>
+    <form id="messageForm" autocomplete="off">
+      <input id="messageInput" type="text" maxlength="2000" required placeholder="Write a reply..." aria-label="Support reply" disabled />
+      <button type="submit" disabled>Send</button>
+    </form>
+  </main>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/admin_navbar.js"></script>
+  <script src="../js/admin_support_chat.js"></script>
+</body>
+</html>

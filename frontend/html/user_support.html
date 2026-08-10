@@ -3,19 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat | Campus Marketplace</title>
+  <title>Support | Campus Marketplace</title>
   <link rel="stylesheet" href="../css/navbar.css" />
   <link rel="stylesheet" href="../css/messages.css" />
 </head>
 <body>
   <div id="navbar"></div>
 
-  <main class="message-page">
-    <div id="chatHeader"></div>
-    <div id="messagesContainer"></div>
-    <form id="messageForm">
-      <input id="messageInput" type="text" maxlength="2000" required placeholder="Write a message..." aria-label="Message" />
-      <button type="submit">Send</button>
+  <main class="message-page support-chat-page" aria-labelledby="supportHeading">
+    <div id="chatHeader">
+      <div>
+        <h1 id="supportHeading">Campus Marketplace Support</h1>
+        <p>Starting your conversation&hellip;</p>
+      </div>
+      <a href="index.html">&larr; Back to marketplace</a>
+    </div>
+    <p id="supportFeedback" class="support-feedback" role="status" aria-live="polite"></p>
+    <div id="messagesContainer" role="log" aria-live="polite" aria-relevant="additions text"></div>
+    <form id="messageForm" autocomplete="off">
+      <input id="messageInput" type="text" maxlength="2000" required placeholder="Describe the issue..." aria-label="Support message" disabled />
+      <button type="submit" disabled>Send</button>
     </form>
   </main>
 

@@ -7,6 +7,7 @@ const listingRoutes = require("./routes/listing");
 const messageRoutes = require("./routes/message");
 const reportRoutes = require("./routes/report");
 const reviewRoutes = require("./routes/review");
+const supportRoutes = require("./routes/support");
 const userRoutes = require("./routes/user");
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/listing", listingRoutes);
 app.use("/api/favorite", favoriteRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/report", reportRoutes);
+app.use("/api/support", supportRoutes);
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "Frontend successfully connected to backend!" });

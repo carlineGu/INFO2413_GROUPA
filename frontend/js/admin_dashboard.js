@@ -6,17 +6,21 @@
   const statPendingReports = document.getElementById("statPendingReports");
   const statOpenMessages = document.getElementById("statOpenMessages");
   const statTotalReports = document.getElementById("statTotalReports");
+  const currentUser = CampusMarketplace.getCurrentUser();
   // const signOutButton = document.getElementById("signOutButton");
 
   async function loadListingsAndReports() {
 
 
     try {
-      const [listings, reportData, userData, messageData] = await Promise.all([
+      const [listings, reportData, userData, supportData] = await Promise.all([
         CampusMarketplace.request("listing"),
         CampusMarketplace.request("report"),
         CampusMarketplace.request("user"),
-        CampusMarketplace.request("message").catch(() => ({ messages: [] }))
+        currentUser?.userId
+          ? CampusMarketplace.request("support/conversations")
+              .catch(() => ({ conversations: [] }))
+          : Promise.resolve({ conversations: [] })
       ]);
 
       const reports = reportData.reports || [];
@@ -27,9 +31,11 @@
       const users = userData.users || [];
       const registeredUsers = users.length || Number(userData.total || 0);
 
-      const messages = messageData.messages || [];
-      const openMessages = messages.filter((m) =>
-        m.status === "SENT" || m.status === "DELIVERED"
+      const supportConversations = Array.isArray(supportData.conversations)
+        ? supportData.conversations
+        : [];
+      const openMessages = supportConversations.filter(
+        (conversation) => String(conversation.status || "").toUpperCase() === "OPEN"
       ).length;
 
       statListings.textContent = String(listings.length);

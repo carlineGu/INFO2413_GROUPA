@@ -9,37 +9,19 @@ const messageInput = document.getElementById("messageInput");
 const supportFeedback = document.getElementById("supportFeedback");
 const submitButton = messageForm.querySelector("button[type='submit']");
 const POLL_INTERVAL_MS = 5000;
+const conversationId = Number(new URLSearchParams(window.location.search).get("conversationId"));
 
-let conversationId = Number(new URLSearchParams(window.location.search).get("conversationId"));
 let isLoading = false;
 let lastMessageSignature = null;
-let pollTimer = null;
 let conversationIsOpen = false;
 
-function hasValidConversationId(value) {
-  return Number.isInteger(value) && value > 0;
+function hasValidConversationId() {
+  return Number.isInteger(conversationId) && conversationId > 0;
 }
 
 function setFeedback(message, isError = false) {
-  supportFeedback.replaceChildren();
   supportFeedback.textContent = message;
   supportFeedback.className = `support-feedback${isError ? " is-error" : ""}`;
-}
-
-function showRetry(message) {
-  supportFeedback.replaceChildren();
-  supportFeedback.className = "support-feedback is-error";
-
-  const text = document.createElement("span");
-  text.textContent = message;
-
-  const retryButton = document.createElement("button");
-  retryButton.type = "button";
-  retryButton.className = "support-retry-button";
-  retryButton.textContent = "Try again";
-  retryButton.addEventListener("click", initializeConversation, { once: true });
-
-  supportFeedback.append(text, retryButton);
 }
 
 function setComposerEnabled(enabled) {
@@ -61,7 +43,7 @@ function renderMessage(message) {
   const card = document.createElement("article");
   card.className = `chat-message${isMine ? " is-mine" : ""}`;
   card.innerHTML = `
-    <strong>${isMine ? "You" : marketplace.escapeHtml(message.senderName || "Administrator")}</strong>
+    <strong>${isMine ? "You" : marketplace.escapeHtml(message.senderName || "Marketplace user")}</strong>
     <p>${marketplace.escapeHtml(message.content)}</p>
     <time>${marketplace.escapeHtml(formatTimestamp(message.sentAt))}</time>
   `;
@@ -74,14 +56,21 @@ function renderHeader(thread) {
 
   chatHeader.innerHTML = `
     <div>
-      <h1 id="supportHeading">Campus Marketplace Support</h1>
-      <p>Conversation with an administrator</p>
+      <h2 id="adminSupportHeading">${marketplace.escapeHtml(thread.userName || "Marketplace user")}</h2>
+      <p>${marketplace.escapeHtml(thread.userEmail || "")}</p>
     </div>
     <div class="support-header-actions">
       <span class="support-status support-status-${statusClass}">${marketplace.escapeHtml(status.replace(/_/g, " "))}</span>
-      <a href="index.html">&larr; Back to marketplace</a>
+      <button type="button" id="supportStatusButton" class="support-status-button">
+        ${status === "OPEN" ? "Close conversation" : "Reopen conversation"}
+      </button>
+      <a href="admin_support_messages.html">&larr; Back to Support Messages</a>
     </div>
   `;
+
+  document.getElementById("supportStatusButton").addEventListener("click", () => {
+    updateConversationStatus(status === "OPEN" ? "CLOSED" : "OPEN");
+  });
 }
 
 function renderMessages(messages, forceScroll = false) {
@@ -102,7 +91,7 @@ function renderMessages(messages, forceScroll = false) {
   if (normalizedMessages.length === 0) {
     const emptyState = document.createElement("p");
     emptyState.className = "empty-chat-state";
-    emptyState.textContent = "Tell us what went wrong and an administrator will reply here.";
+    emptyState.textContent = "This user has not sent a message yet.";
     messagesContainer.appendChild(emptyState);
   } else {
     normalizedMessages.forEach((message) => messagesContainer.appendChild(renderMessage(message)));
@@ -137,13 +126,13 @@ async function markConversationRead(messages) {
 }
 
 async function loadThread({ forceScroll = false, showLoading = false } = {}) {
-  if (isLoading || !hasValidConversationId(conversationId)) {
+  if (isLoading || !hasValidConversationId()) {
     return;
   }
 
   isLoading = true;
   if (showLoading) {
-    setFeedback("Loading your support conversation...");
+    setFeedback("Loading support conversation...");
   }
 
   try {
@@ -154,62 +143,31 @@ async function loadThread({ forceScroll = false, showLoading = false } = {}) {
     renderHeader(thread);
     renderMessages(thread.messages, forceScroll);
     setComposerEnabled(conversationIsOpen);
-    setFeedback(
-      conversationIsOpen
-        ? ""
-        : "This conversation is closed. Open Report an Issue again to reopen it."
-    );
+    setFeedback(conversationIsOpen ? "" : "This support conversation is closed.");
     void markConversationRead(thread.messages);
   } catch (error) {
     setComposerEnabled(false);
-    showRetry(error.message || "Could not load your support conversation.");
+    setFeedback(error.message || "Could not load this support conversation.", true);
   } finally {
     isLoading = false;
   }
 }
 
-function startPolling() {
-  if (pollTimer) {
-    return;
-  }
-
-  pollTimer = window.setInterval(() => {
-    if (!document.hidden) {
-      loadThread();
-    }
-  }, POLL_INTERVAL_MS);
-}
-
-async function initializeConversation() {
-  if (!currentUser?.userId || !marketplace.getAccessToken()) {
-    marketplace.clearCurrentUser();
-    window.location.href = "login.html";
-    return;
-  }
-
-  setComposerEnabled(false);
+async function updateConversationStatus(status) {
+  const statusButton = document.getElementById("supportStatusButton");
+  if (statusButton) statusButton.disabled = true;
+  setFeedback(status === "OPEN" ? "Reopening conversation..." : "Closing conversation...");
 
   try {
-    if (!hasValidConversationId(conversationId)) {
-      setFeedback("Starting your support conversation...");
-      const result = await marketplace.request("support/conversations", {
-        method: "POST"
-      });
-      conversationId = Number(result.conversationId);
-
-      if (!hasValidConversationId(conversationId)) {
-        throw new Error("The server did not return a valid support conversation.");
-      }
-
-      const url = new URL(window.location.href);
-      url.searchParams.set("conversationId", String(conversationId));
-      window.history.replaceState({}, "", url);
-    }
-
-    await loadThread({ forceScroll: true, showLoading: true });
-    startPolling();
+    await marketplace.request(`support/conversations/${conversationId}/status`, {
+      method: "PATCH",
+      body: { status }
+    });
+    lastMessageSignature = null;
+    await loadThread();
   } catch (error) {
-    showRetry(error.message || "Could not start your support conversation.");
+    setFeedback(error.message || "Could not update the conversation status.", true);
+    if (statusButton) statusButton.disabled = false;
   }
 }
 
@@ -217,7 +175,7 @@ messageForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const content = messageInput.value.trim();
 
-  if (!content || !hasValidConversationId(conversationId) || !currentUser?.userId) {
+  if (!content || !hasValidConversationId() || !currentUser?.userId) {
     return;
   }
 
@@ -233,7 +191,7 @@ messageForm.addEventListener("submit", async (event) => {
     lastMessageSignature = null;
     await loadThread({ forceScroll: true });
   } catch (error) {
-    setFeedback(error.message || "Could not send your message.", true);
+    setFeedback(error.message || "Could not send your reply.", true);
   } finally {
     setComposerEnabled(conversationIsOpen);
     if (conversationIsOpen) {
@@ -242,10 +200,29 @@ messageForm.addEventListener("submit", async (event) => {
   }
 });
 
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && hasValidConversationId(conversationId)) {
-    loadThread();
-  }
-});
+if (
+  !currentUser?.userId ||
+  currentUser.user_role !== "ADMIN" ||
+  !marketplace.getAccessToken()
+) {
+  marketplace.clearCurrentUser();
+  window.location.href = "login.html";
+} else if (!hasValidConversationId()) {
+  chatHeader.textContent = "Invalid support conversation.";
+  setFeedback("Return to Support Messages and choose a conversation.", true);
+  setComposerEnabled(false);
+} else {
+  loadThread({ forceScroll: true, showLoading: true });
 
-initializeConversation();
+  window.setInterval(() => {
+    if (!document.hidden) {
+      loadThread();
+    }
+  }, POLL_INTERVAL_MS);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      loadThread();
+    }
+  });
+}

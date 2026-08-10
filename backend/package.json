@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check db.js && node --check routes/auth.js && node --check routes/favorite.js && node --check routes/listing.js && node --check routes/message.js && node --check routes/report.js && node --check routes/review.js && node --check routes/user.js && node --check services/emailService.js",
+    "migrate:support": "node scripts/apply-support-migration.js",
+    "test:support": "node scripts/support-flow.js",
+    "check": "node --check server.js && node --check db.js && node --check middleware/auth.js && node --check routes/auth.js && node --check routes/favorite.js && node --check routes/listing.js && node --check routes/message.js && node --check routes/report.js && node --check routes/review.js && node --check routes/support.js && node --check routes/user.js && node --check scripts/apply-support-migration.js && node --check scripts/support-flow.js && node --check services/emailService.js",
     "test": "npm run check && node scripts/smoke.js"
   },
   "keywords": [],

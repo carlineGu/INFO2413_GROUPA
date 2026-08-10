@@ -5,6 +5,7 @@ const crypto = require("node:crypto");
 const jwt = require("jsonwebtoken");
 
 const {sendVerificationEmail} = require("../services/emailService");
+const { signAccessToken } = require("../middleware/auth");
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
@@ -43,6 +44,7 @@ router.post("/login", async (req, res) => {
 
     return res.json({
       message: "Login successful.",
+      accessToken: signAccessToken(user.user_id),
       user: {
         userId: Number(user.user_id),
         firstName: user.first_name,

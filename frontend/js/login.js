@@ -39,7 +39,7 @@ loginForm.addEventListener("submit", async (event) => {
       body: { email, password }
     });
 
-    window.CampusMarketplace.setCurrentUser(data.user);
+    window.CampusMarketplace.setCurrentUser(data.user, data.accessToken);
     showMessage("Login successful. Redirecting...", "success");
     
     // console.log("Data = ", data);

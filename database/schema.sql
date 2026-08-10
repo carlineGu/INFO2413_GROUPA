@@ -135,6 +135,39 @@ CREATE TABLE `Message` (
     INDEX `idx_message_conversation_sent` (`conversation_id`, `sent_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Support conversations are intentionally separate from listing conversations.
+-- Any active admin may answer a user's single reusable support thread.
+CREATE TABLE `Support_conversation` (
+    `support_conversation_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `support_status` ENUM('OPEN', 'CLOSED') NOT NULL DEFAULT 'OPEN',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT `fk_support_conversation_user` FOREIGN KEY (`user_id`)
+        REFERENCES `User` (`user_id`),
+    CONSTRAINT `uq_support_conversation_user` UNIQUE (`user_id`),
+    INDEX `idx_support_conversation_status_updated` (`support_status`, `updated_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `Support_message` (
+    `support_message_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `support_conversation_id` INT UNSIGNED NOT NULL,
+    `sender_id` INT UNSIGNED NOT NULL,
+    `content` VARCHAR(2000) NOT NULL,
+    `sent_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `read_at` TIMESTAMP NULL DEFAULT NULL,
+
+    CONSTRAINT `fk_support_message_conversation` FOREIGN KEY (`support_conversation_id`)
+        REFERENCES `Support_conversation` (`support_conversation_id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_support_message_sender` FOREIGN KEY (`sender_id`)
+        REFERENCES `User` (`user_id`),
+    INDEX `idx_support_message_conversation_sent`
+        (`support_conversation_id`, `sent_at`, `support_message_id`),
+    INDEX `idx_support_message_read`
+        (`read_at`, `support_conversation_id`, `sender_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Report` (
     `report_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `reason` TEXT NOT NULL,

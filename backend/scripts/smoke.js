@@ -72,7 +72,39 @@ async function main() {
     { method: "GET", path: "/api/review", status: 400 },
     { method: "POST", path: "/api/review", status: 400, body: {} },
     { method: "POST", path: "/api/report", status: 400, body: {} },
-    { method: "POST", path: "/api/auth/login", status: 400, body: {} }
+    { method: "POST", path: "/api/auth/login", status: 400, body: {} },
+    { method: "POST", path: "/api/support/conversations", status: 401, body: {} },
+    { method: "GET", path: "/api/support/conversations", status: 401 },
+    {
+      method: "GET",
+      path: "/api/support/conversations/not-a-number?requesterId=1",
+      status: 401
+    },
+    {
+      method: "POST",
+      path: "/api/support/conversations/1/messages",
+      status: 401,
+      body: {}
+    },
+    {
+      method: "POST",
+      path: "/api/support/conversations/1/messages",
+      status: 401,
+      body: { senderId: 1, content: "x".repeat(2001) }
+    },
+    {
+      method: "PATCH",
+      path: "/api/support/conversations/1/read",
+      status: 401,
+      body: {}
+    },
+    {
+      method: "PATCH",
+      path: "/api/support/conversations/1/status",
+      status: 401,
+      body: { status: "CLOSED" }
+    },
+    { method: "GET", path: "/api/support/unread-count", status: 401 }
   ];
 
   try {

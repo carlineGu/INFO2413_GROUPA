@@ -29,12 +29,20 @@ Do not commit `backend/.env`, uploaded listing photos, or `backend/node_modules`
 
 `database/schema.sql` is for a fresh database; do not run it over an existing one. The application can read both the legacy and current `Listing_image` column layouts. Before changing an existing photo table, run `database/allow photos for listings.sql` as a read-only audit, make a verified backup, and prepare an explicit migration. Restart the server after a photo-schema migration so its cached column capabilities are refreshed.
 
+To enable user-to-admin support chat on an existing database, back up the database and run `npm run migrate:support` from `backend` (or run the additive `database/add_support_conversations.sql` migration directly). It creates dedicated support tables without changing marketplace conversations.
+
 ## Checks
 
 Run the backend syntax suite from `backend`:
 
 ```powershell
 npm test
+```
+
+After applying the support migration, run its database-backed round-trip check from `backend`:
+
+```powershell
+npm run test:support
 ```
 
 Check static page references from the project root:
@@ -50,6 +58,7 @@ The main manual workflow is:
 3. Browse the listing, favorite it from a different account, and open the seller profile.
 4. Start a conversation and send a message.
 5. Submit a seller review or listing report from the listing page.
+6. Open **Report an Issue**, send a support message, and reply from **Admin > Support Messages**.
 
 ## Code conventions
 
@@ -70,4 +79,4 @@ The main manual workflow is:
 
 ## Security note
 
-Email verification is implemented, but this class project currently identifies the signed-in user from browser storage and request `userId` values. Before a real deployment, add server-issued authentication tokens or secure sessions and authorize every write operation from that server-side identity.
+Support messaging uses a signed login token and checks the user's current role and account status in the database. Other legacy marketplace routes still identify users from browser storage and request `userId` values; before a real deployment, move every protected route to the same token-based authorization model or secure server sessions.
