@@ -15,7 +15,7 @@ loginForm.addEventListener("submit", async (event) => {
   const password = passwordInput.value;
   let isValid = true;
 
-  if (!email) {
+  if (!email && email !== "admin") {
     emailError.textContent = "Please enter your email.";
     isValid = false;
   }
@@ -41,10 +41,20 @@ loginForm.addEventListener("submit", async (event) => {
 
     window.CampusMarketplace.setCurrentUser(data.user);
     showMessage("Login successful. Redirecting...", "success");
+    
+    // console.log("Data = ", data);
+    // console.log("User Role = ", data.user.user_role);
 
-    setTimeout(() => {
-      window.location.href = "profile.html";
-    }, 800);
+    if(data.user.user_role === "ADMIN") {
+      setTimeout(() => {
+        window.location.href = "admin_dashboard.html";
+      }, 800);
+    }
+    else {
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 800);
+    }
   } catch (error) {
     console.error("Login request failed:", error);
     showMessage(error.message || "Could not connect to the backend server.", "error");

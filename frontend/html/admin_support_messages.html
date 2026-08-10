@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages | Campus Marketplace</title>
+  <link rel="stylesheet" href="../css/messages.css" />
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-page">
+    <header class="admin-header">
+        <div class="admin-header-left">
+            <button type="button" id="adminMenuButton" aria-label="Menu" aria-controls="adminSideMenu" aria-expanded="false">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="admin-header-titles">
+                <h1>Support Messages</h1>
+                <p>Campus Marketplace</p>
+            </div>
+        </div>
+        <button type="button" id="signOutButton" class="sign-out-button">Sign Out</button>
+    </header>
+    
+    <main class="admin-main">
+        <div class="page-title">
+            <h2>Support Messages</h2>
+            <p>Manage support messages and communications across the platform.</p>
+        </div>
+
+        <div id="chatList"></div>
+        
+        
+        
+    </main>
+        <script src="../js/api.js"></script>
+        <script src="../js/admin_navbar.js"></script>
+        <script src="../js/admin_messages.js"></script>
+
+</body>
+</html>

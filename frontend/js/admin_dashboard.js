@@ -6,9 +6,11 @@
   const statPendingReports = document.getElementById("statPendingReports");
   const statOpenMessages = document.getElementById("statOpenMessages");
   const statTotalReports = document.getElementById("statTotalReports");
-  const signOutButton = document.getElementById("signOutButton");
+  // const signOutButton = document.getElementById("signOutButton");
 
   async function loadListingsAndReports() {
+
+
     try {
       const [listings, reportData, userData, messageData] = await Promise.all([
         CampusMarketplace.request("listing"),
@@ -43,12 +45,12 @@
     }
   }
 
-  if (signOutButton) {
-    signOutButton.addEventListener("click", () => {
-      CampusMarketplace.clearCurrentUser();
-      window.location.href = "login.html";
-    });
-  }
+  // if (signOutButton) {
+  //   signOutButton.addEventListener("click", () => {
+  //     CampusMarketplace.clearCurrentUser();
+  //     window.location.href = "login.html";
+  //   });
+  // }
 
   loadListingsAndReports();
 })();

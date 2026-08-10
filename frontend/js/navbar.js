@@ -120,6 +120,7 @@
           <a href="message.html" data-nav-link>Messages</a>
           <a href="create_listing.html" data-nav-link>Create Listing</a>
           <a href="profile.html" data-nav-link>Account / Profile</a>
+          <a href="user_support.html" data-nav-link id="cmp-user-support-link">Report an Issue</a>
         </aside>
       </header>
     `;
@@ -348,6 +349,31 @@
       updateNotifications();
       renderNotifications();
     }, 5000); // refresh every 5 seconds
+
+    async function startConversationSupport() {
+      if (!currentUser?.userId) {
+        window.location.href = "login.html";
+        return;
+      }
+      
+      console.log("Starting support conversation for user:", currentUser.userId);
+      try {
+        const result = await marketplace.request("message/start", {
+          method: "POST",
+          body: {listingId: "-1", buyerId: currentUser.userId }
+        });
+        console.log("Support conversation started with ID:", result.conversationId);
+        console.log("Listing ID sent:", "-1", "Buyer ID sent:", currentUser.userId);
+        window.location.href = `chat.html?conversationId=${result.conversationId}`;
+      } catch (error) {
+        console.error("Failed to start support conversation:", error);
+      }
+    }
+    
+    document.getElementById("cmp-user-support-link").addEventListener("click", async (event) => {
+      event.preventDefault();
+      await startConversationSupport();
+    });
   }
 
   if (document.readyState === "loading") {

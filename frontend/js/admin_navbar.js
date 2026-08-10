@@ -1,7 +1,15 @@
 (function initializeAdminSideMenu() {
   "use strict";
-
+  const marketplace = window.CampusMarketplace;
+  const user = marketplace.getCurrentUser();
   const menuButton = document.getElementById("adminMenuButton");
+  const signOutButton = document.getElementById("signOutButton");
+
+  if (!user || !user.userId || user.user_role !== "ADMIN") {
+    console.warn("Unauthorized access to admin side menu. Redirecting to login page.");
+    window.location.href = "login.html";
+    return;
+  }
   if (!menuButton) return;
 
   const menuItems = [
@@ -113,6 +121,13 @@
     } catch (error) {
       // Support messages may not be set up yet - fail quietly and leave the badge hidden.
     }
+  }
+
+  if (signOutButton) {
+    signOutButton.addEventListener("click", () => {
+      CampusMarketplace.clearCurrentUser();
+      window.location.href = "login.html";
+    });
   }
 
   loadReportsBadge();

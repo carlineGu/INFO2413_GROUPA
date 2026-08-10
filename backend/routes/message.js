@@ -177,7 +177,8 @@ router.post("/start", async (req, res) => {
       [listingId]
     );
 
-    if (listingRows.length === 0) {
+    console.log("Listing ID:", listingId);
+    if (listingRows.length === 0&& listingId !== "-1") {
       return res.status(404).json({ message: "Listing not found." });
     }
 

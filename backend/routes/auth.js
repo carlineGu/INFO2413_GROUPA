@@ -18,7 +18,7 @@ router.post("/login", async (req, res) => {
     const normalizedEmail = email.trim().toLowerCase();
 
     const [users] = await db.query(
-      `SELECT user_id, first_name, last_name, email_addr, password_hash, account_status
+      `SELECT user_id, first_name, last_name, email_addr, password_hash, account_status, user_role
        FROM User
        WHERE email_addr = ?`,
       [normalizedEmail]
@@ -49,7 +49,9 @@ router.post("/login", async (req, res) => {
         lastName: user.last_name,
         fullName: `${user.first_name} ${user.last_name}`.trim(),
         email: user.email_addr,
-        accountStatus: user.account_status
+        accountStatus: user.account_status,
+        user_role: user.user_role
+
       }
     });
   } catch (error) {
