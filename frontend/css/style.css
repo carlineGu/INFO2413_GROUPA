@@ -9,17 +9,17 @@
   z-index: 5;
   width: 34px;
   height: 34px;
-  border: 1px solid #704050;
+  border: 1px solid #222;
   border-radius: 50%;
   background: #fff;
-  color: #704050;
+  color: #111;
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
 }
 
 .favorite-heart.favorited {
-  color: #704050;
+  color: #d11a2a;
 }
 
 body {
@@ -58,7 +58,7 @@ body {
   width: 350px;
   height: auto;  
 
-  border: 1px solid #704050;
+  border: 1px solid #333;
   object-fit: cover;
 }
 
@@ -90,7 +90,7 @@ body {
   min-height: 42px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #704050;
+  border: 1px solid #111;
   text-decoration: none;
   font-size: 14px;
   transition:
@@ -99,21 +99,21 @@ body {
 }
 
 .primary-button {
-  background: #704050;
+  background: #000;
   color: #fff;
 }
 
 .primary-button:hover {
-  background: rgba(112, 64, 80, 0.85);
+  background: #333;
 }
 
 .secondary-button {
   background: #fff;
-  color: #704050;
+  color: #111;
 }
 
 .secondary-button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #f1f1f1;
 }
 
 @media (max-width: 650px) {
@@ -164,7 +164,7 @@ body {
 
 .register-form {
   padding: 26px 24px 22px;
-  border: 1px solid #704050;
+  border: 1px solid #222;
 }
 
 .form-group {
@@ -181,7 +181,7 @@ body {
   width: 100%;
   height: 38px;
   padding: 0 12px;
-  border: 1px solid #704050;
+  border: 1px solid #222;
   font-size: 14px;
 }
 
@@ -190,7 +190,7 @@ body {
 }
 
 .form-group input:focus {
-  outline: 2px solid #704050;
+  outline: 2px solid #555;
   outline-offset: 1px;
 }
 
@@ -212,15 +212,15 @@ body {
 .register-button {
   width: 100%;
   height: 38px;
-  border: 1px solid #704050;
-  background: #704050;
+  border: 1px solid #000;
+  background: #000;
   color: #fff;
   font-size: 14px;
   cursor: pointer;
 }
 
 .register-button:hover {
-  background: rgba(112, 64, 80, 0.85);
+  background: #333;
 }
 
 .login-link {
@@ -230,7 +230,7 @@ body {
 }
 
 .login-link a {
-  color: #704050;
+  color: #000;
 }
 
 .form-message {
@@ -276,17 +276,4 @@ body {
   .register-form {
     padding: 22px 18px;
   }
-}
-
-/* Bootstrap button overrides for KPU burgundy */
-.btn-dark {
-  background-color: #704050 !important;
-  border-color: #704050 !important;
-  color: #fff !important;
-}
-
-.btn-dark:hover {
-  background-color: rgba(112, 64, 80, 0.85) !important;
-  border-color: rgba(112, 64, 80, 0.85) !important;
-  color: #fff !important;
 }
