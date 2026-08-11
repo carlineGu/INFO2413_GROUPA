@@ -358,6 +358,16 @@ function Profile() {
             </div>
 
             <div className="border-t border-black pt-4 mt-4">
+              <div className="text-xs font-semibold mb-2">Security</div>
+              <a
+                href="forgot-password.html"
+                className="inline-block border border-black px-3 py-1.5 text-xs bg-white transition-colors duration-200 hover:!bg-[#4A0E1A] hover:!text-[#FDFBF6]"
+              >
+                Forgot your password?
+              </a>
+            </div>
+
+            <div className="border-t border-black pt-4 mt-4">
               <div className="text-xs font-semibold mb-2">Department</div>
               <select
                 value={department}
@@ -365,10 +375,15 @@ function Profile() {
                 className="border border-black px-2 py-1.5 text-xs bg-white w-full"
               >
                 <option value="No Department">No Department</option>
-                <option value="Computer Science">Computer Science</option>
                 <option value="Business">Business</option>
-                <option value="Engineering">Engineering</option>
+                <option value="Computer Information Systems / IT">Computer Information Systems / IT</option>
+                <option value="Nursing">Nursing</option>
+                <option value="Criminology">Criminology</option>
+                <option value="Design">Design</option>
+                <option value="Science">Science</option>
+                <option value="Arts">Arts</option>
                 <option value="General">General</option>
+                <option value="Other">Other</option>
               </select>
               {departmentStatus === "saving" && (
                 <p className="text-xs text-gray-500 mt-2">Saving...</p>

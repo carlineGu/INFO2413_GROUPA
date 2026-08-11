@@ -4,9 +4,10 @@ const db = require("../db");
 const crypto = require("node:crypto");
 const jwt = require("jsonwebtoken");
 
-const {sendVerificationEmail} = require("../services/emailService");
+const { sendPasswordResetEmail, sendVerificationEmail } = require("../services/emailService");
 const { signAccessToken } = require("../middleware/auth");
 const router = express.Router();
+const PASSWORD_RESET_SECRET = process.env.PASSWORD_RESET_SECRET || process.env.EMAIL_VERIFICATION_SECRET;
 
 router.post("/login", async (req, res) => {
   try {
@@ -164,6 +165,110 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/request-password-reset", async (req, res) => {
+  try {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+
+    const [users] = await db.query(
+      `SELECT user_id, first_name, last_name, email_addr
+       FROM User
+       WHERE email_addr = ?
+       LIMIT 1`,
+      [email]
+    );
+
+    if (users.length === 0) {
+      return res.status(200).json({
+        message: "If an account exists for that email, a password reset link has been sent."
+      });
+    }
+
+    const user = users[0];
+    const resetToken = jwt.sign(
+      {
+        user_id: user.user_id,
+        email_addr: user.email_addr
+      },
+      PASSWORD_RESET_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    const resetLink = `${process.env.APP_URL}/html/reset-password.html?token=${encodeURIComponent(resetToken)}`;
+
+    await sendPasswordResetEmail(
+      user.email_addr,
+      `${user.first_name} ${user.last_name}`.trim(),
+      resetLink
+    );
+
+    return res.status(200).json({
+      message: "If an account exists for that email, a password reset link has been sent."
+    });
+  } catch (error) {
+    console.error("Password reset request error:", error);
+    return res.status(500).json({ message: "Could not send the password reset email." });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { token, password } = req.body || {};
+
+    if (!token) {
+      return res.status(400).json({ message: "Reset token is missing." });
+    }
+
+    if (!password || String(password).length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters long." });
+    }
+
+    const payload = jwt.verify(token, PASSWORD_RESET_SECRET);
+    const email = String(payload.email_addr || "").trim().toLowerCase();
+
+    if (!email) {
+      return res.status(400).json({ message: "Invalid reset token." });
+    }
+
+    const [users] = await db.query(
+      `SELECT user_id, email_addr
+       FROM User
+       WHERE user_id = ?
+         AND email_addr = ?
+       LIMIT 1`,
+      [payload.user_id, email]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "User not found for this reset token." });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    await db.query(
+      `UPDATE User
+       SET password_hash = ?
+       WHERE user_id = ?
+         AND email_addr = ?`,
+      [passwordHash, payload.user_id, email]
+    );
+
+    return res.status(200).json({
+      message: "Password reset successful. Please sign in with your new password."
+    });
+  } catch (error) {
+    if (error && error.name === "TokenExpiredError") {
+      return res.status(400).json({ message: "This reset link has expired. Please request a new one." });
+    }
+
+    console.error("Password reset error:", error);
+    return res.status(400).json({ message: "Invalid or expired reset token." });
+  }
+});
+
 router.get("/verify-email", async (req, res) => {
   try {
     const token = req.query.token;
@@ -249,6 +354,5 @@ router.get("/verify-email", async (req, res) => {
     `);
   }
 });
-
 
 module.exports = router;

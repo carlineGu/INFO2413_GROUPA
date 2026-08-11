@@ -16,6 +16,7 @@ CREATE TABLE `User` (
     `email_addr` VARCHAR(100) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
     `account_status` ENUM('SUSPENDED', 'ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'INACTIVE',
+    `department` VARCHAR(100) NOT NULL DEFAULT 'No Department',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

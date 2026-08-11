@@ -130,7 +130,22 @@
               <option value="Design">Design</option>
               <option value="Science">Science</option>
               <option value="Arts">Arts</option>
+              <option value="General">General</option>
               <option value="Other">Other</option>
+            </select>
+            <select id="cmp-search-location" class="cmp-search-select" name="location" aria-label="Location">
+              <option value="">All Locations</option>
+              <option value="Richmond Campus">Richmond Campus</option>
+              <option value="Surrey Campus">Surrey Campus</option>
+              <option value="Langley Campus">Langley Campus</option>
+            </select>
+            <select id="cmp-search-price" class="cmp-search-select" name="price" aria-label="Price">
+              <option value="">Any Price</option>
+              <option value="under-25">Under $25</option>
+              <option value="25-50">$25 - $50</option>
+              <option value="50-100">$50 - $100</option>
+              <option value="100-200">$100 - $200</option>
+              <option value="200-plus">$200+</option>
             </select>
             <select id="cmp-search-condition" class="cmp-search-select" name="condition" aria-label="Condition">
               <option value="">Any Condition</option>
@@ -181,10 +196,14 @@
     const _si = navbarContainer.querySelector("#cmp-search-input");
     const _sc = navbarContainer.querySelector("#cmp-search-category");
     const _sd = navbarContainer.querySelector("#cmp-search-department");
+    const _sl = navbarContainer.querySelector("#cmp-search-location");
+    const _sp2 = navbarContainer.querySelector("#cmp-search-price");
     const _sn = navbarContainer.querySelector("#cmp-search-condition");
     if (_si) _si.value = _sp.get("q") || "";
     if (_sc) _sc.value = _sp.get("category") || "";
     if (_sd) _sd.value = _sp.get("department") || "";
+    if (_sl) _sl.value = _sp.get("location") || "";
+    if (_sp2) _sp2.value = _sp.get("price") || "";
     if (_sn) _sn.value = _sp.get("condition") || "";
 
     const menuButton = navbarContainer.querySelector("#cmp-menu-button");

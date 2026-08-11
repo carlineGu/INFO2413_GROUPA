@@ -6,11 +6,11 @@ USE `campus_marketplace`;
 START TRANSACTION;
 
 INSERT INTO `User`
-    (`user_id`, `first_name`, `last_name`, `user_role`, `email_addr`, `password_hash`, `account_status`)
+    (`user_id`, `first_name`, `last_name`, `user_role`, `email_addr`, `password_hash`, `account_status`, `department`)
 VALUES
-    (1, 'Joseph', 'Yang', 'ADMIN', 'sample@gmail.com', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE'),
-    (2, 'Mary', 'Chen', 'USER', 'mary@example.com', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE'),
-    (3, 'Varleen', 'Singh', 'USER', 'varleen@example.com', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE');
+    (1, 'Joseph', 'Yang', 'ADMIN', 'sample@gmail.com', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE', 'General'),
+    (2, 'Mary', 'Chen', 'USER', 'mary@example.com', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE', 'Business'),
+    (3, 'Varleen', 'Singh', 'USER', 'varleen@example.com', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE', 'Science');
 
 INSERT INTO `Category` (`category_id`, `category_name`)
 VALUES
@@ -20,9 +20,15 @@ VALUES
 
 INSERT INTO `Department` (`department_id`, `department_name`)
 VALUES
-    (1, 'Computer Science'),
-    (2, 'Business'),
-    (3, 'General');
+    (1, 'Business'),
+    (2, 'Computer Information Systems / IT'),
+    (3, 'Nursing'),
+    (4, 'Criminology'),
+    (5, 'Design'),
+    (6, 'Science'),
+    (7, 'Arts'),
+    (8, 'General'),
+    (9, 'Other');
 
 INSERT INTO `Location` (`location_id`, `location_name`)
 VALUES

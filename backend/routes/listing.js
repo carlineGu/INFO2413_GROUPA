@@ -12,9 +12,9 @@ const MAX_TOTAL_PHOTO_BYTES = MAX_PHOTOS * MAX_PHOTO_BYTES;
 const IMAGES_DIR = path.join(__dirname, "../../frontend/pictures");
 const ALLOWED_CONDITIONS = new Set(["NEW", "LIKE NEW", "GOOD", "FAIR", "USED"]);
 const LEGACY_DEPARTMENTS = {
-  1: "Computer Science",
-  2: "Business",
-  3: "Engineering"
+  1: "Business",
+  2: "Computer Information Systems / IT",
+  3: "General"
 };
 let imageSchemaCapabilitiesPromise;
 

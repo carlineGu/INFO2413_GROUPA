@@ -17,6 +17,7 @@ function normalizeListingSummary(rawListing) {
     status: rawListing.status ?? rawListing.listing_status ?? "ACTIVE",
     categoryName: rawListing.categoryName ?? rawListing.category_name ?? "",
     departmentName: rawListing.departmentName ?? rawListing.department_name ?? "",
+    locationName: rawListing.locationName ?? rawListing.location_name ?? "",
     condition: rawListing.condition ?? rawListing.listing_condition ?? "",
     photo: rawListing.photo ?? rawListing.image_url ?? null,
     isFavorited: Boolean(rawListing.isFavorited ?? rawListing.favorited)
@@ -27,7 +28,7 @@ function matchesFilters(listing, filters) {
   if (!filters) return true;
 
   if (filters.q) {
-    const haystack = [listing.title, listing.description, listing.categoryName, listing.departmentName]
+    const haystack = [listing.title, listing.description, listing.categoryName, listing.departmentName, listing.locationName]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
@@ -49,6 +50,24 @@ function matchesFilters(listing, filters) {
     if (departmentName !== filters.department.toLowerCase()) {
       return false;
     }
+  }
+
+  if (filters.location) {
+    const locationName = (listing.locationName || "").toLowerCase();
+    if (locationName !== filters.location.toLowerCase()) {
+      return false;
+    }
+  }
+
+  if (filters.price) {
+    const price = Number(listing.price) || 0;
+    const range = filters.price;
+
+    if (range === "under-25" && !(price < 25)) return false;
+    if (range === "25-50" && !(price >= 25 && price <= 50)) return false;
+    if (range === "50-100" && !(price > 50 && price <= 100)) return false;
+    if (range === "100-200" && !(price > 100 && price <= 200)) return false;
+    if (range === "200-plus" && !(price > 200)) return false;
   }
 
   if (filters.condition) {
@@ -167,6 +186,8 @@ async function loadListings() {
     q: (params.get("q") || "").trim().toLowerCase(),
     category: params.get("category") || "",
     department: params.get("department") || "",
+    location: params.get("location") || "",
+    price: params.get("price") || "",
     condition: params.get("condition") || ""
   };
   const query = currentUser?.userId ? `?viewerId=${currentUser.userId}` : "";
@@ -178,7 +199,7 @@ async function loadListings() {
     container.innerHTML = "";
 
     if (filteredListings.length === 0) {
-      const searchText = filters.q || filters.category || filters.department || filters.condition
+      const searchText = filters.q || filters.category || filters.department || filters.location || filters.price || filters.condition
         ? "No listings match your search filters."
         : "No active listings are available yet.";
       container.innerHTML = `<p class="text-muted">${marketplace.escapeHtml(searchText)}</p>`;

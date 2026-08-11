@@ -5,13 +5,18 @@ const db = require("../db");
 
 const router = express.Router();
 
-// Keep this in sync with the <select> options in profile.html.
+// Keep this in sync with the department values used across the site.
 const ALLOWED_DEPARTMENTS = [
   "No Department",
-  "Computer Science",
   "Business",
-  "Engineering",
-  "General"
+  "Computer Information Systems / IT",
+  "Nursing",
+  "Criminology",
+  "Design",
+  "Science",
+  "Arts",
+  "General",
+  "Other"
 ];
 
 function toPrivateUserDto(user) {

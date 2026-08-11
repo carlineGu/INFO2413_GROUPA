@@ -288,6 +288,11 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   color: #2e7d32;
 }
+
+.form-message.info {
+  display: block;
+  color: #5A332E;
+}
 .field-error {
   min-height: 16px;
   margin: 5px 0 0;

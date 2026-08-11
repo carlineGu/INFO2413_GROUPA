@@ -17,25 +17,25 @@ async function sendVerificationEmail(email, fullName, verificationLink) {
     subject: "Verify your Campus Marketplace account",
     text: `
 Hello ${fullName},
-
+ 
 Please verify your Campus Marketplace account by opening this link:
-
+ 
 ${verificationLink}
-
+ 
 This link expires in 30 days.
-
+ 
 If you did not create this account, you can ignore this email.
     `,
     html: `
       <h2>Verify your account</h2>
-
+ 
       <p>Hello ${fullName},</p>
-
+ 
       <p>
         Please verify your Campus Marketplace account by clicking the
         button below.
       </p>
-
+ 
       <p>
         <a
           href="${verificationLink}"
@@ -50,9 +50,9 @@ If you did not create this account, you can ignore this email.
           Verify email
         </a>
       </p>
-
+ 
       <p>This link expires in 30 days.</p>
-
+ 
       <p>
         If you did not create this account, you can ignore this email.
       </p>
@@ -60,6 +60,58 @@ If you did not create this account, you can ignore this email.
   });
 }
 
+async function sendPasswordResetEmail(email, fullName, resetLink) {
+ await transporter.sendMail({
+   from: `"Campus Marketplace" <${process.env.EMAIL_USER}>`,
+   to: email,
+   subject: "Reset your Campus Marketplace password",
+   text: `
+Hello ${fullName},
+
+We received a request to reset your Campus Marketplace password.
+
+Open the link below to set a new password:
+
+${resetLink}
+
+This link expires in 1 hour.
+
+If you did not request this, you can safely ignore this email.
+   `,
+   html: `
+     <h2>Reset your password</h2>
+
+     <p>Hello ${fullName},</p>
+
+     <p>
+       We received a request to reset your Campus Marketplace password.
+     </p>
+
+     <p>
+       <a
+         href="${resetLink}"
+         style="
+           display:inline-block;
+           padding:12px 20px;
+           background:#4A0E1A;
+           color:#fff;
+           text-decoration:none;
+         "
+       >
+         Reset password
+       </a>
+     </p>
+
+     <p>This link expires in 1 hour.</p>
+
+     <p>
+       If you did not request this, you can safely ignore this email.
+     </p>
+   `
+ });
+}
+
 module.exports = {
-  sendVerificationEmail
+ sendPasswordResetEmail,
+ sendVerificationEmail
 };
