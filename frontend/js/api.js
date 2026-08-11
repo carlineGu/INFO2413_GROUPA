@@ -23,7 +23,8 @@
           .join(" "),
       email: rawUser.email ?? rawUser.email_addr ?? "",
       accountStatus: rawUser.accountStatus ?? rawUser.account_status ?? "",
-      user_role: rawUser.user_role ?? rawUser.userRole ?? ""
+      user_role: rawUser.user_role ?? rawUser.userRole ?? "",
+      department: rawUser.department ?? "No Department"
     };
   }
 
