@@ -186,7 +186,7 @@ function Profile() {
               onClick={() => {
                 window.CampusMarketplace.clearCurrentUser();
               }}
-              className="border border-black px-2 py-1 text-xs h-fit text-center"
+              className="border border-black px-2 py-1 text-xs h-fit text-center hover:bg-[#4A0E1A] hover:text-[#FDFBF6]"
             >
               Log out
             </a>
@@ -296,7 +296,7 @@ function Profile() {
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="border border-black px-3 py-1.5 text-xs bg-white text-center cursor-pointer">
+                  <label className="border border-black px-3 py-1.5 text-xs bg-white text-center cursor-pointer transition-colors duration-200 hover:!bg-[#4A0E1A] hover:!text-[#FDFBF6]">
                     Upload Photo
                     <input
                       type="file"
@@ -308,12 +308,13 @@ function Profile() {
                   {profilePic && (
                     <button
                       onClick={handleRemoveProfilePic}
-                      className="border border-black px-3 py-1.5 text-xs bg-white"
+                      className="border border-black px-3 py-1.5 text-xs bg-white transition-colors duration-200 hover:!bg-[#4A0E1A] hover:!text-[#FDFBF6]"
                     >
                       Remove Photo
                     </button>
                   )}
                 </div>
+                
               </div>
             </div>
             <div className="border-t border-black pt-4">

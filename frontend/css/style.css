@@ -126,10 +126,15 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .secondary-button {
-  background: #f9f7ee;
+  background: #fdfbf6;
   color: #4A0E1A;
 }
 
+.secondary-button:hover {
+  background: #4A0E1A;
+  color: #fdfbf6;
+  
+}
 
 
 .btn-dark,
