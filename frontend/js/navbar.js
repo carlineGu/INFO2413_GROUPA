@@ -103,6 +103,47 @@
           </div>
         </nav>
 
+        <div class="cmp-search-bar-row">
+          <form id="cmp-search-form" class="cmp-search-form" role="search" action="index.html" method="get">
+            <input
+              id="cmp-search-input"
+              class="cmp-search-input"
+              type="search"
+              name="q"
+              placeholder="Search listings…"
+              aria-label="Search listings"
+              autocomplete="off"
+            />
+            <select id="cmp-search-category" class="cmp-search-select" name="category" aria-label="Category">
+              <option value="">All Categories</option>
+              <option value="Books & Textbooks">Books & Textbooks</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Dorm & Furniture">Dorm & Furniture</option>
+              <option value="Clothing & Accessories">Clothing & Accessories</option>
+            </select>
+            <select id="cmp-search-department" class="cmp-search-select" name="department" aria-label="Department">
+              <option value="">All Departments</option>
+              <option value="Business">Business</option>
+              <option value="Computer Information Systems / IT">Computer Information Systems / IT</option>
+              <option value="Nursing">Nursing</option>
+              <option value="Criminology">Criminology</option>
+              <option value="Design">Design</option>
+              <option value="Science">Science</option>
+              <option value="Arts">Arts</option>
+              <option value="Other">Other</option>
+            </select>
+            <select id="cmp-search-condition" class="cmp-search-select" name="condition" aria-label="Condition">
+              <option value="">Any Condition</option>
+              <option value="NEW">New</option>
+              <option value="LIKE NEW">Like New</option>
+              <option value="GOOD">Good</option>
+              <option value="FAIR">Fair</option>
+              <option value="USED">Used</option>
+            </select>
+            <button type="submit" class="cmp-search-button">Search</button>
+          </form>
+        </div>
+
         <div id="cmp-menu-overlay" class="cmp-menu-overlay" hidden></div>
 
         <aside
@@ -134,6 +175,17 @@
         </aside>
       </header>
     `;
+
+    // Pre-fill search bar from current page URL params
+    const _sp = new URLSearchParams(window.location.search);
+    const _si = navbarContainer.querySelector("#cmp-search-input");
+    const _sc = navbarContainer.querySelector("#cmp-search-category");
+    const _sd = navbarContainer.querySelector("#cmp-search-department");
+    const _sn = navbarContainer.querySelector("#cmp-search-condition");
+    if (_si) _si.value = _sp.get("q") || "";
+    if (_sc) _sc.value = _sp.get("category") || "";
+    if (_sd) _sd.value = _sp.get("department") || "";
+    if (_sn) _sn.value = _sp.get("condition") || "";
 
     const menuButton = navbarContainer.querySelector("#cmp-menu-button");
     const closeMenuButton = navbarContainer.querySelector("#cmp-close-menu-button");

@@ -15,9 +15,50 @@ function normalizeListingSummary(rawListing) {
     description: rawListing.description ?? rawListing.listing_description ?? "",
     price: Number(rawListing.price),
     status: rawListing.status ?? rawListing.listing_status ?? "ACTIVE",
+    categoryName: rawListing.categoryName ?? rawListing.category_name ?? "",
+    departmentName: rawListing.departmentName ?? rawListing.department_name ?? "",
+    condition: rawListing.condition ?? rawListing.listing_condition ?? "",
     photo: rawListing.photo ?? rawListing.image_url ?? null,
     isFavorited: Boolean(rawListing.isFavorited ?? rawListing.favorited)
   };
+}
+
+function matchesFilters(listing, filters) {
+  if (!filters) return true;
+
+  if (filters.q) {
+    const haystack = [listing.title, listing.description, listing.categoryName, listing.departmentName]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    if (!haystack.includes(filters.q)) {
+      return false;
+    }
+  }
+
+  if (filters.category) {
+    const categoryName = (listing.categoryName || "").toLowerCase();
+    if (categoryName !== filters.category.toLowerCase()) {
+      return false;
+    }
+  }
+
+  if (filters.department) {
+    const departmentName = (listing.departmentName || "").toLowerCase();
+    if (departmentName !== filters.department.toLowerCase()) {
+      return false;
+    }
+  }
+
+  if (filters.condition) {
+    const condition = (listing.condition || "").toUpperCase();
+    if (condition !== filters.condition.toUpperCase()) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 function setConnectionMessage(message, isError = false) {
@@ -121,19 +162,30 @@ async function loadListings() {
   if (!container) return;
 
   const currentUser = marketplace.getCurrentUser();
+  const params = new URLSearchParams(window.location.search);
+  const filters = {
+    q: (params.get("q") || "").trim().toLowerCase(),
+    category: params.get("category") || "",
+    department: params.get("department") || "",
+    condition: params.get("condition") || ""
+  };
   const query = currentUser?.userId ? `?viewerId=${currentUser.userId}` : "";
 
   try {
     const result = await marketplace.request(`listing${query}`);
     const listings = Array.isArray(result) ? result.map(normalizeListingSummary) : [];
+    const filteredListings = listings.filter((listing) => matchesFilters(listing, filters));
     container.innerHTML = "";
 
-    if (listings.length === 0) {
-      container.innerHTML = `<p class="text-muted">No active listings are available yet.</p>`;
+    if (filteredListings.length === 0) {
+      const searchText = filters.q || filters.category || filters.department || filters.condition
+        ? "No listings match your search filters."
+        : "No active listings are available yet.";
+      container.innerHTML = `<p class="text-muted">${marketplace.escapeHtml(searchText)}</p>`;
       return;
     }
 
-    listings.forEach((listing) => container.appendChild(renderListingCard(listing, currentUser)));
+    filteredListings.forEach((listing) => container.appendChild(renderListingCard(listing, currentUser)));
   } catch (error) {
     console.error("Load listings error:", error);
     container.innerHTML = `<p class="text-danger">${marketplace.escapeHtml(error.message || "Listings could not be loaded.")}</p>`;
