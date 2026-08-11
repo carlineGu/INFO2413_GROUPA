@@ -293,6 +293,84 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   color: #5A332E;
 }
+
+.forgot-password-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: #f9f7ee;
+}
+
+.forgot-password-container {
+  width: min(100%, 560px);
+  margin: 0 auto;
+}
+
+.forgot-password-header {
+  margin: 0 0 18px;
+}
+
+.forgot-password-intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #5A332E;
+  font-weight: 500;
+}
+
+.forgot-password-card {
+  padding: 18px 20px 20px;
+  border: 1px solid #D8D0BF;
+  background: transparent;
+}
+
+.forgot-password-form .form-group {
+  margin-bottom: 14px;
+}
+
+.forgot-password-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #5A332E;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.forgot-password-form input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #D8D0BF;
+  background: #edf5ff;
+  color: #5A332E;
+  font-size: 17px;
+  box-sizing: border-box;
+}
+
+.forgot-password-form .field-error {
+  min-height: 18px;
+  margin: 8px 0 0;
+  color: #c62828;
+  font-size: 14px;
+}
+
+.forgot-password-form .register-button {
+  margin-top: 6px;
+  height: 44px;
+  font-size: 17px;
+}
+
+.forgot-password-link {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: #5A332E;
+}
+
+.forgot-password-link a {
+  color: #5A332E;
+  text-decoration: none;
+}
+
 .field-error {
   min-height: 16px;
   margin: 5px 0 0;

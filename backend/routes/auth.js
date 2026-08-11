@@ -182,8 +182,8 @@ router.post("/request-password-reset", async (req, res) => {
     );
 
     if (users.length === 0) {
-      return res.status(200).json({
-        message: "If an account exists for that email, a password reset link has been sent."
+      return res.status(404).json({
+        message: "This email does not have an account with us."
       });
     }
 

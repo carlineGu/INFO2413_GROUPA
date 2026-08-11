@@ -33,7 +33,10 @@ form.addEventListener("submit", async (event) => {
     form.reset();
   } catch (error) {
     console.error("Password reset request failed:", error);
-    showMessage(error.message || "Could not send the reset email.", "error");
+    const message = error?.message === "This email does not have an account with us."
+      ? "This email does not have an account with us"
+      : error.message || "Could not send the reset email.";
+    showMessage(message, "error");
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = "Send reset link";
