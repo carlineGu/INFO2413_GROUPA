@@ -9,14 +9,14 @@ const router = express.Router();
 const ALLOWED_DEPARTMENTS = [
   "No Department",
   "Business",
-  "Computer Information Systems / IT",
   "Nursing",
   "Criminology",
-  "Design",
-  "Science",
+  "Computing Science",
   "Arts",
-  "General",
-  "Other"
+  "Health Sciences",
+  "Trades & Technology",
+  "Design",
+  "Education"
 ];
 
 function toPrivateUserDto(user) {

@@ -127,18 +127,20 @@
               <option value="Electronics">Electronics</option>
               <option value="Dorm & Furniture">Dorm & Furniture</option>
               <option value="Clothing & Accessories">Clothing & Accessories</option>
+              <option value="School Supplies">School Supplies</option>
+              <option value="Services">Services</option>
             </select>
             <select id="cmp-search-department" class="cmp-search-select" name="department" aria-label="Department">
               <option value="">All Departments</option>
               <option value="Business">Business</option>
-              <option value="Computer Information Systems / IT">Computer Information Systems / IT</option>
               <option value="Nursing">Nursing</option>
               <option value="Criminology">Criminology</option>
-              <option value="Design">Design</option>
-              <option value="Science">Science</option>
+              <option value="Computing Science">Computing Science</option>
               <option value="Arts">Arts</option>
-              <option value="General">General</option>
-              <option value="Other">Other</option>
+              <option value="Health Sciences">Health Sciences</option>
+              <option value="Trades &amp; Technology">Trades &amp; Technology</option>
+              <option value="Design">Design</option>
+              <option value="Education">Education</option>
             </select>
             <select id="cmp-search-location" class="cmp-search-select" name="location" aria-label="Location">
               <option value="">All Locations</option>
