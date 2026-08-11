@@ -72,6 +72,13 @@ body.cmp-nav-menu-open {
   border-radius: 4px;
 }
 
+#navbar .cmp-brand-left-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+}
+
 #navbar .cmp-icon-button:hover,
 #navbar .cmp-icon-button:focus-visible,
 #navbar .cmp-close-menu-button:hover,
@@ -101,9 +108,37 @@ body.cmp-nav-menu-open {
   white-space: nowrap;
 }
 
+#navbar .cmp-brand-left {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ justify-self: start;
+ padding-left: 8px;
+}
+
+#navbar .cmp-brand-logo {
+ width: 34px;
+ height: 34px;
+ object-fit: contain;
+ border-radius: 4px;
+}
+
+#navbar .cmp-brand-left-text {
+ display: flex;
+ flex-direction: column;
+ line-height: 1;
+}
+
+#navbar .cmp-university-name {
+ margin: 0;
+ font-size: 12px;
+ font-weight: 700;
+ color: var(--cmp-nav-foreground);
+}
+
 #navbar .cmp-brand:hover,
 #navbar .cmp-brand:focus-visible {
-  background: var(--cmp-nav-muted);
+ background: var(--cmp-nav-muted);
 }
 
 #navbar .cmp-navbar-actions {
@@ -205,8 +240,8 @@ body.cmp-nav-menu-open {
 #navbar .cmp-profile-dropdown a:focus-visible,
 #navbar .cmp-profile-dropdown button:hover,
 #navbar .cmp-profile-dropdown button:focus-visible {
-  background: #7A3e52;
-  color: #fff;
+  background: #4A0E1A;
+  color: #fdfbf6;
 }
 
 #navbar .cmp-notification-empty {

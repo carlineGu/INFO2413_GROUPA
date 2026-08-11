@@ -215,7 +215,7 @@ body {
   width: 100%;
   padding: 13px 18px;
   border: none;
-  background: var(--primary);
+  background: #4A0E1A;
   color: #fff;
   cursor: pointer;
   font: inherit;
@@ -224,8 +224,10 @@ body {
 }
 
 .publish-button:hover {
-  background: var(--primary-dark);
+  background: #fdfbf6;
   transform: translateY(-1px);
+  color: #4A0E1A;
+  border: 1px solid #4A0E1A;
 }
 
 .publish-button:disabled {

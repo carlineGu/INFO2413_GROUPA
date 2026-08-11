@@ -70,7 +70,8 @@ body {
 }
 
 .sign-out-button:hover {
-  background: #782F40;
+  background: #FDFBF6;
+  color: #4A0E1A;
 }
 
 .admin-main {
@@ -402,8 +403,8 @@ body {
 }
 
 .admin-side-menu-link:hover {
-  background: #5A332E;
-  color: #FDFBF6;
+  background: #FDFBF6;
+  color: #4A0E1A;
 }
 
 .admin-side-menu-link.is-active {
@@ -486,8 +487,8 @@ body {
 
 .remove-button,
 .suspend-button {
-  background: #7A3e52;
-  border: 1px solid #7A3e52;
+  background: #4A0E1A;
+  border: 1px solid #4A0E1A;
   color: #FDFBF6;
   padding: 8px 14px;
   font: inherit;
@@ -499,7 +500,9 @@ body {
 
 .remove-button:hover:not(:disabled),
 .suspend-button:hover:not(:disabled) {
-  background: #782F40;
+  background: #FDFBF6;
+  color: #4A0E1A;
+  border-color: #4A0E1A;
 }
 
 .remove-button:disabled,
@@ -556,6 +559,6 @@ body {
 }
 
 .quick-access-card:hover {
-    background: #fef7df;
+    background: #ffff;
     border-color: #D8D0BF;
 }

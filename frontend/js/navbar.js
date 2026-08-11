@@ -24,16 +24,27 @@
     navbarContainer.innerHTML = `
       <header class="cmp-header">
         <nav class="cmp-navbar" aria-label="Primary navigation">
-          <button
-            id="cmp-menu-button"
-            class="cmp-icon-button cmp-menu-button"
-            type="button"
-            aria-label="Open navigation menu"
-            aria-controls="cmp-side-menu"
-            aria-expanded="false"
-          >
-            <span aria-hidden="true">&#9776;</span>
-          </button>
+          <div class="cmp-brand-left-wrapper">
+            <button
+              id="cmp-menu-button"
+              class="cmp-icon-button cmp-menu-button"
+              type="button"
+              aria-label="Open navigation menu"
+              aria-controls="cmp-side-menu"
+              aria-expanded="false"
+            >
+              <span aria-hidden="true">&#9776;</span>
+            </button>
+
+            <div class="cmp-brand-left">
+              <img src="../pictures/icon pic.png" alt="KPU Logo" class="cmp-brand-logo" />
+              <div class="cmp-brand-left-text">
+                <div class="cmp-university-name">Kwantlen</div>
+                <div class="cmp-university-name">Polytechnic</div>
+                <div class="cmp-university-name">University</div>
+              </div>
+            </div>
+          </div>
 
           <a class="cmp-brand" href="index.html" data-nav-link>
             <span class="cmp-brand-full">Campus Marketplace</span>

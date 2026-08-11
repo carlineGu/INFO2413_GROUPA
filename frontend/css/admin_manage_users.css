@@ -87,18 +87,20 @@
     color: #fff;
 }
 
-.remove-btn {
+.remove-btn, .suspend-btn {
     padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
     border: none;
-    background: #7A3e52;
-    color: #FDFBF6;
+    background: #4a0e1a;
+    color: #fdfbf6;
     margin-left: 8px;
 }
 
 .action-btn:hover,
-.remove-btn:hover {
+.remove-btn:hover, .suspend-btn:hover {
     opacity: 0.9;
-    background: #782F40;
+    background: #fdfbf6;
+    color: #4a0e1a;
+    border-color: #4a0e1a; 
 }
