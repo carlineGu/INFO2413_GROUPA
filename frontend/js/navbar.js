@@ -1,15 +1,22 @@
 (function () {
   "use strict";
 
-  const notifications = [
-    // { text: "New message from John", href: "message.html" },
-    // { text: "Someone favorited your listing", href: "favorite.html" },
-
-    
-  ];
+  const NOTIFICATION_STORAGE_KEY = "campus-marketplace-unread-notifications";
+  const notifications = [];
   const marketplace = window.CampusMarketplace;
   const chatList = document.getElementById("chatList");
   const currentUser = marketplace.getCurrentUser();
+
+  function getStoredNotificationCount() {
+    const rawValue = window.localStorage.getItem(NOTIFICATION_STORAGE_KEY);
+    const parsed = Number(rawValue);
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+  }
+
+  function setStoredNotificationCount(value) {
+    const normalized = Number(value) || 0;
+    window.localStorage.setItem(NOTIFICATION_STORAGE_KEY, String(normalized));
+  }
 
   function initializeNavbar() {
     const navbarContainer = document.getElementById("navbar");
@@ -285,56 +292,55 @@
     }
 
     async function updateNotifications() {
-
       if (!currentUser) {
-          return;
+        return;
       }
 
-      const result = await marketplace.request(
+      try {
+        const result = await marketplace.request(
           `message/unread-count?userId=${currentUser.userId}`
-      );
+        );
 
-      const count = result.unreadCount;
+        const count = Number(result?.unreadCount || 0);
+        setStoredNotificationCount(count);
+        notifications.length = 0;
 
-      if (count > 0) {
-        notifications.push({
-            text: `${count} unread message(s)`,
+        if (count > 0) {
+          notifications.push({
+            text: `${count} unread message${count === 1 ? "" : "s"}`,
             href: "message.html"
-        });
+          });
+        }
+      } catch (error) {
+        console.warn("Could not refresh notifications.", error);
       }
-   
-
-      // Update bell badge here
     }
 
     function renderNotifications() {
-      console.log("Rendering notification");
+      const unreadCount = getStoredNotificationCount();
       notificationList.replaceChildren();
 
-      if (notifications.length === 0) {
+      if (unreadCount === 0) {
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "cmp-notification-empty";
         emptyMessage.textContent = "No new notifications";
         notificationList.appendChild(emptyMessage);
       } else {
-        notifications.forEach((notification) => {
-          const link = document.createElement("a");
-          link.className = "cmp-notification-item";
-          link.href = notification.href;
-          link.textContent = notification.text;
-          notificationList.appendChild(link);
-        });
+        const link = document.createElement("a");
+        link.className = "cmp-notification-item";
+        link.href = "message.html";
+        link.textContent = `${unreadCount} unread message${unreadCount === 1 ? "" : "s"}`;
+        notificationList.appendChild(link);
       }
 
-      notificationBadge.textContent = String(notifications.length);
-      notificationBadge.hidden = notifications.length === 0;
+      notificationBadge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+      notificationBadge.hidden = unreadCount === 0;
       notificationButton.setAttribute(
         "aria-label",
-        notifications.length === 0
+        unreadCount === 0
           ? "Notifications, none unread"
-          : `Notifications, ${notifications.length} unread`
+          : `Notifications, ${unreadCount} unread`
       );
-      notifications.pop(); // Clear notifications after rendering
     }
 
     function markCurrentPage() {

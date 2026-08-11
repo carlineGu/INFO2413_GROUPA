@@ -6,7 +6,11 @@ const currentUser = marketplace.getCurrentUser();
 
 function renderChatCard(chat) {
   const wrapper = document.createElement("a");
-  wrapper.href = `chat.html?conversationId=${Number(chat.conversationId)}`;
+  const params = new URLSearchParams({ conversationId: String(Number(chat.conversationId)) });
+  if (Number.isFinite(Number(chat.listingId)) && Number(chat.listingId) > 0) {
+    params.set("listingId", String(Number(chat.listingId)));
+  }
+  wrapper.href = `chat.html?${params.toString()}`;
   wrapper.className = "conversation-card";
   wrapper.innerHTML = `
     <div class="conversation-card-heading">

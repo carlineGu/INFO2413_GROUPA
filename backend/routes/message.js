@@ -41,6 +41,7 @@ router.get("/inbox", async (req, res) => {
     const [rows] = await db.query(
       `SELECT
          c.conversation_id,
+         l.listing_id,
          l.listing_title,
          c.buyer_id,
          c.seller_id,
@@ -69,6 +70,7 @@ router.get("/inbox", async (req, res) => {
 
     const chats = rows.map((row) => ({
       conversationId: row.conversation_id,
+      listingId: row.listing_id,
       partnerName: row.partner_name,
       listingTitle: row.listing_title,
       roleLabel: row.role_label,
@@ -117,6 +119,7 @@ router.get("/thread/:conversationId", async (req, res) => {
       `SELECT c.conversation_id,
               c.buyer_id,
               c.seller_id,
+              l.listing_id,
               l.listing_title,
               CONCAT(b.first_name, ' ', b.last_name) AS buyer_name,
               CONCAT(s.first_name, ' ', s.last_name) AS seller_name
@@ -148,6 +151,7 @@ router.get("/thread/:conversationId", async (req, res) => {
 
     res.json({
       partnerName,
+      listingId: conv.listing_id,
       listingTitle: conv.listing_title,
       roleLabel,
       messages: messages.map((msg) => ({

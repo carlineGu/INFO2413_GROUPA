@@ -249,7 +249,11 @@ async function startConversation(listing) {
       method: "POST",
       body: { listingId: listing.listingId, buyerId: currentUser.userId }
     });
-    window.location.href = `chat.html?conversationId=${result.conversationId}`;
+    const params = new URLSearchParams({
+      conversationId: String(result.conversationId),
+      listingId: String(listing.listingId)
+    });
+    window.location.href = `chat.html?${params.toString()}`;
   } catch (error) {
     setFeedback(error.message || "Could not start a conversation.", true);
     if (button) button.disabled = false;
