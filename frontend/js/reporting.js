@@ -32,6 +32,36 @@
   const requestedTargetUserId = getQueryId(["targetUserId", "target_user_id", "sellerId"]);
   let targetUserId = requestedTargetUserId;
 
+  const LISTING_REASONS = [
+    "Misleading or inaccurate listing",
+    "Prohibited or unsafe item",
+    "Spam or duplicate listing",
+    "Price or payment issue",
+    "Harassment or suspicious communication",
+    "Other concern"
+  ];
+
+  const USER_REASONS = [
+    "Fake or impersonating account",
+    "Harassment or abusive messages",
+    "Suspicious buyer or seller behaviour",
+    "Spam or scam activity",
+    "Inappropriate profile content",
+    "Other concern"
+  ];
+
+  function setReasonOptions() {
+    const options = listingId ? LISTING_REASONS : USER_REASONS;
+    const placeholder = options[0] === "Misleading or inaccurate listing"
+      ? "Choose a listing concern"
+      : "Choose a user concern";
+
+    categoryInput.innerHTML = `
+      <option value="">${placeholder}</option>
+      ${options.map((option) => `<option value="${option}">${option}</option>`).join("")}
+    `;
+  }
+
   function setMessage(message, type = "") {
     formMessage.textContent = message;
     formMessage.className = `form-message${type ? ` ${type}` : ""}`;
@@ -138,6 +168,7 @@
   });
 
   async function initialize() {
+    setReasonOptions();
     setFormEnabled(false);
     try {
       await loadTargetContext();

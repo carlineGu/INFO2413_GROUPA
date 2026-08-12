@@ -480,6 +480,16 @@ function PublicProfile({ userId }) {
               <div>Rating: <b>{ratingLabel}</b></div>
             </div>
           </div>
+          {getStoredUser() && Number(getStoredUser().userId) !== Number(userId) && (
+            <div className="flex flex-col justify-start">
+              <a
+                href={`reporting.html?targetUserId=${userId}`}
+                className="border border-black px-2 py-1 text-xs h-fit text-center hover:bg-[#4A0E1A] hover:text-[#FDFBF6]"
+              >
+                Report User
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="text-xs font-semibold mb-2">Active Listings</div>

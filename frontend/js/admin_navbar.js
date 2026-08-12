@@ -17,7 +17,7 @@
     { href: "user_listing_reports.html", label: "Reports", badgeId: "menuReportsBadge" },
     { href: "admin_marketplace_activity.html", label: "Marketplace Activity" },
     { href: "admin_listings.html", label: "Listings" },
-    { href: "admin_users.html", label: "Users" },
+    { href: "admin_users.html", label: "Accounts" },
     { href: "admin_support_messages.html", label: "Support Messages", badgeId: "menuMessagesBadge" }
   ];
 
