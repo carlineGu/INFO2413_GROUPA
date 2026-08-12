@@ -117,7 +117,5 @@ INSERT INTO `Report`
 VALUES
     (1, 'The listing appears to be posted in the wrong category.', 2, 1, 2);
 
-DELETE FROM `Listing_image` WHERE `listing_id` IN (10, 11);
-DELETE FROM `Listing` WHERE `listing_id` IN (10, 11);
  
 COMMIT;
