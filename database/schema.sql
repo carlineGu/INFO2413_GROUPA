@@ -1,5 +1,5 @@
 -- Campus Marketplace database schema
--- This script is intended for a fresh database. It never drops an existing database.
+-- This script is intended for a fresh database.
 
 CREATE DATABASE IF NOT EXISTS `campus_marketplace`
   CHARACTER SET utf8mb4
