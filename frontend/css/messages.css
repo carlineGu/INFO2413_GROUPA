@@ -42,6 +42,13 @@ body {
   font-size: 0.78rem;
 }
 
+.listing-back-link {
+  display: inline-block;
+  color: #4A0E1A;
+  font-size: 0.85rem;
+  text-underline-offset: 3px;
+}
+
 .conversation-card p { margin: 10px 0 0; }
 .conversation-card-meta { margin-top: 4px; }
 .error-state { color: #b42318; }

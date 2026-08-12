@@ -6,7 +6,10 @@ const currentUser = marketplace.getCurrentUser();
 
 function renderChatCard(chat) {
   const wrapper = document.createElement("a");
-  const params = new URLSearchParams({ conversationId: String(Number(chat.conversationId)) });
+  const params = new URLSearchParams({
+    conversationId: String(Number(chat.conversationId)),
+    returnTo: "inbox"
+  });
   if (Number.isFinite(Number(chat.listingId)) && Number(chat.listingId) > 0) {
     params.set("listingId", String(Number(chat.listingId)));
   }

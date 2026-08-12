@@ -15,6 +15,10 @@ function getListingId() {
   return Number(new URLSearchParams(window.location.search).get("listingId"));
 }
 
+function getReturnTarget() {
+  return new URLSearchParams(window.location.search).get("returnTo") || "";
+}
+
 function renderMessage(message) {
   const isMine = Number(message.senderId) === currentUser.userId;
   const card = document.createElement("article");
@@ -47,10 +51,11 @@ async function loadThread() {
   try {
     const result = await marketplace.request(`message/thread/${conversationId}?userId=${currentUser.userId}`);
     const listingId = getListingId() || Number(result.listingId);
+    const returnTarget = getReturnTarget();
     await marketplace.request(`message/mark-read/${conversationId}?userId=${currentUser.userId}`);
-    const backLink = Number.isFinite(listingId) && listingId > 0
-      ? `<a href="listing.html?id=${listingId}">&larr; Back to listing</a>`
-      : `<a href="message.html">&larr; Back to inbox</a>`;
+    const backLink = returnTarget === "listing" && Number.isFinite(listingId) && listingId > 0
+      ? `<a class="listing-back-link" href="listing.html?id=${listingId}">&larr; Back to listing</a>`
+      : `<a class="listing-back-link" href="message.html">&larr; Back to inbox</a>`;
     chatHeader.innerHTML = `
       <div>
         <h1>${marketplace.escapeHtml(result.partnerName)}</h1>
