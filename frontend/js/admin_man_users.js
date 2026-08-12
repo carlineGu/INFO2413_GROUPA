@@ -16,7 +16,7 @@ async function loadUsers() {
 
       const actionButton =
         user.account_status === "SUSPENDED"
-          ? `<button onclick="reinstateUser(${user.user_id})">Reinstate</button>`
+          ? `<button class="remove-btn" onclick="reinstateUser(${user.user_id})">Reinstate</button>`
           : `<button  class="suspend-btn" onclick="suspendUser(${user.user_id})">Suspend</button>`;
 
       tbody.innerHTML += `
@@ -53,4 +53,3 @@ async function loadUsers() {
     console.error(error);
   }
 }
-
