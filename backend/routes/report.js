@@ -297,8 +297,8 @@ router.get("/activity", async (req, res) => {
       JOIN User u
         ON u.user_id = l.user_id
       WHERE l.listing_status = 'ACTIVE'
-      GROUP BY u.user_id
-      ORDER BY listings DESC
+      GROUP BY u.user_id, u.first_name, u.last_name, u.email_addr
+      ORDER BY listings DESC, u.first_name ASC, u.last_name ASC
       LIMIT 5
     `);
 
