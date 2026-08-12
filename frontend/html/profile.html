@@ -285,20 +285,35 @@ function Profile() {
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {myListings.map((item) => (
-                    <div key={item.listingId} className="border border-black bg-white">
-                     <div className="h-24 overflow-hidden bg-gray-50">
-                        {item.photo ? (
-                            <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
-                        ) : (
-                            <ImgBox />
-                       )}
+                  <div
+                  key={item.listingId}
+                  className="border border-black bg-white cursor-pointer"
+                  onClick={() => window.location.href = `listing.html?id=${item.listingId}&returnTo=profile`}
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      window.location.href = `listing.html?id=${item.listingId}&returnTo=profile`;
+                    }
+                  }}
+                  >
+                 <div className="h-24 overflow-hidden bg-gray-50">
+                    {item.photo ? (
+                        <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />
+                    ) : (
+                        <ImgBox />
+                   )}
                  </div>
                  <div className="p-1.5">
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <div className="text-xs">{item.title}</div>
                       <button
                         type="button"
-                        onClick={() => handleDeleteListing(item.listingId)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleDeleteListing(item.listingId);
+                        }}
                         className="secondary-button text-[10px] px-2 py-1"
                       >
                         Delete
@@ -310,7 +325,10 @@ function Profile() {
                         {String(item.status || "").toUpperCase() === "SOLD" ? (
                           <button
                             type="button"
-                            onClick={() => handleToggleListingStatus(item.listingId, item.status)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleToggleListingStatus(item.listingId, item.status);
+                            }}
                             className="border border-black bg-[#FDFBF6] text-[#4A0E1A] px-2 py-1 text-[10px] font-semibold leading-none rounded-sm hover:bg-[#4A0E1A] hover:text-[#FDFBF6]"
                           >
                             Relist
@@ -318,7 +336,10 @@ function Profile() {
                         ) : (
                           <button
                             type="button"
-                            onClick={() => handleToggleListingStatus(item.listingId, item.status)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleToggleListingStatus(item.listingId, item.status);
+                            }}
                             className="border border-black bg-[#FDFBF6] text-[#4A0E1A] px-2 py-1 text-[10px] font-semibold leading-none rounded-sm hover:bg-[#4A0E1A] hover:text-[#FDFBF6]"
                           >
                             Sold
@@ -343,7 +364,7 @@ function Profile() {
             <div className="grid grid-cols-3 gap-2">
               {savedListings.map((item) => (
                 <div key={item.listingId} className="border border-black bg-white">
-                  <a href={`listing.html?id=${item.listingId}`} className="block">
+                  <a href={`listing.html?id=${item.listingId}&returnTo=profile`} className="block">
                     <div className="h-20 overflow-hidden bg-gray-50">
                       {item.photo ? (
                         <img src={item.photo} alt={item.title} className="w-full h-full object-cover" />

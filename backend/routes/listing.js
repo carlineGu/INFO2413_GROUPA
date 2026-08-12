@@ -32,6 +32,7 @@ const LISTING_SELECT = `
     d.department_name,
     loc.location_name,
     CONCAT_WS(' ', u.first_name, u.last_name) AS seller_name,
+    u.department AS seller_department,
     ratings.avg_rating,
     COALESCE(ratings.review_count, 0) AS review_count,
     EXISTS (
@@ -347,6 +348,7 @@ function toListingDto(row, photos) {
     seller: {
       userId: Number(row.user_id),
       fullName: row.seller_name,
+      department: row.seller_department || null,
       averageRating: row.avg_rating === null ? null : Number(row.avg_rating),
       reviewCount: Number(row.review_count)
     }
@@ -465,6 +467,137 @@ router.get("/:id", async (req, res) => {
     return res.json(listing);
   } catch (error) {
     return sendRouteError(res, error, "Load listing detail error", "Could not load listing.");
+  }
+});
+
+router.patch("/:id", async (req, res) => {
+  let connection;
+  let savedFiles = [];
+
+  try {
+    const listingId = parsePositiveInteger(req.params.id, "Listing id");
+    const userId = parsePositiveInteger(req.body?.userId ?? req.query.userId, "userId");
+    const payload = normalizeCreatePayload(req.body);
+    const imageSchema = await getImageSchemaCapabilities();
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    const [existingRows] = await connection.query(
+      "SELECT user_id FROM Listing WHERE listing_id = ? LIMIT 1",
+      [listingId]
+    );
+
+    if (existingRows.length === 0) {
+      throw clientError(404, "Listing not found.");
+    }
+
+    if (Number(existingRows[0].user_id) !== userId) {
+      throw clientError(403, "Only the listing owner can edit this listing.");
+    }
+
+    const categoryId = await findOrCreate(
+      connection,
+      "Category",
+      "category_id",
+      "category_name",
+      payload.category
+    );
+    const departmentId = await findOrCreate(
+      connection,
+      "Department",
+      "department_id",
+      "department_name",
+      payload.department
+    );
+    const locationId = await findOrCreate(
+      connection,
+      "Location",
+      "location_id",
+      "location_name",
+      payload.location
+    );
+
+    await connection.query(
+      `UPDATE Listing
+         SET category_id = ?,
+             department_id = ?,
+             location_id = ?,
+             listing_title = ?,
+             listing_description = ?,
+             price = ?,
+             listing_condition = ?
+       WHERE listing_id = ?
+         AND user_id = ?`,
+      [
+        categoryId,
+        departmentId,
+        locationId,
+        payload.title,
+        payload.description,
+        payload.price,
+        payload.condition,
+        listingId,
+        userId
+      ]
+    );
+
+    if (Array.isArray(req.body?.photos)) {
+      const [existingPhotos] = await connection.query(
+        "SELECT image_url FROM Listing_image WHERE listing_id = ?",
+        [listingId]
+      );
+
+      const oldPhotoFiles = existingPhotos.map((row) => path.join(__dirname, "../../frontend", row.image_url.replace(/^\/+/, "")));
+      await connection.query("DELETE FROM Listing_image WHERE listing_id = ?", [listingId]);
+
+      const photos = normalizePhotos(req.body);
+      for (const [index, photo] of photos.entries()) {
+        const savedPhoto = await savePhoto(listingId, photo, index + 1);
+        savedFiles.push(savedPhoto.filePath);
+
+        if (imageSchema.hasDisplayOrder) {
+          await connection.query(
+            `INSERT INTO Listing_image (
+               listing_id,
+               image_url,
+               display_order,
+               is_primary
+             ) VALUES (?, ?, ?, ?)`,
+            [
+              listingId,
+              savedPhoto.imageUrl,
+              savedPhoto.displayOrder,
+              savedPhoto.isPrimary
+            ]
+          );
+        } else {
+          await connection.query(
+            `INSERT INTO Listing_image (listing_id, image_url, is_primary)
+             VALUES (?, ?, ?)`,
+            [listingId, savedPhoto.imageUrl, savedPhoto.isPrimary]
+          );
+        }
+      }
+
+      await removeFiles(oldPhotoFiles);
+    }
+
+    await connection.commit();
+    const updatedListing = await getListingById(listingId, userId);
+    return res.json(updatedListing);
+  } catch (error) {
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch (rollbackError) {
+        console.error("Edit listing rollback error:", rollbackError);
+      }
+    }
+
+    await removeFiles(savedFiles);
+    return sendRouteError(res, error, "Edit listing error", "Could not update listing.");
+  } finally {
+    connection?.release();
   }
 });
 

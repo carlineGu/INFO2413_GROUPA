@@ -11,6 +11,21 @@ function getQueryParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
 
+function applyBackLink() {
+  const backLink = document.getElementById("listing-back-link");
+  if (!backLink) return;
+
+  const returnTo = getQueryParam("returnTo");
+  if (returnTo === "profile") {
+    backLink.href = "profile.html";
+    backLink.textContent = "\u2190 Back to Profile";
+    return;
+  }
+
+  backLink.href = "index.html";
+  backLink.textContent = "\u2190 Back to Listings";
+}
+
 function normalizeListing(rawListing) {
   const rawSeller = rawListing.seller || {};
   const primaryPhoto = rawListing.photo || rawListing.image_url || null;
@@ -36,6 +51,7 @@ function normalizeListing(rawListing) {
     seller: {
       userId: Number(rawSeller.userId ?? rawSeller.user_id ?? rawListing.userId ?? rawListing.user_id),
       fullName: rawSeller.fullName ?? rawSeller.name ?? rawListing.seller_name ?? "Unknown seller",
+      department: rawSeller.department ?? rawSeller.departmentName ?? rawSeller.department_name ?? rawListing.sellerDepartment ?? rawListing.seller_department ?? "",
       averageRating: Number(rawSeller.averageRating ?? rawSeller.avgRating ?? 0),
       reviewCount: Number(rawSeller.reviewCount ?? 0)
     }
@@ -129,13 +145,13 @@ function renderSellerCard(listing) {
         <a class="listing-seller-name" href="profile.html?id=${seller.userId}">
           ${marketplace.escapeHtml(seller.fullName)}
         </a>
-        <p class="listing-seller-meta">${marketplace.escapeHtml(listing.departmentName || "Department not provided")}</p>
+        <p class="listing-seller-meta">${marketplace.escapeHtml(listing.seller.department || "Department not provided")}</p>
         <p class="listing-seller-meta">${marketplace.escapeHtml(rating)}</p>
       </div>
       <div class="listing-seller-actions">
         <a class="secondary-button" href="profile.html?id=${seller.userId}">View Profile</a>
         ${isOwnListing
-          ? `<span class="secondary-button is-disabled">Your listing</span>`
+          ? `<a class="secondary-button" href="create_listing.html?editListingId=${listing.listingId}">Edit your Listing</a>`
           : `<button type="button" class="primary-button" id="message-seller-button">Message Seller</button>`}
       </div>
     </section>
@@ -169,6 +185,7 @@ function renderListing(listing) {
         <p class="listing-price">$${price}</p>
         <dl class="listing-metadata">
           <div><dt>Condition</dt><dd>${marketplace.escapeHtml(listing.condition || "Not specified")}</dd></div>
+          <div><dt>Department</dt><dd>${marketplace.escapeHtml(listing.seller.department || listing.departmentName || "Not specified")}</dd></div>
           <div><dt>Category</dt><dd>${marketplace.escapeHtml(listing.categoryName || "Not specified")}</dd></div>
           <div><dt>Meetup</dt><dd>${marketplace.escapeHtml(listing.locationName || "Not specified")}</dd></div>
         </dl>
@@ -270,6 +287,8 @@ function wireListingEvents(listing) {
 }
 
 async function loadListing() {
+  applyBackLink();
+
   const listingId = Number(getQueryParam("id"));
   if (!Number.isFinite(listingId) || listingId <= 0) {
     listingRoot.innerHTML = `<p class="listing-status-message is-error">No valid listing was specified.</p>`;
