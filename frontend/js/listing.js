@@ -251,7 +251,8 @@ async function startConversation(listing) {
     });
     const params = new URLSearchParams({
       conversationId: String(result.conversationId),
-      listingId: String(listing.listingId)
+      listingId: String(listing.listingId),
+      returnTo: "listing"
     });
     window.location.href = `chat.html?${params.toString()}`;
   } catch (error) {
