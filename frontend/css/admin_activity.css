@@ -88,7 +88,6 @@ body {
 }
 
 .stat-card {
-  
   border: 1px solid #D8D0BF;
   border-radius: 6px;
   padding: 20px 22px;
@@ -106,6 +105,55 @@ body {
   letter-spacing: 0.03em;
   color: #7A7768;
   text-transform: uppercase;
+}
+
+#category-list {
+  padding: 0 18px 18px;
+}
+
+.category-row {
+  display: grid;
+  grid-template-columns: minmax(185px, 1fr) minmax(180px, 2fr) 26px;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid #e9e0d1;
+  color: #4A0E1A;
+  font-size: 15px;
+}
+
+.category-row:first-child {
+  border-top: none;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  background: #e7e1d8;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-track {
+  position: absolute;
+  inset: 0;
+  background: #e7e1d8;
+  border-radius: 999px;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: #4A0E1A;
+  border-radius: 999px;
+}
+
+.category-row > span:last-child {
+  text-align: right;
+  font-weight: 700;
 }
 
 .stat-card.issue .stat-number {

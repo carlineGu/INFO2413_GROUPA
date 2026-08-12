@@ -20,12 +20,23 @@ router.get("/activity", async (req, res) => {
     const [categories] = await db.query(`
       SELECT
         c.category_name,
-        COUNT(*) AS total
-      FROM Listing l
-      JOIN Category c
-        ON c.category_id = l.category_id
-      WHERE l.listing_status = 'ACTIVE'
-      GROUP BY c.category_name
+        COUNT(l.listing_id) AS total
+      FROM Category c
+      LEFT JOIN Listing l
+        ON l.category_id = c.category_id
+       AND l.listing_status = 'ACTIVE'
+      GROUP BY c.category_id, c.category_name
+      ORDER BY
+        CASE c.category_name
+          WHEN 'Books & Textbooks' THEN 1
+          WHEN 'Electronics' THEN 2
+          WHEN 'Dorm & Furniture' THEN 3
+          WHEN 'Clothing & Accessories' THEN 4
+          WHEN 'School Supplies' THEN 5
+          WHEN 'Services' THEN 6
+          ELSE 99
+        END,
+        c.category_name ASC
     `);
 
     const [sellers] = await db.query(`

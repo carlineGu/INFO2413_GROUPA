@@ -24,20 +24,22 @@ async function loadMarketplaceActivity() {
 
     categoryList.innerHTML = "";
 
-    data.categories.forEach(category => {
+    const maxCategoryTotal = Math.max(1, ...data.categories.map((category) => Number(category.total || 0)));
+
+    data.categories.forEach((category) => {
+      const total = Number(category.total || 0);
+      const progressWidth = Math.max(0, (total / maxCategoryTotal) * 100);
 
       categoryList.innerHTML += `
         <div class="category-row">
           <span>${category.category_name}</span>
 
-          <div class="progress-bar">
-            <div
-              class="progress-fill"
-              style="width:${category.total * 20}%">
-            </div>
+          <div class="progress-bar" aria-label="${category.category_name} ${total} listings">
+            <div class="progress-track"></div>
+            <div class="progress-fill" style="width:${progressWidth}%"></div>
           </div>
 
-          <span>${category.total}</span>
+          <span>${total}</span>
         </div>
       `;
     });
