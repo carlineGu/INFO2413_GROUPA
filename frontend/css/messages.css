@@ -33,6 +33,30 @@ body {
   gap: 12px;
 }
 
+.chat-header-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-header-main h1 {
+  margin: 0;
+  color: #4A0E1A;
+}
+
+.listing-context-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid #D8D0BF;
+  background: #f3efe6;
+  color: #4A0E1A;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
 .conversation-card-heading time,
 .conversation-card-meta,
 .conversation-card p,
@@ -47,6 +71,7 @@ body {
   color: #4A0E1A;
   font-size: 0.85rem;
   text-underline-offset: 3px;
+  white-space: nowrap;
 }
 
 .conversation-card p { margin: 10px 0 0; }

@@ -57,9 +57,9 @@ async function loadThread() {
       ? `<a class="listing-back-link" href="listing.html?id=${listingId}">&larr; Back to listing</a>`
       : `<a class="listing-back-link" href="message.html">&larr; Back to inbox</a>`;
     chatHeader.innerHTML = `
-      <div>
+      <div class="chat-header-main">
         <h1>${marketplace.escapeHtml(result.partnerName)}</h1>
-        <p>${marketplace.escapeHtml(result.roleLabel)}: ${marketplace.escapeHtml(result.listingTitle)}</p>
+        <div class="listing-context-badge">${marketplace.escapeHtml(result.roleLabel)}: ${marketplace.escapeHtml(result.listingTitle)}</div>
       </div>
       ${backLink}
     `;

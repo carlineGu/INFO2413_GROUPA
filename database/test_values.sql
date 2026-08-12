@@ -59,7 +59,6 @@ VALUES
     (7, 6, 1, 1, 1, 'Physics Textbook', 'Used physics textbook in good condition.', 35.00, 'GOOD', 'ACTIVE'),
     (8, 8, 1, 3, 2, 'Law Textbook', 'Used law textbook in good condition.', 25.00, 'GOOD', 'ACTIVE'),
     (9, 9, 1, 1, 1, 'None Title Textbook', 'hgfjlkdsfef.', 40000.00, 'NEW', 'REMOVED'),
-    (11, 3, 2, 1, 3, 'Used IPhone', 'Brand new iphone, never been unboxed', 1600.00, 'NEW', 'REMOVED'),
     (12, 8, 1, 3, 3, 'Principles of Economics', 'Rarely used course textbook for PHIL 3303', 30.00, 'LIKE NEW', 'REMOVED'),
     (13, 3, 2, 3, 2, 'Iphone', 'Lightly used phone', 800.00, 'LIKE NEW', 'ACTIVE'),
     (14, 3, 2, 3, 1, 'Laptop', 'Very used laptop. Is functional', 500.00, 'USED', 'ACTIVE'),
@@ -77,7 +76,6 @@ VALUES
     (7, 7, '/pictures/physics_textbook.jpg', 1, TRUE),
     (8, 8, '/pictures/law_textbook.jpg', 1, TRUE),
     (9, 9, '/pictures/none_title_textbook.jpg', 1, TRUE),
-    (11, 11, '/pictures/listing-11-a379bef5-d74d-4f54-9e99-6b5e236c7e36.png', 1, TRUE),
     (12, 12, '/pictures/listing-12-131e3072-23a7-4cc2-b5d7-a41e8d9a413a.webp', 1, TRUE),
     (13, 13, '/pictures/listing-13-6389cc7b-1ae0-4140-931d-609f42913a65.png', 1, TRUE),
     (14, 14, '/pictures/listing-14-8d0557f4-993a-482b-a285-2ff2520e3e3b.webp', 1, TRUE),
@@ -114,4 +112,7 @@ INSERT INTO `Report`
 VALUES
     (1, 'The listing appears to be posted in the wrong category.', 3, 1, 2);
 
+DELETE FROM `Listing_image` WHERE `listing_id` IN (10, 11);
+DELETE FROM `Listing` WHERE `listing_id` IN (10, 11);
+ 
 COMMIT;

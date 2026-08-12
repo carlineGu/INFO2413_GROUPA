@@ -415,8 +415,14 @@ router.get("/", async (req, res) => {
     );
     const viewerId = parseOptionalPositiveInteger(req.query.viewerId, "viewerId");
 
-    let whereClause = "WHERE l.listing_status = 'ACTIVE'";
+    const statusFilter = String(req.query.status ?? "ACTIVE").trim().toUpperCase();
+    let whereClause = "WHERE 1 = 1";
     const params = [viewerId];
+
+    if (statusFilter !== "ALL") {
+      whereClause += " AND l.listing_status = ?";
+      params.push(statusFilter);
+    }
 
     if (ownerId !== null) {
       whereClause += " AND l.user_id = ?";
@@ -575,6 +581,55 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.patch("/:id/status", async (req, res) => {
+  try {
+    const listingId = parsePositiveInteger(req.params.id, "Listing id");
+    const userId = parsePositiveInteger(req.body?.userId ?? req.query.userId, "userId");
+    const desiredStatus = String(req.body?.status ?? "").trim().toUpperCase();
+
+    if (!['ACTIVE', 'SOLD'].includes(desiredStatus)) {
+      return res.status(400).json({ message: "Status must be ACTIVE or SOLD." });
+    }
+
+    const currentStatus = desiredStatus === 'SOLD' ? 'ACTIVE' : 'SOLD';
+    const [result] = await db.query(
+      `UPDATE Listing
+          SET listing_status = ?
+        WHERE listing_id = ?
+          AND user_id = ?
+          AND listing_status = ?`,
+      [desiredStatus, listingId, userId, currentStatus]
+    );
+
+    if (result.affectedRows === 0) {
+      const [rows] = await db.query(
+        "SELECT user_id, listing_status FROM Listing WHERE listing_id = ? LIMIT 1",
+        [listingId]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "Listing not found." });
+      }
+
+      if (Number(rows[0].user_id) !== userId) {
+        return res.status(403).json({ message: "Only the listing owner can change this listing status." });
+      }
+
+      return res.status(409).json({
+        message: `This listing is already ${rows[0].listing_status.toLowerCase()}.`
+      });
+    }
+
+    return res.json({
+      message: `Listing marked as ${desiredStatus.toLowerCase()}.`,
+      listingId,
+      status: desiredStatus
+    });
+  } catch (error) {
+    return sendRouteError(res, error, "Update listing status error", "Could not update listing status.");
+  }
+});
+
 router.delete("/admin/:id", async (req, res) => {
   try {
     const listingId = parsePositiveInteger(
@@ -586,7 +641,7 @@ router.delete("/admin/:id", async (req, res) => {
       `UPDATE Listing
           SET listing_status = 'REMOVED'
         WHERE listing_id = ?
-          AND listing_status = 'ACTIVE'`,
+          AND listing_status <> 'REMOVED'`,
       [listingId]
     );
 

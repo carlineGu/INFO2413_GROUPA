@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", loadListings);
 
 async function loadListings() {
   try {
-    const listings = await CampusMarketplace.request("/listing");
+    const listings = await CampusMarketplace.request("/listing?status=ALL");
 
     const tbody = document.getElementById("listings-body");
     tbody.innerHTML = "";
