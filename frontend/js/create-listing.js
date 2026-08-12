@@ -9,7 +9,7 @@ const photoSlots = new Array(4).fill(null);
 const editListingId = Number(new URLSearchParams(window.location.search).get("editListingId"));
 
 const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
-const SUPPORTED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+const SUPPORTED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/jpg", "image/webp"]);
 
 function setFormModeToEdit() {
   const pageTitle = document.querySelector(".create-listing-heading h1");
@@ -47,7 +47,16 @@ async function loadListingForEdit() {
 
     if (titleInput) titleInput.value = listing.title || "";
     if (priceInput) priceInput.value = Number(listing.price || 0).toFixed(2);
-    if (departmentInput && listing.departmentName) departmentInput.value = listing.departmentName;
+
+    const preferredDepartment = listing?.departmentName || "";
+    if (departmentInput) {
+      if (preferredDepartment && [...departmentInput.options].some((option) => option.value === preferredDepartment)) {
+        departmentInput.value = preferredDepartment;
+      } else {
+        departmentInput.value = "";
+      }
+    }
+
     if (categoryInput && listing.categoryName) categoryInput.value = listing.categoryName;
     if (conditionInput && listing.condition) conditionInput.value = listing.condition;
     if (locationInput && listing.locationName) locationInput.value = listing.locationName;
@@ -103,7 +112,7 @@ document.querySelectorAll("[data-photo-slot]").forEach((input) => {
     if (!SUPPORTED_IMAGE_TYPES.has(file.type)) {
       input.value = "";
       clearPhotoSlot(input, slot, preview);
-      showFeedback("Photos must be PNG, JPEG, or WebP files.", true);
+      showFeedback("Photos must be PNG, JPG/JPEG, or WebP files.", true);
       return;
     }
 

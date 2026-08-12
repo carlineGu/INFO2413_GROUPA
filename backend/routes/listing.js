@@ -185,7 +185,7 @@ function decodePhoto(photo, index) {
   );
 
   if (!match) {
-    throw clientError(400, `Photo ${index + 1} must be a PNG, JPEG, or WebP data URL.`);
+    throw clientError(400, `Photo ${index + 1} must be a PNG, JPG/JPEG, or WebP data URL.`);
   }
 
   const encoded = match[2].replace(/\s/g, "");

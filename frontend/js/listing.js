@@ -185,7 +185,7 @@ function renderListing(listing) {
         <p class="listing-price">$${price}</p>
         <dl class="listing-metadata">
           <div><dt>Condition</dt><dd>${marketplace.escapeHtml(listing.condition || "Not specified")}</dd></div>
-          <div><dt>Department</dt><dd>${marketplace.escapeHtml(listing.seller.department || listing.departmentName || "Not specified")}</dd></div>
+          <div><dt>Department</dt><dd>${marketplace.escapeHtml(listing.departmentName || listing.seller.department || "Not specified")}</dd></div>
           <div><dt>Category</dt><dd>${marketplace.escapeHtml(listing.categoryName || "Not specified")}</dd></div>
           <div><dt>Meetup</dt><dd>${marketplace.escapeHtml(listing.locationName || "Not specified")}</dd></div>
         </dl>

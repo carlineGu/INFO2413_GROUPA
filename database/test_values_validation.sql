@@ -1,7 +1,7 @@
 -- Seed data for a database created from schema.sql.
 -- This file reflects the current persisted app data used during local testing.
 
-USE `campus_marketplace`;
+CREATE DATABASE IF NOT EXISTS `campus_marketplace_test` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; USE `campus_marketplace_test`;
 
 START TRANSACTION;
 
@@ -91,7 +91,7 @@ VALUES
     (26, 26, '/pictures/listing-26-d9a8c70b-eafd-4009-8ce5-df0a98575f8b.jpg', 1, TRUE);
 
 INSERT INTO `Listing_reaction` (`listing_id`, `user_id`, `reaction_type`)
-VALUES (1, 2, 'THUMBSUP');
+VALUES (1, 3, 'THUMBSUP');
 
 INSERT INTO `Favorite` (`user_id`, `listing_id`)
 VALUES (2, 1);
@@ -115,9 +115,10 @@ VALUES
 INSERT INTO `Report`
     (`report_id`, `reason`, `reporter_id`, `target_user_id`, `listing_id`)
 VALUES
-    (1, 'The listing appears to be posted in the wrong category.', 2, 1, 2);
+    (1, 'The listing appears to be posted in the wrong category.', 3, 1, 2);
 
 DELETE FROM `Listing_image` WHERE `listing_id` IN (10, 11);
 DELETE FROM `Listing` WHERE `listing_id` IN (10, 11);
  
 COMMIT;
+
