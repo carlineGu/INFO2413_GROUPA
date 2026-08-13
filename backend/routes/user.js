@@ -11,7 +11,7 @@ const ALLOWED_DEPARTMENTS = [
   "Business",
   "Nursing",
   "Criminology",
-  "Computing Science",
+  "Computer Science",
   "Arts",
   "Health Sciences",
   "Trades & Technology",

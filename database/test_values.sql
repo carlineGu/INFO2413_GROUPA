@@ -39,7 +39,8 @@ VALUES
     (16, 'Arts'),
     (17, 'Criminology'),
     (18, 'Nursing'),
-    (19, 'Education');
+    (19, 'Education'),
+    (23, 'Computer Science');
 
 INSERT INTO `Location` (`location_id`, `location_name`)
 VALUES
@@ -69,14 +70,13 @@ VALUES
     (23, 8, 5, 18, 1, 'Stethoscope - Lower Hearing', 'Meant for individuals who have lower hearing', 40.00, 'GOOD', 'ACTIVE'),
     (24, 6, 6, 3, 2, 'English Tutor', '5 years experience in English tutoring', 15.00, 'GOOD', 'ACTIVE'),
     (25, 5, 2, 3, 3, 'Retro Typewriter Keyboard', 'Wireless Bluetooth Typewriter', 55.00, 'NEW', 'ACTIVE'),
-    (26, 2, 4, 2, 1, 'Excel Cheat Sheet Desk Mat', 'Custom made mat', 15.00, 'GOOD', 'ACTIVE');
+    (26, 2, 4, 2, 1, 'Excel Cheat Sheet Desk Mat', 'Custom made mat', 15.00, 'GOOD', 'ACTIVE'),
+    (27, 18, 1, 23, 1, 'PDF - Core Computer Science Textbook', 'This is a pdf textbook, will send on email.', 50.00, 'NEW', 'ACTIVE');
 
 INSERT INTO `Listing_image`
     (`image_id`, `listing_id`, `image_url`, `display_order`, `is_primary`)
 VALUES
     (1, 1, '/pictures/listing-12-1784533102322.jpg', 1, TRUE),
-    (7, 7, '/pictures/physics_textbook.jpg', 1, TRUE),
-    (8, 8, '/pictures/law_textbook.jpg', 1, TRUE),
     (13, 13, '/pictures/listing-13-6389cc7b-1ae0-4140-931d-609f42913a65.png', 1, TRUE),
     (14, 14, '/pictures/listing-14-8d0557f4-993a-482b-a285-2ff2520e3e3b.webp', 1, TRUE),
     (16, 16, '/pictures/listing-16-b39d6aa9-ebf3-40af-aafe-bdbf07422f25.jpg', 1, TRUE),
@@ -86,21 +86,28 @@ VALUES
     (20, 20, '/pictures/listing-20-7b288820-f3e9-424c-b7bb-8d223737567a.webp', 1, TRUE),
     (21, 21, '/pictures/listing-21-b7ffa20c-605a-43e6-ada9-60c445aff94d.webp', 1, TRUE),
     (22, 22, '/pictures/listing-22-efe05cab-63cb-40a4-85f2-f20ea3a99fc0.jpg', 1, TRUE),
-    (23, 23, '/pictures/listing-23-ef836134-c849-4ee1-a210-74c94db2d174.jpg', 1, TRUE),
-    (24, 24, '/pictures/listing-24-baa6d185-3d98-4f7e-b163-5b4b3b9b7f53.webp', 1, TRUE),
-    (25, 25, '/pictures/listing-25-a9aa6fc5-1279-4072-b565-08665e779f43.jpg', 1, TRUE),
-    (26, 26, '/pictures/listing-26-d9a8c70b-eafd-4009-8ce5-df0a98575f8b.jpg', 1, TRUE);
-
-INSERT INTO `Listing_reaction` (`listing_id`, `user_id`, `reaction_type`)
-VALUES (1, 2, 'THUMBSUP');
+    (23, 8, '/pictures/listing-8-71d49f10-4ece-41fb-ae0b-26eae2178675.jpg', 1, TRUE),
+    (24, 23, '/pictures/listing-23-ef836134-c849-4ee1-a210-74c94db2d174.jpg', 1, TRUE),
+    (25, 7, '/pictures/listing-7-19b8d5c4-2729-4554-9355-5b97ccbb3a48.jpg', 1, TRUE),
+    (26, 24, '/pictures/listing-24-baa6d185-3d98-4f7e-b163-5b4b3b9b7f53.webp', 1, TRUE),
+    (27, 25, '/pictures/listing-25-a9aa6fc5-1279-4072-b565-08665e779f43.jpg', 1, TRUE),
+    (28, 26, '/pictures/listing-26-d9a8c70b-eafd-4009-8ce5-df0a98575f8b.jpg', 1, TRUE),
+    (29, 27, '/pictures/listing-27-347e26b7-4c3d-47c3-85d4-9d042dc0cc48.jpg', 1, TRUE);
 
 INSERT INTO `Favorite` (`user_id`, `listing_id`)
-VALUES (2, 1);
+VALUES
+    (2, 1),
+    (8, 18),
+    (17, 8),
+    (18, 18),
+    (18, 19);
 
 INSERT INTO `Review`
     (`review_id`, `rating`, `comment`, `reviewer_user_id`, `reviewed_user_id`, `listing_id`)
 VALUES
-    (1, 5, 'The item matched the description and pickup was easy.', 2, 1, 1);
+    (1, 5, 'The item matched the description and pickup was easy.', 2, 1, 1),
+    (2, 5, 'The seller responds fast and the item was accurate to the descriptions', 17, 8, 8),
+    (3, 4, NULL, 18, 10, 18);
 
 INSERT INTO `Conversation`
     (`conversation_id`, `listing_id`, `buyer_id`, `seller_id`)
@@ -116,7 +123,9 @@ VALUES
 INSERT INTO `Report`
     (`report_id`, `reason`, `reporter_id`, `target_user_id`, `listing_id`)
 VALUES
-    (1, 'The listing appears to be posted in the wrong category.', 2, 1, 2);
+    (5, 'Misleading or inaccurate listing: there is no picture of the listing', 17, 1, 2),
+    (6, 'Misleading or inaccurate listing: Picture does not match listing names', 17, 1, 1),
+    (7, 'Other concern: Bad interaction', 4, 17, NULL);
 
  
 COMMIT;

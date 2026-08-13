@@ -93,7 +93,7 @@ function soldCount() {
 
 function renderImgBox() {
   return `
-    <div class="w-full h-full border border-black relative bg-white overflow-hidden">
+    <div class="w-full h-full border border-[#D8D0BF] relative bg-white overflow-hidden">
       <svg width="100%" height="100%" class="absolute inset-0">
         <line x1="0" y1="0" x2="100%" y2="100%" stroke="black" stroke-width="1" />
         <line x1="100%" y1="0" x2="0" y2="100%" stroke="black" stroke-width="1" />
@@ -104,7 +104,7 @@ function renderImgBox() {
 
 function renderAvatar(photo, altText) {
   if (photo) {
-    return `<img src="${escape(photo)}" alt="${escape(altText)}" class="w-full h-full object-cover border border-black">`;
+    return `<img src="${escape(photo)}" alt="${escape(altText)}" class="w-full h-full object-cover border border-[#D8D0BF]">`;
   }
 
   return renderImgBox();
@@ -127,7 +127,7 @@ function renderCard(listing, options) {
   const statusLabel = status === "SOLD" ? "Relist" : "Sold";
 
   return `
-    <div class="border border-black bg-white cursor-pointer" role="link" tabindex="0" data-listing-url="${escape(href)}">
+    <div class="border border-[#D8D0BF] bg-white cursor-pointer" role="link" tabindex="0" data-listing-url="${escape(href)}">
       <div class="h-24 overflow-hidden bg-gray-50">
         ${renderListingMedia(listing.photo, listing.title)}
       </div>
@@ -150,7 +150,7 @@ function renderCard(listing, options) {
 
 function renderTabs() {
   return `
-    <div class="flex border border-black mb-4 bg-white" role="tablist" aria-label="Profile sections">
+    <div class="flex border border-[#D8D0BF] mb-4 bg-white" role="tablist" aria-label="Profile sections">
       ${["listings", "saved", "settings"].map((tab) => `
         <button
           type="button"
@@ -173,7 +173,7 @@ function renderSelfView() {
     : "No ratings yet";
 
   const listingsHtml = state.myListings.length === 0
-    ? `<div class="border border-black p-8 text-center text-xs text-gray-400 bg-white">No listings yet</div>`
+    ? `<div class="border border-[#D8D0BF] p-8 text-center text-xs text-gray-400 bg-white">No listings yet</div>`
     : `<div class="grid grid-cols-3 gap-2">${state.myListings.map((item) => renderCard(item, {
         href: `listing.html?id=${item.listingId}&returnTo=profile`,
         showDelete: true,
@@ -181,31 +181,31 @@ function renderSelfView() {
       })).join("")}</div>`;
 
   const savedHtml = state.savedListings.length === 0
-    ? `<div class="border border-black p-8 text-center text-xs text-gray-400 bg-white">No saved items</div>`
+    ? `<div class="border border-[#D8D0BF] p-8 text-center text-xs text-gray-400 bg-white">No saved items</div>`
     : `<div class="grid grid-cols-3 gap-2">${state.savedListings.map((item) => renderCard(item, {
         href: `listing.html?id=${item.listingId}&returnTo=profile`,
         showRemove: true
       })).join("")}</div>`;
 
   const settingsHtml = `
-    <div class="border border-black p-4 bg-white">
+    <div class="border border-[#D8D0BF] p-4 bg-white">
       <div class="mb-5">
         <div class="text-xs mb-2">Profile Picture</div>
         <div class="flex items-center gap-4">
-          <div class="w-16 h-16 shrink-0">
+          <div class="w-20 h-20 shrink-0">
           ${renderAvatar(state.profilePic, "Profile")}
           </div>
           <div class="flex flex-col gap-2">
-          <label class="border border-black px-3 py-1.5 text-xs bg-white text-center cursor-pointer transition-colors duration-200 hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">
+          <label class="border border-[#D8D0BF] px-3 py-1.5 text-xs bg-white text-center cursor-pointer transition-colors duration-200 hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">
             Upload Photo
             <input type="file" accept="image/*" class="hidden" data-action="upload-photo">
           </label>
-          ${state.profilePic ? `<button type="button" data-action="remove-photo" class="border border-black px-3 py-1.5 text-xs bg-white transition-colors duration-200 hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Remove Photo</button>` : ""}
+          ${state.profilePic ? `<button type="button" data-action="remove-photo" class="border border-[#D8D0BF] px-3 py-1.5 text-xs bg-white transition-colors duration-200 hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Remove Photo</button>` : ""}
           </div>
         </div>
       </div>
 
-      <div class="border-t border-black pt-4">
+      <div class="border-t border-[#D8D0BF] pt-4">
         <div class="text-xs font-semibold mb-2">Account details</div>
         <dl class="text-xs space-y-2">
           <div>
@@ -220,20 +220,20 @@ function renderSelfView() {
         <p class="text-xs text-gray-500 mt-3">Name and email are read-only in this class-project build.</p>
       </div>
 
-      <div class="border-t border-black pt-4 mt-4">
+      <div class="border-t border-[#D8D0BF] pt-4 mt-4">
         <div class="text-xs font-semibold mb-2">Security</div>
-        <a href="forgot-password.html" class="inline-block border border-black px-3 py-1.5 text-xs bg-white transition-colors duration-200 hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Forgot your password?</a>
+        <a href="forgot-password.html" class="inline-block border border-[#D8D0BF] px-3 py-1.5 text-xs bg-white transition-colors duration-200 hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Forgot your password?</a>
       </div>
 
-      <div class="border-t border-black pt-4 mt-4">
+      <div class="border-t border-[#D8D0BF] pt-4 mt-4">
         <div class="text-xs font-semibold mb-2">Department</div>
-        <select class="border border-black px-2 py-1.5 text-xs bg-white w-full" data-action="department-select">
+        <select class="border border-[#D8D0BF] px-2 py-1.5 text-xs bg-white w-full" data-action="department-select">
         ${[
           "No Department",
           "Business",
           "Nursing",
           "Criminology",
-          "Computing Science",
+          "Computer Science",
           "Arts",
           "Health Sciences",
           "Trades & Technology",
@@ -252,9 +252,9 @@ function renderSelfView() {
 
   const content = state.tab === "listings"
     ? `
-      <a class="block w-full border border-black bg-[#4A0E1A] px-2 py-2 text-center text-xs text-[#FDFBF6] mb-3 hover:bg-[#fdfbf6] hover:text-[#4A0E1A]" href="create_listing.html">+ Create Listing</a>
+      <a class="block w-full border border-[#D8D0BF] bg-[#4A0E1A] px-2 py-2 text-center text-xs text-[#FDFBF6] mb-3 hover:bg-[#fdfbf6] hover:text-[#4A0E1A]" href="create_listing.html">+ Create Listing</a>
       ${state.myListings.length === 0
-        ? `<div class="border border-black p-8 text-center text-xs text-gray-400 bg-white">No listings yet</div>`
+        ? `<div class="border border-[#D8D0BF] p-8 text-center text-xs text-gray-400 bg-white">No listings yet</div>`
         : `<div class="grid grid-cols-3 gap-2">${state.myListings.map((item) => renderCard(item, {
             href: `listing.html?id=${item.listingId}&returnTo=profile`,
             showDelete: true,
@@ -268,8 +268,8 @@ function renderSelfView() {
 
   return `
     <div>
-      <div class="border border-black p-4 flex gap-4 mb-4 bg-white">
-        <div class="w-16 h-16 shrink-0">
+      <div class="border border-[#D8D0BF] p-4 flex gap-4 mb-4 bg-white">
+        <div class="w-20 h-20 shrink-0">
           ${renderAvatar(state.profilePic, displayName)}
         </div>
         <div class="flex-1">
@@ -283,7 +283,7 @@ function renderSelfView() {
           </div>
         </div>
         <div class="flex flex-col gap-2">
-          <a href="login.html" data-action="logout" class="border border-black px-2 py-1 text-xs h-fit text-center bg-white text-[#4A0E1A] hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Log out</a>
+          <a href="login.html" data-action="logout" class="border border-[#D8D0BF] px-2 py-1 text-xs h-fit text-center bg-white text-[#4A0E1A] hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Log out</a>
         </div>
       </div>
 
@@ -309,15 +309,15 @@ function renderPublicView() {
     : "No ratings yet";
 
   const listingsHtml = state.publicListings.length === 0
-    ? `<div class="border border-black p-8 text-center text-xs text-gray-400 bg-white">No active listings</div>`
+    ? `<div class="border border-[#D8D0BF] p-8 text-center text-xs text-gray-400 bg-white">No active listings</div>`
     : `<div class="grid grid-cols-3 gap-2">${state.publicListings.map((item) => renderCard(item, {
         href: `listing.html?id=${item.listingId}`
       })).join("")}</div>`;
 
   return `
     <div>
-      <div class="border border-black p-4 flex gap-4 mb-4 bg-white">
-        <div class="w-16 h-16 shrink-0">
+      <div class="border border-[#D8D0BF] p-4 flex gap-4 mb-4 bg-white">
+        <div class="w-20 h-20 shrink-0">
           ${renderAvatar(null, profile.fullName)}
         </div>
         <div class="flex-1">
@@ -330,7 +330,7 @@ function renderPublicView() {
         </div>
         ${currentUser && Number(currentUser.userId) !== Number(profile.userId) ? `
           <div class="flex flex-col justify-start">
-            <a href="reporting.html?targetUserId=${profile.userId}" class="border border-black px-2 py-1 text-xs h-fit text-center bg-white text-[#4A0E1A] hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Report User</a>
+            <a href="reporting.html?targetUserId=${profile.userId}" class="border border-[#D8D0BF] px-2 py-1 text-xs h-fit text-center bg-white text-[#4A0E1A] hover:bg-[#4A0E1A] hover:text-[#FDFBF6]">Report User</a>
           </div>
         ` : ""}
       </div>
