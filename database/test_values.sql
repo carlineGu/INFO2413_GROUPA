@@ -19,7 +19,8 @@ VALUES
     (13, 'bloom', 'Willow', 'USER', 'bloom@student.kpu.ca', '$2b$12$1M8dgF/deOVqzpTMjc0pQ.FVEP.2KJOiKrl5QeV7RFb2jYOT/vcX.', 'INACTIVE', 'No Department'),
     (14, 'jenny', 'john', 'USER', 'jenny@student.kpu.ca', '$2b$12$Iec6gFMWa63e5Ivcl16pC.kfaCaN1/S7upoUWI4zZkxsWXoAFBNDy', 'INACTIVE', 'No Department'),
     (16, 'Varleen', 'Jaswal', 'USER', 'varleen.jaswal@student.kpu.ca', '$2b$12$Y7TPX9gzMkrBxTxxsQnTDuc607kZp0ZjFDQpYToWOenO4BlL3YCzK', 'INACTIVE', 'No Department'),
-    (17, 'Navneet', 'Grewal', 'USER', 'navneet.grewal7@student.kpu.ca', '$2b$12$dU1VwN8r0/umCErQxC6R4.aeFuWHZfxulc2uvYmd9wbMUrQqNMUfW', 'ACTIVE', 'No Department');
+    (17, 'Navneet', 'Grewal', 'USER', 'navneet.grewal7@student.kpu.ca', '$2b$12$dU1VwN8r0/umCErQxC6R4.aeFuWHZfxulc2uvYmd9wbMUrQqNMUfW', 'ACTIVE', 'No Department'),
+    (18, 'Natash', 'Rana', 'USER', 'natash.rana@student.kpu.ca', '$2b$10$o3FOIDAKA001Wmtm9xf2feg.NfggGpyXjS3IYh3SuBx1W2qv1SRwS', 'ACTIVE', 'No Department');
 
 INSERT INTO `Category` (`category_id`, `category_name`)
 VALUES
